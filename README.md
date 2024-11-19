@@ -1,2 +1,2 @@
-# Space-Crab
-Space Crab - puzzle game about repairing satellite in the outer space.
+# Forgotten Echo
+Forgotten Echo - puzzle game about repairing satellites in the outer space.
