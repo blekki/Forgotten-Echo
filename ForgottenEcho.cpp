@@ -58,7 +58,7 @@ int main(void)
     }
 
     //time and fps
-    // double time = glfwGetTime();
+    double time = glfwGetTime();
     glfwSwapInterval(1);
 
     //create window
@@ -84,15 +84,22 @@ int main(void)
     glOrtho(-1, 1, -1, 1, -1, 1);
 
     //loop
+    float angle = 0.0f;
     while(!glfwWindowShouldClose(basicWindow)){
         glClear(GL_COLOR_BUFFER_BIT);
 
         // createCircle(0.0f, 0.0f, 1.0f);
-        // createTriangle();
+        createTriangle();
+
+        //rotate object and change that position
+        glTranslated(cos(angle) / 100.0f, 0.0f, 0.0f);
+        glRotated(2.0f, 1.0f, 0.0f, 0.0f);
 
         //other needy actions
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
+
+        angle += 0.01;
     }
 
     //close everything
