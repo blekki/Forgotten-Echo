@@ -41,7 +41,7 @@ void createCircle(float x, float y, float radius)
     }
     glEnd();
 }
-// draw simple 2d triangle
+//draw simple 2d triangle
 void createTriangle()
 {
     glBegin(GL_TRIANGLES);
@@ -54,32 +54,49 @@ void createTriangle()
     glEnd();
 }
 
-void sphereCap(int section)
+void sphereCap(int section, int position)
 {
-    //there must be code creating sphere caps using GL_TRIANGLE_FAN
+    //position means where hat must be created.
+    //   "1" - upper
+    //   "-1" - lower
+
+    float stk = (1.57f - 3.14f / (float)section) * position; //1.57 = pi/2
+
+    glColor3f(1.0f, 1.0f * position, 0.0f); //unneedy color changer (was added only for testing)
+
+    //create sphere caps
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(0.0f, 1.0f * position, 0.0f); //pole point
+    //other section line points
+    for(int sector = 0; sector <= section; sector++){
+        float sec = (6.28f * (float)sector / (float)section) * position; //6.28 = pi * 2
+        glVertex3f(cos(stk) * cos(sec), sin(stk), cos(stk) * sin(sec));
+    }
+    glEnd();
 }
 
-//!!! ПОТРІБНО ДОРОБИТИ !!!
 void createSphere(int section)
 {
-    for (int stack = 0; stack < section; stack++)
-    { // sections up to down
+    //upper pole
+    sphereCap(section, 1);
+
+    for (int stack = 1; stack < section - 1; stack++){ // sections up to down
         glBegin(GL_QUAD_STRIP);
-
-        for (int sector = 0; sector <= section; sector++)
-        { // sections around
+        for (int sector = 0; sector <= section; sector++){ // sections around
+            float stk = 1.57f - 3.14f * (float)stack / (float)section;  //1.57 = pi/2
+            float sec = 6.28f * (float)sector / (float)section;         //6.28 = pi * 2
+            
             glColor3f(0.1f * sector, 0.1f * sector, 0.1f * sector);
-
-            float sec = 6.28f * (float)sector / (float)section;
-            float stk = 1.57f - 3.14f * (float)stack / (float)section;
-
-            glVertex3f(cos(stk) * cos(sec), cos(stk) * sin(sec), sin(stk));
+            glVertex3f(cos(stk) * cos(sec), sin(stk), cos(stk) * sin(sec));
+            //next stack line point
             stk = 1.57f - 3.14f * (float)(stack + 1) / (float)section;
-            glVertex3f( cos(stk) * cos(sec), cos(stk) * sin(sec), sin(stk));
-
+            glVertex3f(cos(stk) * cos(sec), sin(stk), cos(stk) * sin(sec));
         }
         glEnd();
     }
+
+    //lower pole
+    sphereCap(section, -1);
 }
 
 //<><><><><> MAIN PROGRAM <><><><><>
@@ -128,12 +145,12 @@ int main(void)
 
         // createCircle(0.0f, 0.0f, 1.0f);
         // createTriangle();
-        createSphere(15);
+        createSphere(18);
 
         // rotate object and change that position
         //  glTranslated(cos(angle) / 100.0f, 0.0f, 0.0f);
         //  angle += 0.01;
-        glRotated(1.0f, 1.0f, 1.0f, 1.0f);
+        glRotated(1.0f, 1.0f, 0.0f, 0.0f);
         
 
         // other needy actions
