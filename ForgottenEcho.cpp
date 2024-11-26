@@ -99,6 +99,55 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
+void normalize(float vec[]){
+    float coef = 1.0f / (sqrt(pow(vec[0], 2) + pow(vec[1], 2) + pow(vec[2], 2)));
+    vec[0] *= coef;
+    vec[1] *= coef;
+    vec[2] *= coef;
+}
+
+void multiTriangle(float a[], float b[], float c[], int resolution){
+    if(resolution > 0){
+        float d[3] = {(a[0]+ b[0]) / 2.0f, (a[1]+ b[1]) / 2.0f, (a[2]+ b[2]) / 2};
+        normalize(d);
+        float e[3] = {(c[0]+ b[0]) / 2.0f, (c[1]+ b[1]) / 2.0f, (c[2]+ b[2]) / 2};
+        normalize(e);
+        float f[3] = {(a[0]+ c[0]) / 2.0f, (a[1]+ c[1]) / 2.0f, (a[2]+ c[2]) / 2};
+        normalize(f);
+
+        multiTriangle(a, d, f, resolution - 1);
+        multiTriangle(f, e, c, resolution - 1);
+        multiTriangle(d, b, e, resolution - 1);
+        multiTriangle(d, f, e, resolution - 1);
+    }
+    else{
+        glBegin(GL_TRIANGLES);
+        float color = fabs(1.0f * a[0]) + 0.1f;
+        glColor3d(color, color, color);
+        glVertex3fv(a);
+        glVertex3fv(b);
+        glVertex3fv(c);
+        glEnd();
+    }
+}
+
+void triangleSphere(int resolution){ //right now resolution = 1
+
+    float angle60 = 6.28f / 3.0f;
+    for(int i = 0; i < 3; i++){
+        
+        float a[3] {0.0f, cos(0.0f), 0.0f};
+        float b[3] {cos(angle60 * i) * sin(angle60), cos(angle60), sin(angle60 * i) * sin(angle60)};
+        float c[3] {cos(angle60 * (i + 1)) * sin(angle60), cos(angle60), sin(angle60 * (i + 1)) * sin(angle60)};
+        
+        multiTriangle(a, b, c, resolution);
+    }
+    float a[3] {sin(angle60), cos(angle60), 0.0f};
+    float b[3] {cos(angle60) * sin(angle60), cos(angle60), sin(angle60) * sin(angle60)};
+    float c[3] {cos(angle60 * 2) * sin(angle60), cos(angle60), sin(angle60 * 2) * sin(angle60)};
+    multiTriangle(a, b, c, resolution);
+}
+
 //<><><><><> MAIN PROGRAM <><><><><>
 int main(void)
 {
@@ -125,6 +174,8 @@ int main(void)
     }
     glfwMakeContextCurrent(basicWindow);
 
+    glEnable(GL_DEPTH_TEST);
+
     // key enter function
     glfwSetKeyCallback(basicWindow, key_callback);
 
@@ -141,16 +192,17 @@ int main(void)
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
         // createCircle(0.0f, 0.0f, 1.0f);
         // createTriangle();
-        createSphere(18);
+        // createSphere(100);
+        triangleSphere(4);
 
         // rotate object and change that position
         //  glTranslated(cos(angle) / 100.0f, 0.0f, 0.0f);
         //  angle += 0.01;
-        glRotated(1.0f, 1.0f, 0.0f, 0.0f);
+        glRotated(1.0f, 1.0f, 1.0f, 0.0f);
         
 
         // other needy actions
