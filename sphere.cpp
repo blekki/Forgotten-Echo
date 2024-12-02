@@ -5,8 +5,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
-
-extern int textureID;
+#include "sphere.h"
 
 //normalize 3-component vector (up to 1.0f)
 void normalize(float vec[]){
@@ -17,20 +16,12 @@ void normalize(float vec[]){
 }
 
 //draw a triangle with texture
-void vertex(float a[]){
-    float x {a[0]};
-    float y {a[1]};
-    float z {a[2]};
-
-    float phi = 1.0f - (1.0f + atan2(x, -z) / 3.1415f) / 2.0f;
-    float theta = acos(y) / 3.1415f;
-
-    glTexCoord2f(phi, theta);
+void Sphere::vertex(float a[]){
     glVertex3fv(a);
 }
 
 //divide one triangle into four some smaller
-void multiTriangle(float a[], float b[], float c[], int resolution){
+void Sphere::multiTriangle(float a[], float b[], float c[], int resolution){
     if(resolution > 0){
         float d[3] = {(a[0]+ b[0]) / 2.0f, (a[1]+ b[1]) / 2.0f, (a[2]+ b[2]) / 2};
         normalize(d);
@@ -45,31 +36,28 @@ void multiTriangle(float a[], float b[], float c[], int resolution){
         multiTriangle(d, f, e, resolution - 1);
     }
     else{
-        //draw triangle
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glBegin(GL_TRIANGLES);
-        glColor3d(1.0f, 1.0f, 1.0f);
+        //generate triangles
         vertex(a);
         vertex(b);
         vertex(c);
-        glEnd();
     }
 }
 
 //function for creating icosphere
-void triangleSphere(int resolution){ //right now resolution = 1
+void Sphere::triangleSphere(int resolution){ //right now resolution = 1
+    glBegin(GL_TRIANGLES);
 
     float angle60 = 6.283f / 3.0f;
     for(int i = 0; i < 3; i++){
-        
         float a[3] {0.0f, cos(0.0f), 0.0f};
-        float b[3] {cos(angle60 * i) * sin(angle60), cos(angle60), sin(angle60 * i) * sin(angle60)};
-        float c[3] {cos(angle60 * (i + 1.0f)) * sin(angle60), cos(angle60), sin(angle60 * (i + 1.0f)) * sin(angle60)};
-        
+        float b[3] {cosf(angle60 * i) * sinf(angle60), cosf(angle60), sinf(angle60 * i) * sinf(angle60)};
+        float c[3] {cosf(angle60 * (i + 1.0f)) * sinf(angle60), cosf(angle60), sinf(angle60 * (i + 1.0f)) * sinf(angle60)};
         multiTriangle(a, b, c, resolution);
     }
-    float a[3] {sin(angle60), cos(angle60), 0.0f};
-    float b[3] {cos(angle60) * sin(angle60), cos(angle60), sin(angle60) * sin(angle60)};
-    float c[3] {cos(angle60 * 2.0f) * sin(angle60), cos(angle60), sin(angle60 * 2.0f) * sin(angle60)};
+    float a[3] {sinf(angle60), cosf(angle60), 0.0f};
+    float b[3] {cosf(angle60) * sinf(angle60), cosf(angle60), sinf(angle60) * sinf(angle60)};
+    float c[3] {cosf(angle60 * 2.0f) * sinf(angle60), cosf(angle60), sinf(angle60 * 2.0f) * sinf(angle60)};
     multiTriangle(a, b, c, resolution);
+
+    glEnd();
 }

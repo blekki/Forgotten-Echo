@@ -8,7 +8,9 @@
 #include <GL/glut.h>
 
 #include "sphere.h"
+#include "planet.h"
 // #include <glad/glad.h>
+
 
 using namespace std;
 
@@ -17,8 +19,11 @@ const float PiDiv180 = 3.1415f / 180.0f;
 int width{600};
 int height{400};
 
-int textureID;
-int sphere;
+int textureID[2];
+int sphere[3];
+float centrePoint[3] {2.0f, 0.0f, 0.0f};
+
+// Planet mars;
 
 //<><><> FUNCTIONS <><><>
 // call actions if key pressed
@@ -29,11 +34,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         cout << "logs: window was closed" << endl;
         glfwSetWindowShouldClose(window, true);
     }
-}
-// coef for x coordinate
-float coefX(float x)
-{
-    return (x / 1.5);
 }
 
 // draw a 2d circle
@@ -108,7 +108,22 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
-//<><><><><> MAIN PROGRAM <><><><><>
+void createList(int id){
+    sphere[id] = glGenLists(id);
+    glNewList(sphere[id], GL_COMPILE);
+    // triangleSphere(5);
+    glEndList();
+}
+
+void matrix(){
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslated(0.2f, 0.0f, 0.0f);
+}
+
+
+//##############################################
+//<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
 {
     // check did glfw run or not
@@ -138,11 +153,15 @@ int main(void)
     glLoadIdentity();
     glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
 
+    // mars.setPosition();
+    // mars.setTexture();
+
 
     //add texture
-    textureID = SOIL_load_OGL_texture("./solarsystemscope/2k_moon.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-    cout << "texture: " << textureID << endl;
-
+    textureID[0] = SOIL_load_OGL_texture("./solarsystemscope/2k_moon.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+    cout << "texture 1: " << textureID[0] << endl;
+    textureID[1] = SOIL_load_OGL_texture("./solarsystemscope/2k_mars.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+    cout << "texture 2: " << textureID[1] << endl;
 
     //enable gl functions
     glEnable(GL_DEPTH_TEST);
@@ -151,13 +170,19 @@ int main(void)
     glfwSetKeyCallback(basicWindow, key_callback);
 
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0f, width / (float) height, 0.1f, 1000.0f);
 
-    gluLookAt(0.0f, 0.0f, 1.0f,
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0f, 0.0f, 10.0f,
               0.0f, 0.0f, 0.0f,
               0.0f, 1.0f, 0.0f);
-    gluPerspective(90.0f, width/height, -0.1f, -3.0f);
-    // glPushMatrix();
-    // glPopMatrix();
+
+    Planet mars;
+    mars.setTexture("./solarsystemscope/2k_mars.jpg");
+    mars.setPosition(3.0f, 4.0f, 0.0f);
 
 
     // loop
@@ -169,13 +194,20 @@ int main(void)
         // createCircle(0.0f, 0.0f, 1.0f);
         // createTriangle();
         // createSphere(100);
-        if (sphere == 0){
-            sphere = glGenLists(1);
-            glNewList(sphere, GL_COMPILE);
-            triangleSphere(5);
-            glEndList();
-        }
-        glCallList(sphere);
+
+        // sphere.draw(5);
+        mars.draw();
+
+        // if (sphere[1] == 0){
+        //     sphere[1] = glGenLists(2);
+        //     glNewList(sphere[1], GL_COMPILE);
+        //     triangleSphere(0);
+        //     glEndList();
+        // }
+        // glCallList(sphere[1]);
+
+        // matrix();
+
 
         // rotate object and change that position
         // glLoadIdentity();
