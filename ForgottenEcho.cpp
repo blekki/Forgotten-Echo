@@ -130,10 +130,6 @@ int main(void)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(basicWindow);
-    // size of window
-    glfwGetFramebufferSize(basicWindow, &width, &height);
-    glViewport(0, 0, width, height);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     // set coordinates system for window
     glLoadIdentity();
     glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
@@ -174,16 +170,14 @@ int main(void)
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
+        // size of window
+        glfwGetFramebufferSize(basicWindow, &width, &height);
+        glViewport(0, 0, width, height);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
         mars.draw();
         moon.draw();
-
-        // rotate object and change that position
-        // glLoadIdentity();
-        // glTranslated(0.0f, 0.0f, -0.008f);
-        // angle += 0.01;
-        // glRotated(0.2f, 0.0f, 1.0f, 0.0f);
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

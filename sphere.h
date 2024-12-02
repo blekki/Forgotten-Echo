@@ -4,11 +4,12 @@ using namespace std;
 
 class Sphere{
     private:
+        const int SPHERE_RESOLUTION = 5;
         int sphereID;
         void multiTriangle(float a[], float b[], float c[], int resolution);
     public:
         virtual void draw(){
-            triangleSphere(3);
+            triangleSphere(SPHERE_RESOLUTION);
         }
     protected:
         void triangleSphere(int resolution);
