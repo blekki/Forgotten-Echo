@@ -111,8 +111,7 @@ void createSphere(int section)
 int main(void)
 {
     // check did glfw run or not
-    if (!glfwInit())
-    {
+    if (!glfwInit()){
         cout << "error: glfw didn'd run" << endl;
         exit(EXIT_FAILURE);
     }
@@ -124,8 +123,7 @@ int main(void)
 
     // create window
     GLFWwindow *basicWindow = glfwCreateWindow(width, height, "Basic Window", NULL, NULL);
-    if (!basicWindow)
-    {
+    if (!basicWindow){
         cout << "error: window can't be created" << endl;
         exit(EXIT_FAILURE);
     }
@@ -162,7 +160,7 @@ int main(void)
     Planet moon;
     moon.setTexture("./solarsystemscope/2k_moon.jpg");
     moon.setScale(0.4f);
-    moon.setPosition(3.0f, 0.0f, 0.0f);
+    moon.setPosition(5.0f, 0.0f, 0.0f);
     moon.setRotateSpeed(1.0f);
 
 
