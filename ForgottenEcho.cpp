@@ -23,8 +23,6 @@ int textureID[2];
 int sphere[3];
 float centrePoint[3] {2.0f, 0.0f, 0.0f};
 
-// Planet mars;
-
 //<><><> FUNCTIONS <><><>
 // call actions if key pressed
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -108,13 +106,6 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
-void createList(int id){
-    sphere[id] = glGenLists(id);
-    glNewList(sphere[id], GL_COMPILE);
-    // triangleSphere(5);
-    glEndList();
-}
-
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -127,7 +118,8 @@ int main(void)
     }
 
     // time and fps
-    double time = glfwGetTime();
+    glfwSetTime(0.0f);
+    // double time = glfwGetTime();
     glfwSwapInterval(1);
 
     // create window
@@ -167,11 +159,15 @@ int main(void)
     //planets creating
     Planet mars;
     mars.setTexture("./solarsystemscope/2k_mars.jpg");
-    mars.setPosition(3.0f, 0.0f, 0.0f);
+    mars.setScale(1.0f);
+    mars.setPosition(0.0001f, 0.0f, 0.0f);
+    mars.setRotateSpeed(1.0f);
 
     Planet moon;
     moon.setTexture("./solarsystemscope/2k_moon.jpg");
-    moon.setPosition(-1.0f, 0.0f, 0.0f);
+    moon.setScale(0.4f);
+    moon.setPosition(3.0f, 0.0f, 0.0f);
+    moon.setRotateSpeed(1.0f);
 
 
     // loop
@@ -183,26 +179,16 @@ int main(void)
         mars.draw();
         moon.draw();
 
-        // if (sphere[1] == 0){
-        //     sphere[1] = glGenLists(2);
-        //     glNewList(sphere[1], GL_COMPILE);
-        //     triangleSphere(0);
-        //     glEndList();
-        // }
-        // glCallList(sphere[1]);
-
-        // matrix();
-
-
         // rotate object and change that position
         // glLoadIdentity();
         // glTranslated(0.0f, 0.0f, -0.008f);
         // angle += 0.01;
-        glRotated(0.2f, 0.0f, 1.0f, 0.0f);
+        // glRotated(0.2f, 0.0f, 1.0f, 0.0f);
 
         // other needy actions
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
+
     }
 
     // close everything
