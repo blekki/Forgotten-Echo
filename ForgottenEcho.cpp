@@ -115,13 +115,6 @@ void createList(int id){
     glEndList();
 }
 
-void matrix(){
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslated(0.2f, 0.0f, 0.0f);
-}
-
-
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -153,15 +146,6 @@ int main(void)
     glLoadIdentity();
     glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
 
-    // mars.setPosition();
-    // mars.setTexture();
-
-
-    //add texture
-    textureID[0] = SOIL_load_OGL_texture("./solarsystemscope/2k_moon.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-    cout << "texture 1: " << textureID[0] << endl;
-    textureID[1] = SOIL_load_OGL_texture("./solarsystemscope/2k_mars.jpg", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-    cout << "texture 2: " << textureID[1] << endl;
 
     //enable gl functions
     glEnable(GL_DEPTH_TEST);
@@ -169,7 +153,7 @@ int main(void)
     // key enter function
     glfwSetKeyCallback(basicWindow, key_callback);
 
-
+    //basic matrixes
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(45.0f, width / (float) height, 0.1f, 1000.0f);
@@ -180,9 +164,14 @@ int main(void)
               0.0f, 0.0f, 0.0f,
               0.0f, 1.0f, 0.0f);
 
+    //planets creating
     Planet mars;
     mars.setTexture("./solarsystemscope/2k_mars.jpg");
-    mars.setPosition(3.0f, 4.0f, 0.0f);
+    mars.setPosition(3.0f, 0.0f, 0.0f);
+
+    Planet moon;
+    moon.setTexture("./solarsystemscope/2k_moon.jpg");
+    moon.setPosition(-1.0f, 0.0f, 0.0f);
 
 
     // loop
@@ -191,12 +180,8 @@ int main(void)
     {
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        // createCircle(0.0f, 0.0f, 1.0f);
-        // createTriangle();
-        // createSphere(100);
-
-        // sphere.draw(5);
         mars.draw();
+        moon.draw();
 
         // if (sphere[1] == 0){
         //     sphere[1] = glGenLists(2);
