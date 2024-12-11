@@ -20,17 +20,11 @@ void Model::setModel(string fileName){
     ifstream input(fileName);
     string textline;
 
-    //todo: skip comments
-    //todo: read material filename
-    //todo: skip object
-
-    getline(input, textline);
-    getline(input, textline);
-    getline(input, textline);
-    getline(input, textline);
-
     Mesh* currentMesh = 0;
-    vertexList.push_back(xyz_t(0, 0, 0)); //#########################
+    //zero index was added for comfortability.
+    //some later when triangles is drawing zero index gives
+    //posibilities don't plus unit every time for every vertex
+    vertexList.push_back(xyz_t(0, 0, 0));
     texcoordList.push_back(st_t(0, 0));
     normalList.push_back(xyz_t(0, 0, 0));
 
@@ -100,12 +94,20 @@ void Model::setModel(string fileName){
             continue;
         }
 
-        if (textline == "s"){
-            int j;
-            input >> j;
-            input.get();
-            continue;
-        }
+        // if (textline == "s"){
+            // int j;
+            // input >> j;
+            // input.get();
+            // continue;
+        // }
+        
+
+        // (if textline == other symbol)
+        // include comments (#), right now unneeded symbols (o, s)
+        getline(input, textline);
+
+        
+
     }
     if (currentMesh != 0) {
         geometry.push_back(currentMesh);
