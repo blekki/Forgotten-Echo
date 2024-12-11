@@ -43,8 +43,6 @@ void Planet::setTexture(char* texture){
 }
 
 void Planet::draw(){
-    double time = glfwGetTime();
-    
     if (ID == 0){
             ID = glGenLists(1);
             glNewList(ID, GL_COMPILE);
@@ -55,10 +53,10 @@ void Planet::draw(){
     
 
     glPushMatrix();
-    glRotatef(orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
+    glRotatef(this->orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
     glScalef(scale, scale, scale);
     glTranslated(x, y, z);
-    glRotatef(rotateSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
+    glRotatef(this->rotateSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
 
     glBindTexture(GL_TEXTURE_2D, ID);
     glCallList(ID);

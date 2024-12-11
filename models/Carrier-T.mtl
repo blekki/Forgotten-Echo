@@ -1,0 +1,101 @@
+# Blender MTL File: 'Carrier-T.blend'
+# Material Count: 9
+
+newmtl Material__1
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page0.bmp
+
+newmtl Material__2
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page1.bmp
+
+newmtl Material__3
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page0.bmp
+
+newmtl Material__4
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.501961 0.501961 0.501961
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page0.bmp
+
+newmtl Material__5
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page2.bmp
+
+newmtl Material__6
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page1.bmp
+
+newmtl Material__7
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.784314 0.784314 0.784314
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page2.bmp
+
+newmtl Material__8
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.270588 0.270588 0.270588
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page0.bmp
+
+newmtl Material__9
+Ns 7.999999
+Ka 1.000000 1.000000 1.000000
+Kd 0.513726 0.345098 0.145098
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd media/textures/Carrier-T/lod0/page1.bmp

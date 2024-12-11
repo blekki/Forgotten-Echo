@@ -6,10 +6,13 @@
 #include <GL/gl.h>
 #include <SOIL/SOIL.h>
 #include <GL/glut.h>
+// #include <glad/glad.h>
 
 #include "sphere.h"
 #include "planet.h"
-// #include <glad/glad.h>
+#include "model.h"
+#include "object.h"
+
 
 
 using namespace std;
@@ -155,13 +158,19 @@ int main(void)
     mars.setTexture("./solarsystemscope/2k_mars.jpg");
     mars.setScale(1.0f);
     mars.setPosition(0.0001f, 0.0f, 0.0f);
-    mars.setRotateSpeed(1.0f);
+    mars.setRotateSpeed(40.0f);
 
     Planet moon;
     moon.setTexture("./solarsystemscope/2k_moon.jpg");
     moon.setScale(0.4f);
     moon.setPosition(5.0f, 0.0f, 0.0f);
-    moon.setRotateSpeed(1.0f);
+    moon.setRotateSpeed(-13.0f);
+
+    Object spaceship;
+    spaceship.newModel("models/Carrier-T.obj");
+    spaceship.setScale(0.02f);
+    spaceship.setRotate(4.0f);
+    // spaceship.draw();
 
 
     // loop
@@ -174,8 +183,9 @@ int main(void)
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        mars.draw();
-        moon.draw();
+        // mars.draw();
+        // moon.draw();
+        spaceship.draw();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

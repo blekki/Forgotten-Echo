@@ -1,5 +1,4 @@
 #pragma once
-
 #include "sphere.h"
 
 using namespace std;
@@ -15,8 +14,8 @@ class Planet: Sphere{
 
         //other characteristics
         float scale = 1.0f;
-        float orbitSpeed = 3.0f;
-        float rotateSpeed = 0.1f;
+        float orbitSpeed = 30.0f;
+        float rotateSpeed = 0.0001f;
 
     public:
         void setTexture(char* texture);
