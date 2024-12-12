@@ -24,6 +24,11 @@ void Planet::setScale(float scale){
     this->scale = scale;
 }
 
+void Planet::setTexture(char* texture){
+    textureID = SOIL_load_OGL_texture(texture, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+    cout << "setTexture: " << textureID << endl;
+}
+
 //draw a triangle with texture
 void Planet::vertex(float a[]){
     float x = a[0];
@@ -35,11 +40,6 @@ void Planet::vertex(float a[]){
 
     glTexCoord2f(phi, theta);
     Sphere::vertex(a);
-}
-
-void Planet::setTexture(char* texture){
-    textureID = SOIL_load_OGL_texture(texture, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-    cout << "setTexture: " << textureID << endl;
 }
 
 void Planet::draw(){

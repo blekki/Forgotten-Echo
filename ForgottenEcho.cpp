@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <SOIL/SOIL.h>
-#include <GL/glut.h>
+#include <GL/glu.h>
 // #include <glad/glad.h>
 
 #include "sphere.h"
@@ -109,6 +109,20 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
+void start(){
+    int textureID;
+    textureID = SOIL_load_OGL_texture("model/page0.bmp", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+
+    glBegin(GL_TRIANGLES);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2f(1.0f, 1.0f);
+    glTexCoord2f(-1.0f, 1.0f);
+    glVertex2f(-1.0f, 1.0f);
+    glTexCoord2f(-1.0f, -1.0f);
+    glVertex2f(-1.0f, -1.0f);
+    glEnd();
+}
+
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -132,8 +146,8 @@ int main(void)
     }
     glfwMakeContextCurrent(basicWindow);
     // set coordinates system for window
-    glLoadIdentity();
-    glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
+    // glLoadIdentity();
+    // glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
 
 
     //enable gl functions
@@ -168,10 +182,10 @@ int main(void)
 
     Object spaceship;
     spaceship.newModel("models/Carrier-T.obj");
+    spaceship.newMaterials("models/Carrier-T.mtl");
     spaceship.setScale(0.02f);
-    spaceship.setRotate(4.0f);
+    spaceship.setRotate(8.0f);
     // spaceship.draw();
-
 
     // loop
     float angle = 0.0f;
@@ -186,6 +200,7 @@ int main(void)
         // mars.draw();
         // moon.draw();
         spaceship.draw();
+        // start();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

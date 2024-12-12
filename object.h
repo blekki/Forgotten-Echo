@@ -23,8 +23,8 @@ class Object: public Model{
         
         void draw(){
             glPushMatrix();
-            glScalef(scale, scale, scale);
             glTranslated(x, y, z);
+            glScalef(scale, scale, scale);
             glRotatef(angleX * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
             drawTriangles();
             glPopMatrix();

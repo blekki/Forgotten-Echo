@@ -3,17 +3,37 @@
 #include <fstream>
 #include <vector>
 #include <GL/gl.h>
+#include <SOIL/SOIL.h>
 
 #include "model.h"
 
 using namespace std;
 
-//<><><> structures
-struct xyz_t;
-struct st_t;
-struct Vertex;
-struct Triangle;
-struct Mesh;
+void Model::setMaterials(string fileName){
+    ifstream input(fileName);
+    string textline;
+
+    // materialList.push_back(0);
+
+    while (getline(input, textline, ' ')) {
+        
+        if (textline == "map_Kd"){
+            string texture;
+            input >> texture;
+
+            int textureID = SOIL_load_OGL_texture(texture.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+            cout << "setMaterial: " << textureID << " : " << texture << endl;
+            materialList.push_back(Material(textureID));
+            input.get();
+            continue;
+        }
+
+        // if input have something else, skip iteration
+        getline(input, textline);
+    }
+
+    input.close();
+}
 
 void Model::setModel(string fileName){
     // fileName = "models/Carrier-T.obj";
@@ -102,8 +122,8 @@ void Model::setModel(string fileName){
         // }
         
 
-        // (if textline == other symbol)
-        // include comments (#), right now unneeded symbols (o, s)
+        //--> if textline == other symbol
+        //--> include comments (#), right now unneeded symbols (o, s)
         getline(input, textline);
 
         
