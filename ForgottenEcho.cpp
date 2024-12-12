@@ -169,13 +169,13 @@ int main(void)
 
     //planets creating
     Planet mars;
-    mars.setTexture("./solarsystemscope/2k_mars.jpg");
+    mars.setTexture("solarsystemscope/2k_mars.jpg");
     mars.setScale(1.0f);
     mars.setPosition(0.0001f, 0.0f, 0.0f);
     mars.setRotateSpeed(40.0f);
 
     Planet moon;
-    moon.setTexture("./solarsystemscope/2k_moon.jpg");
+    moon.setTexture("solarsystemscope/2k_moon.jpg");
     moon.setScale(0.4f);
     moon.setPosition(5.0f, 0.0f, 0.0f);
     moon.setRotateSpeed(-13.0f);
@@ -185,7 +185,6 @@ int main(void)
     spaceship.newMaterials("models/Carrier-T.mtl");
     spaceship.setScale(0.02f);
     spaceship.setRotate(8.0f);
-    // spaceship.draw();
 
     // loop
     float angle = 0.0f;

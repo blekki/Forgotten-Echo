@@ -9,6 +9,8 @@ using namespace std;
 
 class Model{
     protected:
+        int ID = 0;
+
         struct xyz_t
         {
             float x;

@@ -18,11 +18,11 @@ void Model::setMaterials(string fileName){
     while (getline(input, textline, ' ')) {
         
         if (textline == "map_Kd"){
-            string texture;
-            input >> texture;
+            string textureName;
+            input >> textureName;
 
-            int textureID = SOIL_load_OGL_texture(texture.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-            cout << "setMaterial: " << textureID << " : " << texture << endl;
+            int textureID = SOIL_load_OGL_texture(textureName.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+            cout << "setMaterial: " << textureID << " : " << textureName << endl;
             materialList.push_back(Material(textureID));
             input.get();
             continue;
@@ -36,14 +36,13 @@ void Model::setMaterials(string fileName){
 }
 
 void Model::setModel(string fileName){
-    // fileName = "models/Carrier-T.obj";
     ifstream input(fileName);
     string textline;
 
     Mesh* currentMesh = 0;
-    //zero index was added for comfortability.
-    //some later when triangles is drawing zero index gives
-    //posibilities don't plus unit every time for every vertex
+    // zero index was added for comfortability.
+    // some later when triangles is drawing zero index gives
+    // posibilities don't plus unit every time for every vertex
     vertexList.push_back(xyz_t(0, 0, 0));
     texcoordList.push_back(st_t(0, 0));
     normalList.push_back(xyz_t(0, 0, 0));
@@ -121,13 +120,9 @@ void Model::setModel(string fileName){
             // continue;
         // }
         
-
         //--> if textline == other symbol
         //--> include comments (#), right now unneeded symbols (o, s)
         getline(input, textline);
-
-        
-
     }
     if (currentMesh != 0) {
         geometry.push_back(currentMesh);
