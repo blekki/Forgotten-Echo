@@ -25,19 +25,21 @@ void Object::setScale(float scale){
 
 //draw object on screen
 void Object::drawTriangles(){
+    const int TRIANGLE_VERTICES = 3;
     glColor3f(1.0f, 1.0f, 1.0f);
     
     if (this->ID == 0){
-        ID = glGenLists(1);
+        this->ID = glGenLists(1);
         glNewList(ID, GL_COMPILE);
-
-        const int TRIANGLE_VERTICES = 3;
+        // cout << geometry.size() << endl;
         int meshCount = this->geometry.size();
-        for (int m = 0; m < meshCount; m++) { //read every mesh with triangles
-            glBindTexture(GL_TEXTURE_2D, materialList.at(m).textureID);
-            glBegin(GL_TRIANGLES);
 
+        for (int m = 0; m < meshCount; m++) { //read every mesh with triangles
+            // glBindTexture(GL_TEXTURE_2D, materialList.at(m).textureID);
+            glBindTexture(GL_TEXTURE_2D, materialList[geometry.at(m)->material].textureID);
+            glBegin(GL_TRIANGLES);
             // cout << "textureID: " << this->materialList.at(m).textureID << endl;
+            cout << "textureID: " << this->materialList[geometry.at(m)->material].textureID << endl;
 
             int triangleCount = this->geometry.at(m)->triangles.size();
 
@@ -54,13 +56,11 @@ void Object::drawTriangles(){
                     float x = vertexList.at(vertexPoint).x;
                     float y = vertexList.at(vertexPoint).y;
                     float z = vertexList.at(vertexPoint).z;
-                    // glColor3f(tv == 0 ? 1 : 0, tv == 1 ? 1 : 0, tv == 2 ? 1 : 0);
                     glVertex3f(x, y, z);
                 }
             }
             glEnd();
         }
-
         glEndList();
     }
     glCallList(this->ID);

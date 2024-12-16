@@ -13,25 +13,43 @@ void Model::setMaterials(string fileName){
     ifstream input(fileName);
     string textline;
 
-    // materialList.push_back(0);
+    string path = "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/";
 
+    // materialList.push_back(0);
+    string materialName;
     while (getline(input, textline, ' ')) {
+
+        if (textline == "newmtl"){
+            input >> materialName;
+            input.get();
+            continue;
+        }
         
         if (textline == "map_Kd"){
             string textureName;
             input >> textureName;
 
-            int textureID = SOIL_load_OGL_texture(textureName.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-            cout << "setMaterial: " << textureID << " : " << textureName << endl;
-            materialList.push_back(Material(textureID));
+            if (materialList[materialName].textureID == 0){ 
+                int textureID = SOIL_load_OGL_texture((path + textureName).c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+                cout << "setMaterial: " << textureID << " : " << textureName << endl;
+                materialList[materialName].textureID = textureID;
+            }
             input.get();
             continue;
         }
+
+        // if (textline == "\n\t"){
+        //     string nothing = textline;
+        //     // input >> nothing;
+        //     // input.get();
+        //     continue;
+        // }
 
         // if input have something else, skip iteration
         getline(input, textline);
     }
 
+    cout << "materrial was correctly read -> " << fileName << endl;
     input.close();
 }
 
@@ -91,9 +109,11 @@ void Model::setModel(string fileName){
                 geometry.push_back(currentMesh);
             }
             currentMesh = new Mesh();
+            input >> currentMesh->material;
 
-            string name;
-            getline(input, name);
+            // string name;
+            // geometry
+            // getline(input, name);
             continue;
         }
 
@@ -128,5 +148,6 @@ void Model::setModel(string fileName){
         geometry.push_back(currentMesh);
     }
 
+    cout << "model was correctly read -> " << fileName << endl;
     input.close();
 }    

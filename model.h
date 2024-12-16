@@ -4,6 +4,7 @@
 // #include <fstream>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -53,23 +54,19 @@ class Model{
         struct Material
         {
             int textureID;
-            // float ns;
-            // vector<float> ka;
-            // vector<float> kd;
-            // vector<float> ks;
-            // vector<float> ke;
-            // float ni;
-            // float d;
 
             Material(int textureID){
                 this->textureID = textureID;
             }
-
+            Material(){
+                this->textureID = 0;
+            }
         };
 
         struct Mesh
         {
-            int material;
+            // int material;
+            string material;
             vector<Triangle> triangles;
         };
 
@@ -89,9 +86,11 @@ class Model{
         virtual ~Model(){};
     
     protected:
+    public:
         vector<xyz_t> vertexList;
         vector<st_t> texcoordList;
         vector<xyz_t> normalList;
-        vector<Material> materialList;
+        map<string, Material> materialList;
+        
         vector<Mesh*> geometry;
 };

@@ -19,6 +19,7 @@ using namespace std;
 
 //<><><> NEEDY CONSTANTS
 const float PiDiv180 = 3.1415f / 180.0f;
+// const char* MODELS_DIRECTORY = "models/";
 int width{600};
 int height{400};
 
@@ -109,20 +110,6 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
-void start(){
-    int textureID;
-    textureID = SOIL_load_OGL_texture("model/page0.bmp", SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-
-    glBegin(GL_TRIANGLES);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2f(1.0f, 1.0f);
-    glTexCoord2f(-1.0f, 1.0f);
-    glVertex2f(-1.0f, 1.0f);
-    glTexCoord2f(-1.0f, -1.0f);
-    glVertex2f(-1.0f, -1.0f);
-    glEnd();
-}
-
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -181,10 +168,21 @@ int main(void)
     moon.setRotateSpeed(-13.0f);
 
     Object spaceship;
-    spaceship.newModel("models/Carrier-T.obj");
-    spaceship.newMaterials("models/Carrier-T.mtl");
+    // spaceship.newModel("models/Carrier-T.obj");
+    // spaceship.newMaterials("models/Carrier-T.mtl");
+    spaceship.newModel("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.obj");
+    spaceship.newMaterials("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.mtl");
     spaceship.setScale(0.02f);
     spaceship.setRotate(8.0f);
+    // spaceship.draw();
+
+    for (int i = 0; i < spaceship.geometry.size(); i++){
+        // cout << spaceship.materialList[spaceship.geometry.at(i)->material].textureID << endl;
+        cout << i << " : " << spaceship.geometry.at(i)->material << endl;
+    }
+    cout << spaceship.materialList.size() << endl;
+    
+    // cout << spaceship.materialList.size() << endl;
 
     // loop
     float angle = 0.0f;
@@ -199,7 +197,6 @@ int main(void)
         // mars.draw();
         // moon.draw();
         spaceship.draw();
-        // start();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);
