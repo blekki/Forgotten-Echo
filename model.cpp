@@ -132,13 +132,6 @@ void Model::setModel(string fileName){
             currentMesh->triangles.push_back(face);
             continue;
         }
-
-        // if (textline == "s"){
-            // int j;
-            // input >> j;
-            // input.get();
-            // continue;
-        // }
         
         //--> if textline == other symbol
         //--> include comments (#), right now unneeded symbols (o, s)
