@@ -37,7 +37,7 @@ void Object::drawTriangles(){
         for (int m = 0; m < meshCount; m++) { //read every mesh with triangles
             glBindTexture(GL_TEXTURE_2D, materialList[geometry.at(m)->material].textureID);
             glBegin(GL_TRIANGLES);
-            cout << "textureID: " << this->materialList[geometry.at(m)->material].textureID << endl;
+            // cout << "textureID: " << this->materialList[geometry.at(m)->material].textureID << endl;
 
             int triangleCount = this->geometry.at(m)->triangles.size();
 
