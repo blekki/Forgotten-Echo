@@ -110,6 +110,86 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
+class Vec{
+    public:
+        float x;
+        float y;
+
+        Vec& operator-(const Vec& other){
+            x -= other.x;
+            y -= other.y;
+            return *this;
+        }
+        Vec& operator+(const Vec& other){
+            x += other.x;
+            y += other.y;
+            return *this;
+        }
+        Vec& operator/(const float other){
+            x /= other;
+            y /= other;
+            return *this;
+        }
+        Vec& operator*(const float other){
+            x *= other;
+            y *= other;
+            return *this;
+        }
+        void print(){
+            cout << x << " : " << y << endl;
+        }
+        void normalize(){
+            float coef = 1.0f / sqrt(x * x + y * y);
+            x *= coef;
+            y *= coef;
+        }
+};
+
+// class Qued{
+//     public:
+//         float real;
+//         float im;
+        
+//         void print(){
+//             cout << real << " : " << im << endl;
+//         }
+// };
+
+void testing(){
+    // Vec vec1 {0.0f, 1.0f};
+    // Vec qued {3.14f / 2.0f, 3.14f / 2.0f};
+    // Vec result;
+    // result.x = vec1.x * qued.x + vec1.x * qued.y;
+    // result.y = vec1.y * qued.x;// + vec1.y * qued.y;
+    // result.y = result.y * -1.0f;
+    // result.print();
+
+    // Qued k {cos(20), sin(20)};
+    // Qued result;
+    // result.real = 0.0f;// vec1.x * k.real + vec1.x * k.im;
+    // result.im = vec1.y * k.real + vec1.y * k.im;
+    // result.print();
+
+    
+    // Vec vec2 {0.0f, 1.0f};
+    // Vec vec3 = vec1;
+    // Vec part;
+    // part = (vec2 - vec1) / 10.0f;
+    
+    // glBegin(GL_TRIANGLE_FAN);
+    // glColor3f(1.0f, 1.0f, 1.0f);
+    // glVertex3f(0.0f, 0.0f, 0.0f);
+    // glVertex3f(vec3.x * 4, vec3.y * 4, 0.0f);
+    // for (int a = 0; a < 10; a++){
+    //     glColor3f(part.x, part.y, 1.0f);
+    //     vec3 = vec3 + part;
+    //     vec3.normalize();
+    //     glVertex3f(vec3.x * 4, vec3.y * 4, 0.0f);
+    // }
+    // glEnd();
+
+}
+
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -132,10 +212,6 @@ int main(void)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(basicWindow);
-    // set coordinates system for window
-    // glLoadIdentity();
-    // glOrtho(-((float)width / (float)height), ((float)width / (float)height), -1, 1, -1, 1);
-
 
     //enable gl functions
     glEnable(GL_DEPTH_TEST);
@@ -176,13 +252,14 @@ int main(void)
     spaceship.setRotate(8.0f);
     // spaceship.draw();
 
-    for (int i = 0; i < spaceship.geometry.size(); i++){
-        // cout << spaceship.materialList[spaceship.geometry.at(i)->material].textureID << endl;
-        cout << i << " : " << spaceship.geometry.at(i)->material << endl;
-    }
-    cout << spaceship.materialList.size() << endl;
-    
+    // for (int i = 0; i < spaceship.geometry.size(); i++){
+    //     // cout << spaceship.materialList[spaceship.geometry.at(i)->material].textureID << endl;
+    //     cout << i << " : " << spaceship.geometry.at(i)->material << endl;
+    // }
     // cout << spaceship.materialList.size() << endl;
+    // // cout << spaceship.materialList.size() << endl;
+
+    testing();
 
     // loop
     float angle = 0.0f;
@@ -197,6 +274,7 @@ int main(void)
         // mars.draw();
         // moon.draw();
         spaceship.draw();
+        // testing();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

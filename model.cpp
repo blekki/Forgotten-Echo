@@ -38,13 +38,6 @@ void Model::setMaterials(string fileName){
             continue;
         }
 
-        // if (textline == "\n\t"){
-        //     string nothing = textline;
-        //     // input >> nothing;
-        //     // input.get();
-        //     continue;
-        // }
-
         // if input have something else, skip iteration
         getline(input, textline);
     }

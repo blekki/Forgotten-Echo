@@ -15,7 +15,7 @@ void Object::setPosition(float x, float y, float z){
 }
 
 void Object::setRotate(float angleX){
-    this->angleX = angleX;
+//     this->angleX = angleX;
     // this->angleY = angleY;
 }
 
