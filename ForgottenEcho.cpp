@@ -43,8 +43,7 @@ void createCircle(float x, float y, float radius)
 { // x and y means centre of circle
     // glColor3f(1.0f, 1.0f, 1.0f); //white color
     glBegin(GL_TRIANGLE_FAN);
-    for (int i = 0; i < 360; i++)
-    {
+    for (int i = 0; i < 360; i++) {
         x = radius * cos(i * PiDiv180);
         y = radius * sin(i * PiDiv180);
         glColor3f(x, y, 1.0f);
@@ -79,7 +78,7 @@ void sphereCap(int section, int position)
     glBegin(GL_TRIANGLE_FAN);
     glVertex3f(0.0f, 1.0f * position, 0.0f); //pole point
     //other section line points
-    for(int sector = 0; sector <= section; sector++){
+    for (int sector = 0; sector <= section; sector++) {
         float sec = (6.28f * (float)sector / (float)section) * position; //6.28 = pi * 2
         glVertex3f(cos(stk) * cos(sec), sin(stk), cos(stk) * sin(sec));
     }
@@ -91,9 +90,9 @@ void createSphere(int section)
     //upper pole
     sphereCap(section, 1);
 
-    for (int stack = 1; stack < section - 1; stack++){ // sections up to down
+    for (int stack = 1; stack < section - 1; stack++) { // sections up to down
         glBegin(GL_QUAD_STRIP);
-        for (int sector = 0; sector <= section; sector++){ // sections around
+        for (int sector = 0; sector <= section; sector++) { // sections around
             float stk = 1.57f - 3.14f * (float)stack / (float)section;  //1.57 = pi/2
             float sec = 6.28f * (float)sector / (float)section;         //6.28 = pi * 2
             
@@ -110,83 +109,42 @@ void createSphere(int section)
     sphereCap(section, -1);
 }
 
-class Vec{
-    public:
-        float x;
-        float y;
-
-        Vec& operator-(const Vec& other){
-            x -= other.x;
-            y -= other.y;
-            return *this;
-        }
-        Vec& operator+(const Vec& other){
-            x += other.x;
-            y += other.y;
-            return *this;
-        }
-        Vec& operator/(const float other){
-            x /= other;
-            y /= other;
-            return *this;
-        }
-        Vec& operator*(const float other){
-            x *= other;
-            y *= other;
-            return *this;
-        }
-        void print(){
-            cout << x << " : " << y << endl;
-        }
-        void normalize(){
-            float coef = 1.0f / sqrt(x * x + y * y);
-            x *= coef;
-            y *= coef;
-        }
-};
-
-// class Qued{
+// class Vec{
 //     public:
-//         float real;
-//         float im;
-        
+//         float x;
+//         float y;
+
+//         Vec& operator-(const Vec& other){
+//             x -= other.x;
+//             y -= other.y;
+//             return *this;
+//         }
+//         Vec& operator+(const Vec& other){
+//             x += other.x;
+//             y += other.y;
+//             return *this;
+//         }
+//         Vec& operator/(const float other){
+//             x /= other;
+//             y /= other;
+//             return *this;
+//         }
+//         Vec& operator*(const float other){
+//             x *= other;
+//             y *= other;
+//             return *this;
+//         }
 //         void print(){
-//             cout << real << " : " << im << endl;
+//             cout << x << " : " << y << endl;
+//         }
+//         void normalize(){
+//             float coef = 1.0f / sqrt(x * x + y * y);
+//             x *= coef;
+//             y *= coef;
 //         }
 // };
 
 void testing(){
-    // Vec vec1 {0.0f, 1.0f};
-    // Vec qued {3.14f / 2.0f, 3.14f / 2.0f};
-    // Vec result;
-    // result.x = vec1.x * qued.x + vec1.x * qued.y;
-    // result.y = vec1.y * qued.x;// + vec1.y * qued.y;
-    // result.y = result.y * -1.0f;
-    // result.print();
-
-    // Qued k {cos(20), sin(20)};
-    // Qued result;
-    // result.real = 0.0f;// vec1.x * k.real + vec1.x * k.im;
-    // result.im = vec1.y * k.real + vec1.y * k.im;
-    // result.print();
-
-    
-    // Vec vec2 {0.0f, 1.0f};
-    // Vec vec3 = vec1;
-    // Vec part;
-    // part = (vec2 - vec1) / 10.0f;
-    
-    // glBegin(GL_TRIANGLE_FAN);
-    // glColor3f(1.0f, 1.0f, 1.0f);
-    // glVertex3f(0.0f, 0.0f, 0.0f);
-    // glVertex3f(vec3.x * 4, vec3.y * 4, 0.0f);
-    // for (int a = 0; a < 10; a++){
-    //     glColor3f(part.x, part.y, 1.0f);
-    //     vec3 = vec3 + part;
-    //     vec3.normalize();
-    //     glVertex3f(vec3.x * 4, vec3.y * 4, 0.0f);
-    // }
-    // glEnd();
 
 }
 
@@ -195,7 +153,7 @@ void testing(){
 int main(void)
 {
     // check did glfw run or not
-    if (!glfwInit()){
+    if (!glfwInit()) {
         cout << "error: glfw didn'd run" << endl;
         exit(EXIT_FAILURE);
     }
@@ -207,7 +165,7 @@ int main(void)
 
     // create window
     GLFWwindow *basicWindow = glfwCreateWindow(width, height, "Basic Window", NULL, NULL);
-    if (!basicWindow){
+    if (!basicWindow) {
         cout << "error: window can't be created" << endl;
         exit(EXIT_FAILURE);
     }

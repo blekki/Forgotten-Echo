@@ -63,13 +63,13 @@ class Qued{
         float w;
 
     public:
+        Qued(){};
         void normalize();
         void conjugate();
 
         Qued(Vec3 from, Vec3 to){
             float s = sqrt((1.0f + from.x * to.x + from.y * to.y + from.z * to.z) * 2.0f);
-            if (s > 0.0f)
-            {
+            if (s > 0.0f) {
                 float is = 1.0f / s;
                 this->x = (from.y * to.z - from.z * to.y) * is;
                 this->y = (from.z * to.x - from.x * to.z) * is;
@@ -92,8 +92,6 @@ class Qued{
             //     // in-game use of this function we return (0,1,0,0), but generally that is also wrong.
             // }
         }
-
-        Qued(){};
 };
 
 // Qued rotationBetween(Vec3 from, Vec3 to){
