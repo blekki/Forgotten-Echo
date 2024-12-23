@@ -210,14 +210,9 @@ int main(void)
     spaceship.setRotate(8.0f);
     // spaceship.draw();
 
-    // for (int i = 0; i < spaceship.geometry.size(); i++){
-    //     // cout << spaceship.materialList[spaceship.geometry.at(i)->material].textureID << endl;
-    //     cout << i << " : " << spaceship.geometry.at(i)->material << endl;
-    // }
-    // cout << spaceship.materialList.size() << endl;
-    // // cout << spaceship.materialList.size() << endl;
-
-    testing();
+    // prepering everything for rotationMatrices
+    rotMatrices coupleMatrices;
+    coupleMatrices.newMatrices();
 
     // loop
     float angle = 0.0f;
@@ -231,6 +226,9 @@ int main(void)
 
         // mars.draw();
         // moon.draw();
+        spaceship.addRotateMatrix(coupleMatrices.getRoll());
+        // spaceship.addRotateMatrix(coupleMatrices.getYaw());
+        spaceship.addRotateMatrix(coupleMatrices.getPitch());
         spaceship.draw();
         // testing();
 

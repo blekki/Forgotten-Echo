@@ -1,36 +1,36 @@
 #pragma once
 #include "model.h"
 #include <GLFW/glfw3.h>
+
 #include "qued.h"
+#include "matrices.h"
 
 class Object: public Model{
     private:
-        //coordinates
+        // coordinates
         Vec3 position;
         float x = 0.0f;
         float y = 0.0f;
         float z = 0.0f;
 
-        //rotate position
-        Matrix4 rotation;
-        Matrix4 cwYaw;
-        Matrix4 ccwYaw;
+        // rotate position
+        Matrix4 rotationPosition;
+        
+        // Matrix4 cwRoll;
+        // Matrix4 ccwRoll;
+        // Matrix4 cwYaw;
+        // Matrix4 upPitch;
 
         float scale = 1.0f;
 
         void drawTriangles();
 
     public:
-        Object(){ 
-            Vec3 vecUp {0, 1, 0};
-            Vec3 vecRight {1, 0, 0};
-            Qued rot(vecUp, vecRight);
-            Qued rot2(vecUp, vecRight);
-            //розділити кватерніон на 90 градусів
-            cwYaw = rotationMatrix(rot);
-            rot2.conjugate();
-            ccwYaw = rotationMatrix(rot2);
-            yaw(false);
+        Object(){
+            // розділити кватерніон на 90 градусів
+            
+            // rot2.conjugate();
+            // ccwRoll = rotationMatrix(rot2);
         };
         void setPosition(float x, float y, float z);
         void setRotate(float angleX);
@@ -40,15 +40,27 @@ class Object: public Model{
             glPushMatrix();
             glTranslated(x, y, z);
             glScalef(scale, scale, scale);
-            glMultMatrixf(rotation.ptr());
+            glMultMatrixf(rotationPosition.ptr());
             // glRotatef(angleX * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
             drawTriangles();
             glPopMatrix();
         }
 
-        void yaw(bool cw){
-            rotation = multiplyMatrix(rotation, (cw ? cwYaw : ccwYaw));
+
+        // a couple function for rotate object
+
+        void addRotateMatrix(Matrix4 rollMatrix){
+            rotationPosition = multiplyMatrix(rotationPosition, rollMatrix);
+            // rotationPosition = multiplyMatrix(rotationPosition, (cw ? cwRoll : ccwRoll));
         }
+
+        // void yaw(Matrix4 yawMatrix){
+        //     rotationPosition = multiplyMatrix(rotationPosition, yawMatrix);
+        // }
+
+        // void pitch(Matrix4 pitchMatrix){
+        //     rotationPosition = multiplyMatrix(rotationPosition, pitchMatrix);
+        // }
 
         virtual ~Object(){};
 };

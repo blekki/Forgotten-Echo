@@ -62,6 +62,4 @@ void Object::drawTriangles(){
         glEndList();
     }
     glCallList(this->ID);
-
-    
 }

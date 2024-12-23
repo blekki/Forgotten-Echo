@@ -67,3 +67,29 @@ void Qued::conjugate(){
 	z = -z;
 	//variable w not changed
 }
+
+void Qued::declareQued(Vec3 from, Vec3 to){
+	float s = sqrt((1.0f + from.x * to.x + from.y * to.y + from.z * to.z) * 2.0f);
+	if (s > 0.0f) {
+		float is = 1.0f / s;
+		this->x = (from.y * to.z - from.z * to.y) * is;
+		this->y = (from.z * to.x - from.x * to.z) * is;
+		this->z = (from.x * to.y - from.y * to.x) * is;
+		this->w = s * 0.5f;
+	}
+	// else
+	// {
+	//     // Is this actually a problem?
+	//     if (vector_equal(v1, kBasisZVector) || vector_equal(v0, kBasisZVector))
+	//     {
+	//         q = make_quaternion(0, 1, 0, 0);
+	//     }
+	//     else
+	//     {
+	//         q = kIdentityQuaternion;
+	//     }
+	//     // We arrive here for antiparallel vectors. Rotation axis is then undefined, but not rotating is
+	//     // wrong. Probably the calling function should exclude this situation. For current
+	//     // in-game use of this function we return (0,1,0,0), but generally that is also wrong.
+	// }
+}
