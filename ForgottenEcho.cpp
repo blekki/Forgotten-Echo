@@ -26,16 +26,39 @@ int height{400};
 int textureID[2];
 int sphere[3];
 float centrePoint[3] {2.0f, 0.0f, 0.0f};
+int actionStatus = 0;
 
 //<><><> FUNCTIONS <><><>
-// call actions if key pressed
-static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void keyAction(string logs, int actionType){
+    cout << logs << endl;
+    actionStatus = actionType;
+}
+
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) // call actions if key pressed
 {
-    if (key == 256 && action == 1)
-    {
-        cout << "logs: window was closed" << endl;
+    if (key == 256 && action == 1) {
+        cout << "action: window was closed" << endl;
         glfwSetWindowShouldClose(window, true);
     }
+
+    //keys right and left
+    if (key == GLFW_KEY_Q && (action == 2 || action == 1))
+        keyAction("action: key Q", 1);
+    if (key == GLFW_KEY_E && (action == 2 || action == 1))
+        keyAction("action: key E", 2);
+
+    //keys up and down
+    if (key == GLFW_KEY_RIGHT && (action == 2 || action == 1))
+        keyAction("action: key right", 3);
+    if (key == GLFW_KEY_LEFT && (action == 2 || action == 1))
+        keyAction("action: key left", 4);
+
+    //keys E and Q
+    if (key == GLFW_KEY_UP && (action == 2 || action == 1))
+        keyAction("action: key up", 5);
+    if (key == GLFW_KEY_DOWN && (action == 2 || action == 1))
+        keyAction("action: key down", 6);
+
 }
 
 // draw a 2d circle
@@ -226,16 +249,30 @@ int main(void)
 
         // mars.draw();
         // moon.draw();
-        spaceship.addRotateMatrix(coupleMatrices.getRoll());
-        // spaceship.addRotateMatrix(coupleMatrices.getYaw());
-        spaceship.addRotateMatrix(coupleMatrices.getPitch());
+
+        // a few actions for rotation an our object
+        if (actionStatus == 1)
+            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
+        if (actionStatus == 2)
+            spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
+        
+        if (actionStatus == 3)
+            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
+        if (actionStatus == 4)
+            spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
+        
+        if (actionStatus == 5)
+            spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
+        if (actionStatus == 6)
+            spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
+            
         spaceship.draw();
         // testing();
 
         // other needy actions
+        actionStatus = 0;
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
-
     }
 
     // close everything

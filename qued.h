@@ -65,12 +65,12 @@ class Qued{
 
     public:
         Qued(){};
-        void normalize();
-        void conjugate();
-
         void newQued(Vec3 from, Vec3 to){
             declareQued(from, to);
         };
+        
+        void normalize();
+        void conjugate();
 };
 
 // Qued rotationBetween(Vec3 from, Vec3 to){

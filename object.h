@@ -46,21 +46,11 @@ class Object: public Model{
             glPopMatrix();
         }
 
-
         // a couple function for rotate object
-
         void addRotateMatrix(Matrix4 rollMatrix){
             rotationPosition = multiplyMatrix(rotationPosition, rollMatrix);
             // rotationPosition = multiplyMatrix(rotationPosition, (cw ? cwRoll : ccwRoll));
         }
-
-        // void yaw(Matrix4 yawMatrix){
-        //     rotationPosition = multiplyMatrix(rotationPosition, yawMatrix);
-        // }
-
-        // void pitch(Matrix4 pitchMatrix){
-        //     rotationPosition = multiplyMatrix(rotationPosition, pitchMatrix);
-        // }
 
         virtual ~Object(){};
 };
