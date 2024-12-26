@@ -41,6 +41,7 @@ class Matrix4{
 
 class Vec3{
     private:
+    public:
         float x;
         float y;
         float z;
@@ -114,3 +115,4 @@ class Qued{
 
 Matrix4 rotationMatrix(Qued qued);
 Matrix4 multiplyMatrix(Matrix4 matrix1, Matrix4 matrix2);
+Vec3 multiplyMatrixVec(Matrix4 matrix, Vec3 vec3);

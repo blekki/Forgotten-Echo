@@ -47,6 +47,23 @@ Matrix4 multiplyMatrix(Matrix4 matrix1, Matrix4 matrix2){
     return out;
 }
 
+Vec3 multiplyMatrixVec(Matrix4 matrix, Vec3 vec3){
+	float vec4[4] {vec3.x, vec3.y, vec3.z, 0};
+	float vec[4];
+
+	for (int a = 0; a < 4; a++) { //matrix
+        for (int b = 0; b < 1; b++) { //vec
+			float sum = 0;
+			for (int c = 0; c < 4; c++){ //matrix*vec
+				sum = sum + matrix.at(a, c) * vec4[c];
+			}
+			vec[a] = sum;
+		}
+	}
+
+	return Vec3(vec[0], vec[1], vec[2]);
+}
+
 void Qued::normalize(){
 	float w = this->w;
 	float x = this->x;

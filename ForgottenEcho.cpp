@@ -26,12 +26,16 @@ int height{400};
 // save action type (rotate direction). Change when concrete key was pressed
 enum action_t{
     ACTION_NOTHING,
+
     ACTION_ROLL_CW,
     ACTION_ROLL_CCW,
     ACTION_YAW_CW,
     ACTION_YAW_CCW,
     ACTION_PITCH_UP,
     ACTION_PITCH_DOWN,
+
+    ACTION_MOVE_FORWARD,
+    ACTION_MOVE_BACK,
 };
 action_t actionStatus = ACTION_NOTHING;
 
@@ -43,11 +47,13 @@ void keyAction(string logs, action_t actionType){
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) // call actions if key pressed
 {
-    if (key == 256 && action == 1) {
+    //close application
+    if (key == GLFW_KEY_ESCAPE && action == 1) {
         cout << "action: window was closed" << endl;
         glfwSetWindowShouldClose(window, true);
     }
 
+    //###### rotate keys ######
     //keys right and left
     if (key == GLFW_KEY_Q && (action == 2 || action == 1))
         keyAction("action: key Q", ACTION_ROLL_CW);
@@ -65,6 +71,14 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         keyAction("action: key up", ACTION_PITCH_UP);
     if (key == GLFW_KEY_DOWN && (action == 2 || action == 1))
         keyAction("action: key down", ACTION_PITCH_DOWN);
+
+    //###### move keys ######
+    //keys W and S
+    if (key == GLFW_KEY_W && (action == 2 || action == 1))
+        keyAction("action: key W", ACTION_MOVE_FORWARD);
+    
+    if (key == GLFW_KEY_S && (action == 2 || action == 1))
+        keyAction("action: key S", ACTION_MOVE_BACK);
 
 }
 
@@ -168,15 +182,14 @@ int main(void)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
         if (actionStatus == ACTION_PITCH_DOWN)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
+        
+        if (actionStatus == ACTION_MOVE_FORWARD)
+            spaceship.addTranslateVec(Vec3(0,0,1));
+        if (actionStatus == ACTION_MOVE_BACK)
+            spaceship.addTranslateVec(Vec3(0,0,-1));
             
         spaceship.draw();
         // testing();
-
-        // glLoadIdentity();
-        // gluLookAt(0.0f, 0.0f, 10.0f,
-        //           spaceship.x, 0.0f, 0.0f,
-        //           0.0f, 1.0f, 0.0f);
-        // glMultMatrixf(spaceship.rotationPosition.ptr());
 
         // other needy actions
         actionStatus = ACTION_NOTHING;

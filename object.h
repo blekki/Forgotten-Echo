@@ -49,5 +49,12 @@ class Object: public Model{
             rotationPosition = multiplyMatrix(rotationPosition, matrix);
         }
 
+        void addTranslateVec(Vec3 vec){
+            Vec3 translateVec = multiplyMatrixVec(rotationPosition, vec);
+            x += translateVec.x / 5.0f;
+            y += translateVec.y / 5.0f;
+            z += translateVec.z / 5.0f;
+        }
+
         virtual ~Object(){};
 };
