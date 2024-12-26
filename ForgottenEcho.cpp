@@ -101,17 +101,6 @@ int main(void)
     // key enter function
     glfwSetKeyCallback(basicWindow, key_callback);
 
-    //basic matrixes
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0f, width / (float) height, 0.1f, 1000.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f,
-              0.0f, 0.0f, 0.0f,
-              0.0f, 1.0f, 0.0f);
-
     //planets creating
     Planet mars;
     mars.setTexture("solarsystemscope/2k_mars.jpg");
@@ -149,6 +138,17 @@ int main(void)
         glViewport(0, 0, width, height);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+        //basic matrixes
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(45.0f, width / (float) height, 0.1f, 1000.0f);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(0.0f, 0.0f, 10.0f,
+                0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f);
 
         // mars.draw();
         // moon.draw();

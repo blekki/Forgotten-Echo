@@ -58,6 +58,7 @@ class Vec3{
             Vec3 newVec;
             newVec.x = x - other.x;
             newVec.y = y - other.y;
+            newVec.z = z - other.z;
             return newVec;
         }
 
@@ -65,23 +66,22 @@ class Vec3{
             Vec3 newVec;
             newVec.x = x + other.x;
             newVec.y = y + other.y;
+            newVec.z = z - other.z;
             return newVec;
         }
 
         Vec3& operator/(const float other){
             x /= other;
             y /= other;
+            z /= other;
             return *this;
         }
 
-        void print(){
-            std::cout << x << " : " << y << std::endl;
-        }
-
         void normalize(){
-            float coef = 1.0f / sqrt(x * x + y * y);
+            float coef = 1.0f / sqrt(x * x + y * y + z * z);
             x *= coef;
             y *= coef;
+            z *= coef;
         }
         friend class Qued;
 };

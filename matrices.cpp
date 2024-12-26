@@ -8,7 +8,7 @@ using namespace std;
 void rotMatrices::declareMatrix(Matrix4* matrix4, Matrix4* opposMatrix4, Vec3 from, Vec3 to){
 	Qued qued;
 
-	Vec3 tinyToVec = from + (to - from) / 90.0f;
+	Vec3 tinyToVec = from + (to - from) / 20.0f;
 	tinyToVec.normalize();
 
     qued.newQued(from, tinyToVec);
