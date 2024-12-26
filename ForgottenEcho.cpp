@@ -15,7 +15,6 @@
 #include "object.h"
 
 
-
 using namespace std;
 
 //<><><> NEEDY CONSTANTS
@@ -24,13 +23,20 @@ const float PiDiv180 = 3.1415f / 180.0f;
 int width{600};
 int height{400};
 
-// int textureID[2];
-// int sphere[3];
-// float centrePoint[3] {2.0f, 0.0f, 0.0f};
-int actionStatus = 0;
+// save action type (rotate direction). Change when concrete key was pressed
+enum action_t{
+    ACTION_NOTHING,
+    ACTION_ROLL_CW,
+    ACTION_ROLL_CCW,
+    ACTION_YAW_CW,
+    ACTION_YAW_CCW,
+    ACTION_PITCH_UP,
+    ACTION_PITCH_DOWN,
+};
+action_t actionStatus = ACTION_NOTHING;
 
 //<><><> FUNCTIONS <><><>
-void keyAction(string logs, int actionType){
+void keyAction(string logs, action_t actionType){
     cout << logs << endl;
     actionStatus = actionType;
 }
@@ -44,61 +50,26 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
     //keys right and left
     if (key == GLFW_KEY_Q && (action == 2 || action == 1))
-        keyAction("action: key Q", 1);
+        keyAction("action: key Q", ACTION_ROLL_CW);
     if (key == GLFW_KEY_E && (action == 2 || action == 1))
-        keyAction("action: key E", 2);
+        keyAction("action: key E", ACTION_ROLL_CCW);
 
     //keys up and down
     if (key == GLFW_KEY_RIGHT && (action == 2 || action == 1))
-        keyAction("action: key right", 3);
+        keyAction("action: key right", ACTION_YAW_CW);
     if (key == GLFW_KEY_LEFT && (action == 2 || action == 1))
-        keyAction("action: key left", 4);
+        keyAction("action: key left", ACTION_YAW_CCW);
 
     //keys E and Q
     if (key == GLFW_KEY_UP && (action == 2 || action == 1))
-        keyAction("action: key up", 5);
+        keyAction("action: key up", ACTION_PITCH_UP);
     if (key == GLFW_KEY_DOWN && (action == 2 || action == 1))
-        keyAction("action: key down", 6);
+        keyAction("action: key down", ACTION_PITCH_DOWN);
 
 }
 
-// class Vec{
-//     public:
-//         float x;
-//         float y;
-
-//         Vec& operator-(const Vec& other){
-//             x -= other.x;
-//             y -= other.y;
-//             return *this;
-//         }
-//         Vec& operator+(const Vec& other){
-//             x += other.x;
-//             y += other.y;
-//             return *this;
-//         }
-//         Vec& operator/(const float other){
-//             x /= other;
-//             y /= other;
-//             return *this;
-//         }
-//         Vec& operator*(const float other){
-//             x *= other;
-//             y *= other;
-//             return *this;
-//         }
-//         void print(){
-//             cout << x << " : " << y << endl;
-//         }
-//         void normalize(){
-//             float coef = 1.0f / sqrt(x * x + y * y);
-//             x *= coef;
-//             y *= coef;
-//         }
-// };
-
 void testing(){
-
+    //###
 }
 
 //##############################################
@@ -183,26 +154,32 @@ int main(void)
         // moon.draw();
 
         // a few actions for rotation an our object
-        if (actionStatus == 1)
+        if (actionStatus == ACTION_ROLL_CW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
-        if (actionStatus == 2)
+        if (actionStatus == ACTION_ROLL_CCW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
         
-        if (actionStatus == 3)
+        if (actionStatus == ACTION_YAW_CW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
-        if (actionStatus == 4)
+        if (actionStatus == ACTION_YAW_CCW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
         
-        if (actionStatus == 5)
+        if (actionStatus == ACTION_PITCH_UP)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
-        if (actionStatus == 6)
+        if (actionStatus == ACTION_PITCH_DOWN)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
             
         spaceship.draw();
         // testing();
 
+        // glLoadIdentity();
+        // gluLookAt(0.0f, 0.0f, 10.0f,
+        //           spaceship.x, 0.0f, 0.0f,
+        //           0.0f, 1.0f, 0.0f);
+        // glMultMatrixf(spaceship.rotationPosition.ptr());
+
         // other needy actions
-        actionStatus = 0;
+        actionStatus = ACTION_NOTHING;
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
     }

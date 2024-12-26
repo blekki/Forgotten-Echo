@@ -6,7 +6,7 @@
 #include "matrices.h"
 
 class Object: public Model{
-    private:
+    public:
         // coordinates
         Vec3 position;
         float x = 0.0f;
@@ -28,9 +28,6 @@ class Object: public Model{
     public:
         Object(){
             // розділити кватерніон на 90 градусів
-            
-            // rot2.conjugate();
-            // ccwRoll = rotationMatrix(rot2);
         };
         void setPosition(float x, float y, float z);
         void setRotate(float angleX);
@@ -40,16 +37,16 @@ class Object: public Model{
             glPushMatrix();
             glTranslated(x, y, z);
             glScalef(scale, scale, scale);
+            // glLoadIdentity();
             glMultMatrixf(rotationPosition.ptr());
             // glRotatef(angleX * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
             drawTriangles();
             glPopMatrix();
         }
 
-        // a couple function for rotate object
+        // function for rotate object
         void addRotateMatrix(Matrix4 rollMatrix){
             rotationPosition = multiplyMatrix(rotationPosition, rollMatrix);
-            // rotationPosition = multiplyMatrix(rotationPosition, (cw ? cwRoll : ccwRoll));
         }
 
         virtual ~Object(){};
