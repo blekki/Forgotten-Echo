@@ -45,8 +45,8 @@ class Object: public Model{
         }
 
         // function for rotate object
-        void addRotateMatrix(Matrix4 rollMatrix){
-            rotationPosition = multiplyMatrix(rotationPosition, rollMatrix);
+        void addRotateMatrix(Matrix4 matrix){
+            rotationPosition = multiplyMatrix(rotationPosition, matrix);
         }
 
         virtual ~Object(){};

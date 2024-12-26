@@ -11,9 +11,9 @@ class rotMatrices{
         Matrix4 upPitch;
         Matrix4 downPitch;
 
-        Vec3 vecUp {0, 0.5, 0};
-        Vec3 vecRight {0.5, 0, 0};
-        Vec3 vecForward {0, 0, 0.5};
+        Vec3 vecUp {0, 1, 0};
+        Vec3 vecRight {1, 0, 0};
+        Vec3 vecForward {0, 0, 1};
 
         void declareMatrix(Matrix4* matrix4, Matrix4* opposMatrix4, Vec3 from, Vec3 to);
 
