@@ -25,24 +25,31 @@ int height{400};
 
 // save action type (rotate direction). Change when concrete key was pressed
 enum action_t{
-    ACTION_NOTHING,
+    ACTION_NOTHING = 0,
 
-    ACTION_ROLL_CW,
-    ACTION_ROLL_CCW,
-    ACTION_YAW_CW,
-    ACTION_YAW_CCW,
-    ACTION_PITCH_UP,
-    ACTION_PITCH_DOWN,
+    ACTION_ROLL_CW = 1,
+    ACTION_ROLL_CCW = 2,
+    ACTION_YAW_CW = 4,
+    ACTION_YAW_CCW = 8,
+    ACTION_PITCH_UP = 16,
+    ACTION_PITCH_DOWN = 32,
 
-    ACTION_MOVE_FORWARD,
-    ACTION_MOVE_BACK,
+    ACTION_MOVE_FORWARD = 64,
+    ACTION_MOVE_BACK = 128,
+
+
 };
-action_t actionStatus = ACTION_NOTHING;
+
+int actionStatus = ACTION_NOTHING;
 
 //<><><> FUNCTIONS <><><>
-void keyAction(string logs, action_t actionType){
-    cout << logs << endl;
-    actionStatus = actionType;
+void keyAction(string logs, action_t actionType, bool pressed){
+    if (pressed){
+        actionStatus |= actionType;
+    }
+    else actionStatus &= ~actionType;
+
+    cout << logs << " . " << actionType << " . " << actionStatus << " . " << pressed << endl;
 }
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) // call actions if key pressed
@@ -55,30 +62,30 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
     //###### rotate keys ######
     //keys right and left
-    if (key == GLFW_KEY_Q && (action == 2 || action == 1))
-        keyAction("action: key Q", ACTION_ROLL_CW);
-    if (key == GLFW_KEY_E && (action == 2 || action == 1))
-        keyAction("action: key E", ACTION_ROLL_CCW);
+    if (key == GLFW_KEY_Q)
+        keyAction("action: key Q", ACTION_ROLL_CW, (action == 1 || action == 2));
+    if (key == GLFW_KEY_E)
+        keyAction("action: key E", ACTION_ROLL_CCW, (action == 1 || action == 2));
 
     //keys up and down
-    if (key == GLFW_KEY_RIGHT && (action == 2 || action == 1))
-        keyAction("action: key right", ACTION_YAW_CW);
-    if (key == GLFW_KEY_LEFT && (action == 2 || action == 1))
-        keyAction("action: key left", ACTION_YAW_CCW);
+    if (key == GLFW_KEY_RIGHT)
+        keyAction("action: key right", ACTION_YAW_CW, (action == 1 || action == 2));
+    if (key == GLFW_KEY_LEFT)
+        keyAction("action: key left", ACTION_YAW_CCW, (action == 1 || action == 2));
 
     //keys E and Q
-    if (key == GLFW_KEY_UP && (action == 2 || action == 1))
-        keyAction("action: key up", ACTION_PITCH_UP);
-    if (key == GLFW_KEY_DOWN && (action == 2 || action == 1))
-        keyAction("action: key down", ACTION_PITCH_DOWN);
+    if (key == GLFW_KEY_UP)
+        keyAction("action: key up", ACTION_PITCH_UP, (action == 1 || action == 2));
+    if (key == GLFW_KEY_DOWN)
+        keyAction("action: key down", ACTION_PITCH_DOWN, (action == 1 || action == 2));
 
     //###### move keys ######
     //keys W and S
-    if (key == GLFW_KEY_W && (action == 2 || action == 1))
-        keyAction("action: key W", ACTION_MOVE_FORWARD);
+    if (key == GLFW_KEY_W)
+        keyAction("action: key W", ACTION_MOVE_FORWARD, (action == 1 || action == 2));
     
-    if (key == GLFW_KEY_S && (action == 2 || action == 1))
-        keyAction("action: key S", ACTION_MOVE_BACK);
+    if (key == GLFW_KEY_S)
+        keyAction("action: key S", ACTION_MOVE_BACK, (action == 1 || action == 2));
 
 }
 
@@ -168,31 +175,31 @@ int main(void)
         // moon.draw();
 
         // a few actions for rotation an our object
-        if (actionStatus == ACTION_ROLL_CW)
+        if (actionStatus & ACTION_ROLL_CW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
-        if (actionStatus == ACTION_ROLL_CCW)
+        if (actionStatus & ACTION_ROLL_CCW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
         
-        if (actionStatus == ACTION_YAW_CW)
+        if (actionStatus & ACTION_YAW_CW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
-        if (actionStatus == ACTION_YAW_CCW)
+        if (actionStatus & ACTION_YAW_CCW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
         
-        if (actionStatus == ACTION_PITCH_UP)
+        if (actionStatus & ACTION_PITCH_UP)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
-        if (actionStatus == ACTION_PITCH_DOWN)
+        if (actionStatus & ACTION_PITCH_DOWN)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
         
-        if (actionStatus == ACTION_MOVE_FORWARD)
+        if (actionStatus & ACTION_MOVE_FORWARD)
             spaceship.addTranslateVec(Vec3(0,0,1));
-        if (actionStatus == ACTION_MOVE_BACK)
+        if (actionStatus & ACTION_MOVE_BACK)
             spaceship.addTranslateVec(Vec3(0,0,-1));
             
         spaceship.draw();
         // testing();
 
         // other needy actions
-        actionStatus = ACTION_NOTHING;
+        // actionStatus = ACTION_NOTHING;
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
     }
