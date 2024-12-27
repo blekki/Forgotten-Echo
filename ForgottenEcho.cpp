@@ -36,8 +36,6 @@ enum action_t{
 
     ACTION_MOVE_FORWARD = 64,
     ACTION_MOVE_BACK = 128,
-
-
 };
 
 int actionStatus = ACTION_NOTHING;
@@ -68,10 +66,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         keyAction("action: key E", ACTION_ROLL_CCW, (action == 1 || action == 2));
 
     //keys up and down
-    if (key == GLFW_KEY_RIGHT)
-        keyAction("action: key right", ACTION_YAW_CW, (action == 1 || action == 2));
     if (key == GLFW_KEY_LEFT)
-        keyAction("action: key left", ACTION_YAW_CCW, (action == 1 || action == 2));
+        keyAction("action: key left", ACTION_YAW_CW, (action == 1 || action == 2));
+    if (key == GLFW_KEY_RIGHT)
+        keyAction("action: key right", ACTION_YAW_CCW, (action == 1 || action == 2));
 
     //keys E and Q
     if (key == GLFW_KEY_UP)
@@ -89,8 +87,31 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 }
 
-void testing(){
-    //###
+void drawCoord(float x, float y, float z, float *rotation, bool follow){
+    glDisable(GL_DEPTH_TEST);
+    glPushMatrix();
+
+    float xPoint[3] {1, 0, 0};
+    float yPoint[3] {0, 1, 0};
+    float zPoint[3] {0, 0, 1};
+    float *array[3] {xPoint, yPoint, zPoint};
+    
+    glLoadIdentity();
+    (follow) ? glTranslatef(x, y, z) : glTranslatef(0, 0, -2); //does exis follow ship or not
+    glScalef(3, 3, 3);
+    glMultMatrixf(rotation);
+
+    glBegin(GL_LINES);
+    for (int a = 0; a < 3; a++){
+        glColor3fv(array[a]);
+        //#######
+        glVertex3f(0, 0, 0);
+        glVertex3fv(array[a]);
+    }
+    glEnd();
+
+    glPopMatrix();
+    glEnable(GL_DEPTH_TEST);
 }
 
 //##############################################
@@ -125,14 +146,14 @@ int main(void)
     //planets creating
     Planet mars;
     mars.setTexture("solarsystemscope/2k_mars.jpg");
-    mars.setScale(1.0f);
-    mars.setPosition(0.0001f, 0.0f, 0.0f);
+    mars.setScale(40.0f);
+    mars.setPosition(0.0f, 0.0f, -5.0f);
     mars.setRotateSpeed(40.0f);
 
     Planet moon;
     moon.setTexture("solarsystemscope/2k_moon.jpg");
-    moon.setScale(0.4f);
-    moon.setPosition(5.0f, 0.0f, 0.0f);
+    moon.setScale(10.0f);
+    moon.setPosition(5.0f, -10.0f, -30.0f);
     moon.setRotateSpeed(-13.0f);
 
     Object spaceship;
@@ -167,12 +188,29 @@ int main(void)
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(0.0f, 0.0f, 10.0f,
-                0.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f);
+        
+        Vec3 whereIam {spaceship.x, spaceship.y, spaceship.z};
+        Vec3 forward = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 0, -1});
+        Vec3 to = whereIam + forward; 
 
-        // mars.draw();
-        // moon.draw();
+        Vec3 preUp = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 1, 0});
+        Vec3 up = whereIam + preUp;
+
+        glTranslated(spaceship.x, spaceship.y, spaceship.z);
+        glLoadIdentity();
+        gluLookAt(
+                whereIam.x, whereIam.y, whereIam.z,
+                to.x, to.y, to.z,
+                //   0, 1, 0
+                up.x, up.y, up.z
+                );
+
+        // drawCoord(spaceship.x, spaceship.y, spaceship.z, spaceship.rotationPosition.ptr(), true);
+        // drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
+
+        mars.draw();
+        moon.draw();
+        spaceship.draw();
 
         // a few actions for rotation an our object
         if (actionStatus & ACTION_ROLL_CW)
@@ -194,9 +232,10 @@ int main(void)
             spaceship.addTranslateVec(Vec3(0,0,1));
         if (actionStatus & ACTION_MOVE_BACK)
             spaceship.addTranslateVec(Vec3(0,0,-1));
-            
-        spaceship.draw();
-        // testing();
+
+        // glMultMatrixf(spaceship.rotationPosition.ptr());
+        // spaceship.draw();
+       
 
         // other needy actions
         // actionStatus = ACTION_NOTHING;

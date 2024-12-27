@@ -15,11 +15,6 @@ class Object: public Model{
 
         // rotate position
         Matrix4 rotationPosition;
-        
-        // Matrix4 cwRoll;
-        // Matrix4 ccwRoll;
-        // Matrix4 cwYaw;
-        // Matrix4 upPitch;
 
         float scale = 1.0f;
 

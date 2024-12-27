@@ -53,7 +53,7 @@ void Planet::draw(){
     
 
     glPushMatrix();
-    glRotatef(this->orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
+    // glRotatef(this->orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
     glScalef(scale, scale, scale);
     glTranslated(x, y, z);
     glRotatef(this->rotateSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
