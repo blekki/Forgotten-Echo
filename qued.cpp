@@ -52,13 +52,11 @@ Vec3 multiplyMatrixVec(Matrix4 matrix, Vec3 vec3){
 	float vec[4];
 
 	for (int a = 0; a < 4; a++) { //matrix
-        for (int b = 0; b < 1; b++) { //vec
-			float sum = 0;
-			for (int c = 0; c < 4; c++){ //matrix*vec
-				sum = sum + matrix.at(a, c) * vec4[c];
-			}
-			vec[a] = sum;
+		float sum = 0;
+		for (int c = 0; c < 4; c++){ //matrix*vec
+			sum += matrix.at(a, c) * vec4[c];
 		}
+		vec[a] = sum;
 	}
 
 	return Vec3(vec[0], vec[1], vec[2]);

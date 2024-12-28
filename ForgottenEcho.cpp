@@ -39,6 +39,7 @@ enum action_t{
 };
 
 int actionStatus = ACTION_NOTHING;
+int firstPerson = 1;
 
 //<><><> FUNCTIONS <><><>
 void keyAction(string logs, action_t actionType, bool pressed){
@@ -47,7 +48,7 @@ void keyAction(string logs, action_t actionType, bool pressed){
     }
     else actionStatus &= ~actionType;
 
-    cout << logs << " . " << actionType << " . " << actionStatus << " . " << pressed << endl;
+    cout << logs << " - actionType " << actionType << " - actionStatus " << actionStatus << endl;
 }
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) // call actions if key pressed
@@ -81,26 +82,29 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     //keys W and S
     if (key == GLFW_KEY_W)
         keyAction("action: key W", ACTION_MOVE_FORWARD, (action == 1 || action == 2));
-    
     if (key == GLFW_KEY_S)
         keyAction("action: key S", ACTION_MOVE_BACK, (action == 1 || action == 2));
+
+    //###### view type ######
+    if (key == GLFW_KEY_1)
+        firstPerson = 0;
+    if (key == GLFW_KEY_2)
+        firstPerson = 1;
 
 }
 
 void drawCoord(float x, float y, float z, float *rotation, bool follow){
-    glDisable(GL_DEPTH_TEST);
-    glPushMatrix();
-
-    float xPoint[3] {1, 0, 0};
-    float yPoint[3] {0, 1, 0};
-    float zPoint[3] {0, 0, 1};
+    
+    float xPoint[3] {3, 0, 0};
+    float yPoint[3] {0, 3, 0};
+    float zPoint[3] {0, 0, 3};
     float *array[3] {xPoint, yPoint, zPoint};
     
-    glLoadIdentity();
+    glPushMatrix();
     (follow) ? glTranslatef(x, y, z) : glTranslatef(0, 0, -2); //does exis follow ship or not
-    glScalef(3, 3, 3);
     glMultMatrixf(rotation);
-
+    // draw exis
+    glLineWidth(3);
     glBegin(GL_LINES);
     for (int a = 0; a < 3; a++){
         glColor3fv(array[a]);
@@ -109,9 +113,7 @@ void drawCoord(float x, float y, float z, float *rotation, bool follow){
         glVertex3fv(array[a]);
     }
     glEnd();
-
     glPopMatrix();
-    glEnable(GL_DEPTH_TEST);
 }
 
 //##############################################
@@ -126,8 +128,6 @@ int main(void)
 
     // time and fps
     glfwSetTime(0.0f);
-    // double time = glfwGetTime();
-    glfwSwapInterval(1);
 
     // create window
     GLFWwindow *basicWindow = glfwCreateWindow(width, height, "Basic Window", NULL, NULL);
@@ -146,14 +146,14 @@ int main(void)
     //planets creating
     Planet mars;
     mars.setTexture("solarsystemscope/2k_mars.jpg");
-    mars.setScale(40.0f);
-    mars.setPosition(0.0f, 0.0f, -5.0f);
-    mars.setRotateSpeed(40.0f);
+    mars.setScale(60.0f);
+    mars.setPosition(0.0f, 0.0f, -200.0f);
+    mars.setRotateSpeed(20.0f);
 
     Planet moon;
     moon.setTexture("solarsystemscope/2k_moon.jpg");
-    moon.setScale(10.0f);
-    moon.setPosition(5.0f, -10.0f, -30.0f);
+    moon.setScale(8.0f);
+    moon.setPosition(50.0f, -10.0f, -100.0f);
     moon.setRotateSpeed(-13.0f);
 
     Object spaceship;
@@ -181,36 +181,38 @@ int main(void)
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-        //basic matrixes
+        // basic matrixes
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(45.0f, width / (float) height, 0.1f, 1000.0f);
-
         glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
         
+        // follow for spaceship
         Vec3 whereIam {spaceship.x, spaceship.y, spaceship.z};
         Vec3 forward = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 0, -1});
-        Vec3 to = whereIam + forward; 
-
+        Vec3 to = whereIam + forward;
         Vec3 preUp = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 1, 0});
-        Vec3 up = whereIam + preUp;
+        if (firstPerson == 1){
+            glLoadIdentity();
+            gluLookAt(whereIam.x, whereIam.y, whereIam.z,
+                      to.x, to.y, to.z,
+                      preUp.x, preUp.y, preUp.z);
+        }
+        else{
+            glLoadIdentity();
+            gluLookAt(50, 0, 0,
+                      to.x, to.y, to.z,
+                      0, 1, 0);
+        }
 
-        glTranslated(spaceship.x, spaceship.y, spaceship.z);
-        glLoadIdentity();
-        gluLookAt(
-                whereIam.x, whereIam.y, whereIam.z,
-                to.x, to.y, to.z,
-                //   0, 1, 0
-                up.x, up.y, up.z
-                );
-
-        // drawCoord(spaceship.x, spaceship.y, spaceship.z, spaceship.rotationPosition.ptr(), true);
-        // drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
-
+        // drawing axis
+        drawCoord(spaceship.x, spaceship.y, spaceship.z, spaceship.rotationPosition.ptr(), true);
+        drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
+        // drawing objects
         mars.draw();
         moon.draw();
-        spaceship.draw();
+        if (!firstPerson)
+            spaceship.draw();
 
         // a few actions for rotation an our object
         if (actionStatus & ACTION_ROLL_CW)
@@ -238,7 +240,6 @@ int main(void)
        
 
         // other needy actions
-        // actionStatus = ACTION_NOTHING;
         glfwSwapBuffers(basicWindow);
         glfwPollEvents();
     }

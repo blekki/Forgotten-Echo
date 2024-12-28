@@ -57,9 +57,9 @@ class Vec3{
 
         Vec3 operator-(const Vec3& other){
             Vec3 newVec;
-            newVec.x = x - other.x;
-            newVec.y = y - other.y;
-            newVec.z = z - other.z;
+            newVec.x = other.x - x;
+            newVec.y = other.y - y;
+            newVec.z = other.z - z;
             return newVec;
         }
 
@@ -67,7 +67,7 @@ class Vec3{
             Vec3 newVec;
             newVec.x = x + other.x;
             newVec.y = y + other.y;
-            newVec.z = z - other.z;
+            newVec.z = z + other.z;
             return newVec;
         }
 
