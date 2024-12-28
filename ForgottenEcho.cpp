@@ -13,6 +13,7 @@
 #include "planet.h"
 #include "model.h"
 #include "object.h"
+#include "particlebox.h"
 
 
 using namespace std;
@@ -87,9 +88,9 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
     //###### view type ######
     if (key == GLFW_KEY_1)
-        firstPerson = 0;
-    if (key == GLFW_KEY_2)
         firstPerson = 1;
+    if (key == GLFW_KEY_2)
+        firstPerson = 0;
 
 }
 
@@ -170,6 +171,8 @@ int main(void)
     coupleMatrices.newMatrices();
 
     Primal primalObj;
+    Particlebox particle;
+    particle.generateParticle();
 
     // loop
     float angle = 0.0f;
@@ -213,22 +216,28 @@ int main(void)
         moon.draw();
         if (!firstPerson)
             spaceship.draw();
+        
+        // particle.setBoxPosition(spaceship.x, spaceship.y, glfwGetTime() * 0.9f);
+        particle.setBoxPosition(spaceship.x, spaceship.y, spaceship.z);
+        particle.draw();
+
+
 
         // a few actions for rotation an our object
         if (actionStatus & ACTION_ROLL_CCW)
-            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
-        if (actionStatus & ACTION_ROLL_CW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
+        if (actionStatus & ACTION_ROLL_CW)
+            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
         
         if (actionStatus & ACTION_YAW_CCW)
-            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
-        if (actionStatus & ACTION_YAW_CW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
+        if (actionStatus & ACTION_YAW_CW)
+            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
         
         if (actionStatus & ACTION_PITCH_UP)
-            spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
-        if (actionStatus & ACTION_PITCH_DOWN)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
+        if (actionStatus & ACTION_PITCH_DOWN)
+            spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
         
         if (actionStatus & ACTION_MOVE_BACK)
             spaceship.addTranslateVec(Vec3(0,0,1));
