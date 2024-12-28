@@ -171,8 +171,8 @@ int main(void)
     coupleMatrices.newMatrices();
 
     Primal primalObj;
-    Particlebox particle;
-    particle.generateParticle();
+    ParticleBox particle;
+    particle.newGenerate();
 
     // loop
     float angle = 0.0f;
@@ -218,7 +218,7 @@ int main(void)
             spaceship.draw();
         
         // particle.setBoxPosition(spaceship.x, spaceship.y, glfwGetTime() * 0.9f);
-        particle.setBoxPosition(spaceship.x, spaceship.y, spaceship.z);
+        particle.newBoxPosition(spaceship.x, spaceship.y, spaceship.z);
         particle.draw();
 
 
