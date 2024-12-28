@@ -215,14 +215,14 @@ int main(void)
             spaceship.draw();
 
         // a few actions for rotation an our object
-        if (actionStatus & ACTION_ROLL_CW)
-            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
         if (actionStatus & ACTION_ROLL_CCW)
+            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
+        if (actionStatus & ACTION_ROLL_CW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
         
-        if (actionStatus & ACTION_YAW_CW)
-            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
         if (actionStatus & ACTION_YAW_CCW)
+            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
+        if (actionStatus & ACTION_YAW_CW)
             spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
         
         if (actionStatus & ACTION_PITCH_UP)
@@ -230,9 +230,9 @@ int main(void)
         if (actionStatus & ACTION_PITCH_DOWN)
             spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
         
-        if (actionStatus & ACTION_MOVE_FORWARD)
-            spaceship.addTranslateVec(Vec3(0,0,1));
         if (actionStatus & ACTION_MOVE_BACK)
+            spaceship.addTranslateVec(Vec3(0,0,1));
+        if (actionStatus & ACTION_MOVE_FORWARD)
             spaceship.addTranslateVec(Vec3(0,0,-1));
 
         // glMultMatrixf(spaceship.rotationPosition.ptr());
