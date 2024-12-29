@@ -12,12 +12,12 @@ using namespace std;
 // constants
 const int PARTICLE_COUNT = 1000;
 
-class Particle{
-    public:
-        xyz_t position;
+// class Particle{
+//     public:
+//         xyz_t position;
     
-        void generate(int radius);
-};
+//         void generate(int radius);
+// };
 
 class ParticleBox{
     private:
@@ -25,20 +25,24 @@ class ParticleBox{
         xyz_t position {0, 0, 0};
         xyz_t differPos {0, 0, 0};
 
-        vector<Particle> particleGroup;
+        vector<xyz_t> particleGroup;
 
         void setBoxPosition(float x, float y, float z);
         void drawparticle();
-        void checkPosition(Particle *particle, xyz_t differPos);
-        void normalizeToRadius(Particle *particle, float distance);
+        void checkPosition(xyz_t *particle, xyz_t differPos);
+        void normalizeToRadius(xyz_t *particle, float distance);
+        // void generate(xyz_t *particle);
+        void generate();
 
     public:
         void newGenerate(){
-            Particle particle;
-            for (int i = 0; i < PARTICLE_COUNT; i++){
-                particle.generate(radius);
-                particleGroup.push_back(particle);
-            }
+            // Particle particle;
+            // for (int i = 0; i < PARTICLE_COUNT; i++){
+                // particle.generate(radius);
+                // generate(&particleGroup.at(i));
+                // particleGroup.push_back(particle);
+                generate();
+            // }
         }
 
         void newBoxPosition(float x, float y, float z){

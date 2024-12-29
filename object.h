@@ -9,7 +9,7 @@
 class Object: public Model{
     public:
         // coordinates
-        Vec3 position;
+        xyz_t position;
 
         // rotate position
         Matrix4 rotationPosition;

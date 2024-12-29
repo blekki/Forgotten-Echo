@@ -5,13 +5,18 @@
 
 using namespace std;
 
-void Particle::generate(int radius){
-    // range between (-1.0 * radius) and (1.0 * radius)
-    int maxNum = 200 * radius + 1;
-    int reduce = 100 * radius;
-    position.x = (rand() % maxNum - reduce) / 100.0f;
-    position.y = (rand() % maxNum - reduce) / 100.0f;
-    position.z = (rand() % maxNum - reduce) / 100.0f;
+void ParticleBox::generate(){
+    for (int i = 0; i < PARTICLE_COUNT; i++){
+        xyz_t particle;
+        // range between (-1.0 * radius) and (1.0 * radius)
+        int maxNum = 200 * radius + 1;
+        int reduce = 100 * radius;
+
+        particle.x = (rand() % maxNum - reduce) / 100.0f;
+        particle.y = (rand() % maxNum - reduce) / 100.0f;
+        particle.z = (rand() % maxNum - reduce) / 100.0f;
+        particleGroup.push_back(particle);
+    }
 }
 
 void ParticleBox::setBoxPosition(float x, float y, float z){
@@ -23,17 +28,17 @@ void ParticleBox::setBoxPosition(float x, float y, float z){
     position.z = z;
 }
 
-void ParticleBox::checkPosition(Particle *particle, xyz_t differPos){
-    particle->position.x -= differPos.x;
-    particle->position.y -= differPos.y;
-    particle->position.z -= differPos.z;
+void ParticleBox::checkPosition(xyz_t *particle, xyz_t differPos){
+    particle->x -= differPos.x;
+    particle->y -= differPos.y;
+    particle->z -= differPos.z;
 }
 
-void ParticleBox::normalizeToRadius(Particle *particle, float distance){
+void ParticleBox::normalizeToRadius(xyz_t *particle, float distance){
     float coef = radius / sqrt(distance);
-    particle->position.x -= particle->position.x * coef * 2;
-    particle->position.y -= particle->position.y * coef * 2;
-    particle->position.z -= particle->position.z * coef * 2;
+    particle->x -= particle->x * coef * 2;
+    particle->y -= particle->y * coef * 2;
+    particle->z -= particle->z * coef * 2;
 }
 void ParticleBox::drawparticle(){
     glPointSize(2);
@@ -43,14 +48,14 @@ void ParticleBox::drawparticle(){
     for (int i = 0; i < PARTICLE_COUNT; i++){
         ParticleBox::checkPosition(&particleGroup.at(i), differPos);
         
-        //checking if particle out the range (radius)
-        float distance = particleGroup.at(i).position.x * particleGroup.at(i).position.x +
-                            particleGroup.at(i).position.y * particleGroup.at(i).position.y +
-                            particleGroup.at(i).position.z * particleGroup.at(i).position.z;
+        //checking if particle out the range (out of radius)
+        float distance = particleGroup.at(i).x * particleGroup.at(i).x +
+                            particleGroup.at(i).y * particleGroup.at(i).y +
+                            particleGroup.at(i).z * particleGroup.at(i).z;
         if (distance > radius * radius)
             ParticleBox::normalizeToRadius(&particleGroup.at(i), distance);
 
-        glVertex3f(particleGroup.at(i).position.x, particleGroup.at(i).position.y, particleGroup.at(i).position.z);
+        glVertex3f(particleGroup.at(i).x, particleGroup.at(i).y, particleGroup.at(i).z);
 
     }
     differPos.x = 0;
