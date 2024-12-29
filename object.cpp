@@ -9,9 +9,9 @@ using namespace std;
 
 //set basic object characteristics
 void Object::setPosition(float x, float y, float z){
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    this->position.x = x;
+    this->position.y = y;
+    this->position.z = z;
 }
 
 void Object::setRotate(float angleX){

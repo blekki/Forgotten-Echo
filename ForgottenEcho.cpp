@@ -147,15 +147,15 @@ int main(void)
     //planets creating
     Planet mars;
     mars.setTexture("solarsystemscope/2k_mars.jpg");
-    mars.setScale(60.0f);
-    mars.setPosition(0.0f, 0.0f, -200.0f);
-    mars.setRotateSpeed(20.0f);
+    mars.setScale(100.0f);
+    mars.setPosition(0.0f, 0.0f, -400.0f);
+    mars.setRotateSpeed(1.5f);
 
     Planet moon;
     moon.setTexture("solarsystemscope/2k_moon.jpg");
-    moon.setScale(8.0f);
-    moon.setPosition(50.0f, -10.0f, -100.0f);
-    moon.setRotateSpeed(-13.0f);
+    moon.setScale(15.0f);
+    moon.setPosition(50.0f, -30.0f, -300.0f);
+    moon.setRotateSpeed(-2.0f);
 
     Object spaceship;
     // spaceship.newModel("models/Carrier-T.obj");
@@ -191,7 +191,7 @@ int main(void)
         glMatrixMode(GL_MODELVIEW);
         
         // follow for spaceship
-        Vec3 whereIam {spaceship.x, spaceship.y, spaceship.z};
+        Vec3 whereIam {spaceship.position.x, spaceship.position.y, spaceship.position.z};
         Vec3 forward = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 0, -1});
         Vec3 to = whereIam + forward;
         Vec3 preUp = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 1, 0});
@@ -209,7 +209,7 @@ int main(void)
         }
 
         // drawing axis
-        drawCoord(spaceship.x, spaceship.y, spaceship.z, spaceship.rotationPosition.ptr(), true);
+        drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr(), true);
         drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
         // drawing objects
         mars.draw();
@@ -218,7 +218,7 @@ int main(void)
             spaceship.draw();
         
         // particle.setBoxPosition(spaceship.x, spaceship.y, glfwGetTime() * 0.9f);
-        particle.newBoxPosition(spaceship.x, spaceship.y, spaceship.z);
+        particle.newBoxPosition(spaceship.position.x, spaceship.position.y, spaceship.position.z);
         particle.draw();
 
 

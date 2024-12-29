@@ -1,11 +1,12 @@
 #include <vector>
 
 #include "particlebox.h"
+#include "structures/xyz.h"
 
 using namespace std;
 
 void Particle::generate(int radius){
-    // range between -1.0 and 1.0
+    // range between (-1.0 * radius) and (1.0 * radius)
     int maxNum = 200 * radius + 1;
     int reduce = 100 * radius;
     position.x = (rand() % maxNum - reduce) / 100.0f;
@@ -30,15 +31,12 @@ void ParticleBox::checkPosition(Particle *particle, xyz_t differPos){
 
 void ParticleBox::normalizeToRadius(Particle *particle, float distance){
     float coef = radius / sqrt(distance);
-    xyz_t vec;
-    vec.x = particle->position.x * coef;
-    vec.y = particle->position.y * coef;
-    vec.z = particle->position.z * coef;
-    particle->position.x -= vec.x * 2;
-    particle->position.y -= vec.y * 2;
-    particle->position.z -= vec.z * 2;
+    particle->position.x -= particle->position.x * coef * 2;
+    particle->position.y -= particle->position.y * coef * 2;
+    particle->position.z -= particle->position.z * coef * 2;
 }
 void ParticleBox::drawparticle(){
+    glPointSize(2);
     glBegin(GL_POINTS);
     glColor3f(1.0f, 1.0f, 1.0f);
     

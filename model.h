@@ -6,45 +6,15 @@
 #include <string>
 #include <map>
 
+#include "structures/xyz.h"
+#include "structures/st.h"
+#include "structures/vertex.h"
+
 using namespace std;
 
 class Model{
     protected:
         int ID = 0;
-
-        struct xyz_t
-        {
-            float x;
-            float y;
-            float z;
-            xyz_t(float x, float y, float z){
-                this->x = x;
-                this->y = y;
-                this->z = z;
-            }
-        };
-        struct st_t
-        {
-            float s;
-            float t;
-            st_t(float s, float t){
-                this->s = s;
-                this->t = t;
-            }
-        };
-
-        struct Vertex
-        {
-            int position;
-            int texcoord;
-            int normal;
-            Vertex(int a, int b, int c){
-                this->position = a;
-                this->texcoord = b;
-                this->normal = c;
-            }
-            Vertex(){}
-        };
 
         struct Triangle
         {
@@ -65,7 +35,6 @@ class Model{
 
         struct Mesh
         {
-            // int material;
             string material;
             vector<Triangle> triangles;
         };

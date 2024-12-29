@@ -104,10 +104,6 @@ void Model::setModel(string fileName){
             currentMesh = new Mesh();
             input >> currentMesh->material;
             input.get();
-
-            // string name;
-            // geometry
-            // getline(input, name);
             continue;
         }
 

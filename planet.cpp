@@ -11,9 +11,9 @@
 
 //change basic planet variables (characteristics)
 void Planet::setPosition(float x, float y, float z){
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    this->position.x = x;
+    this->position.y = y;
+    this->position.z = z;
 }
 
 void Planet::setRotateSpeed(float rotateSpeed){
@@ -54,7 +54,7 @@ void Planet::draw(){
 
     glPushMatrix();
     // glRotatef(this->orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
-    glTranslated(x, y, z);
+    glTranslated(position.x, position.y, position.z);
     glScalef(scale, scale, scale);
     glRotatef(this->rotateSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
 

@@ -5,16 +5,12 @@
 #include <GL/gl.h>
 #include "qued.h"
 
+#include "structures/xyz.h"
+
 using namespace std;
 
 // constants
-const int PARTICLE_COUNT = 2000;
-
-struct xyz_t{
-    float x;
-    float y;
-    float z;
-};
+const int PARTICLE_COUNT = 1000;
 
 class Particle{
     public:
@@ -25,7 +21,7 @@ class Particle{
 
 class ParticleBox{
     private:
-        float radius = 20;
+        float radius = 10;
         xyz_t position {0, 0, 0};
         xyz_t differPos {0, 0, 0};
 

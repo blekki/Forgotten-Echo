@@ -1,17 +1,17 @@
 #pragma once
 #include "sphere.h"
 
+#include "structures/xyz.h"
+
 using namespace std;
 
 class Planet: Sphere{
     private:
         int ID = 0;
         int textureID = 0;
-        //position 
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
-
+        //position
+        xyz_t position;
+        
         //other characteristics
         float scale = 1.0f;
         float orbitSpeed = 30.0f;
