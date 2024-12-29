@@ -4,7 +4,7 @@ using namespace std;
 
 class Sphere{
     private:
-        const int SPHERE_RESOLUTION = 5;
+        const int SPHERE_RESOLUTION = 0;
         int sphereID;
         void multiTriangle(float a[], float b[], float c[], int resolution);
     public:

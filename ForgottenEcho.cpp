@@ -1,12 +1,15 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
-#define GLFW_INCLUDE_NONE
+#include <cstring>
+// #define GLFW_INCLUDE_NONE
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <SOIL/SOIL.h>
 #include <GL/glu.h>
 // #include <glad/glad.h>
+
 
 #include "primal.h"
 #include "sphere.h"
@@ -94,6 +97,115 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 }
 
+GLuint loadShaider(string vertexSource, string fragmentSource){
+    // Create an empty vertex shader handle
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // Send the vertex shader source code to GL
+    // Note that std::string's .c_str is NULL character terminated.
+    const GLchar *source = (const GLchar *)vertexSource.c_str();
+    glShaderSource(vertexShader, 1, &source, 0);
+
+    // Compile the vertex shader
+    glCompileShader(vertexShader);
+
+    GLint isCompiled = 0;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+    if(isCompiled == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> infoLog(maxLength);
+        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+        
+        // We don't need the shader anymore.
+        glDeleteShader(vertexShader);
+
+        // Use the infoLog as you see fit.
+        cout << "infolog: " << (char*) infoLog.data() << endl;
+        
+        // In this simple program, we'll just leave
+        return 0;
+    }
+
+    // Create an empty fragment shader handle
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    // Send the fragment shader source code to GL
+    // Note that std::string's .c_str is NULL character terminated.
+    source = (const GLchar *)fragmentSource.c_str();
+    glShaderSource(fragmentShader, 1, &source, 0);
+
+    // Compile the fragment shader
+    glCompileShader(fragmentShader);
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> infoLog(maxLength);
+        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
+        
+        // We don't need the shader anymore.
+        glDeleteShader(fragmentShader);
+        // Either of them. Don't leak shaders.
+        glDeleteShader(vertexShader);
+
+        // Use the infoLog as you see fit.
+        cout << "infolog: " << (char*) infoLog.data() << endl;
+        
+        // In this simple program, we'll just leave
+        return 0;
+    }
+
+    // Vertex and fragment shaders are successfully compiled.
+    // Now time to link them together into a program.
+    // Get a program object.
+    GLuint program = glCreateProgram();
+
+    // Attach our shaders to our program
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+
+    // Link our program
+    glLinkProgram(program);
+
+    // Note the different functions here: glGetProgram* instead of glGetShader*.
+    GLint isLinked = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+    if (isLinked == GL_FALSE)
+    {
+        GLint maxLength = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> infoLog(maxLength);
+        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        
+        // We don't need the program anymore.
+        glDeleteProgram(program);
+        // Don't leak shaders either.
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+        // Use the infoLog as you see fit.
+        cout << "infolog: " << (char*) infoLog.data() << endl;
+        // In this simple program, we'll just leave
+        return 0;
+    }
+
+    // Always detach shaders after a successful link.
+    glDetachShader(program, vertexShader);
+    glDetachShader(program, fragmentShader);
+
+    return program;
+}
+
 void drawCoord(float x, float y, float z, float *rotation, bool follow){
     
     float xPoint[3] {3, 0, 0};
@@ -137,6 +249,63 @@ int main(void)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(basicWindow);
+    cout << glGetString(GL_VENDOR) << endl;
+    cout << glGetString(GL_VERSION) << endl;
+    if (glewInit()) {
+        cout << "error: glew didn't run" << endl;
+        exit(EXIT_FAILURE);
+    }
+    // cout << glGetString(GL_EXTENSIONS) << endl;
+    if (!strstr((const char*) glGetString(GL_EXTENSIONS), "GL_ARB_texture_non_power_of_two")){
+        cout << "у вас немає розширення" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    GLuint program = loadShaider(
+        R"cut(
+            void main(){
+                // gl_Vertex;
+
+                // gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+                // gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+                gl_Position = ftransform();
+            }
+        )cut",
+        R"cut(
+            uniform float time;
+            uniform vec2 dimensions;
+            void main(){
+                vec2  p = 7.*(2.*gl_FragCoord.xy-dimensions.xy)/dimensions.y;
+                float m1 = sin(length(p)*0.3-time*0.3);
+                float m2 = sin(0.3*(length(p)*0.3-time*0.3));
+                float c1 = 0.012/abs(length(mod(p,2.0*m1)-m1)-0.3);
+                float c2 = 0.012/abs(length(mod(p,2.0*m2)-m2)-0.3);
+                gl_FragColor = vec4(vec3(1.,2.,8.)*c1+vec3(8.,2.,1.)*c2, 1.);
+            }
+        )cut"
+    );
+
+    GLuint program2 = loadShaider(
+        R"cut(
+            uniform sampler2D tex;
+            // varying vec2 st;
+            varying vec4 color;
+            void main(){
+                gl_Position = ftransform();
+                color = texture2D(tex, st);
+                st = gl_MultiTexCoord0;
+            }
+        )cut",
+        R"cut(
+            uniform sampler2D tex;
+            varying vec2 st;
+            varying vec4 color;
+            void main(){
+                // gl_FragColor = color;
+                gl_FragColor = texture2D(tex, st);
+            }
+        )cut"
+    );
 
     //enable gl functions
     glEnable(GL_DEPTH_TEST);
@@ -212,10 +381,21 @@ int main(void)
         drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr(), true);
         drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
         // drawing objects
+        int tex = glGetUniformLocation(program2, "tex");
+        glUseProgram(program2);
+        glUniform1i(tex, 0);
         mars.draw();
         moon.draw();
-        if (!firstPerson)
+        glUseProgram(0);
+        if (!firstPerson){
+            int time = glGetUniformLocation(program, "time");
+            int dimensions = glGetUniformLocation(program, "dimensions");
+            glUseProgram(program);
+            glUniform1f(time, glfwGetTime());
+            glUniform2f(dimensions, width, height);
             spaceship.draw();
+            glUseProgram(0);
+        }
         
         // particle.setBoxPosition(spaceship.x, spaceship.y, glfwGetTime() * 0.9f);
         particle.newBoxPosition(spaceship.position.x, spaceship.position.y, spaceship.position.z);
