@@ -164,24 +164,23 @@ GLuint loadShaider(string vertexSource, string fragmentSource){
     return program;
 }
 
-void drawCoord(float x, float y, float z, float *rotation, bool follow){
-    
+void drawCoord(float x, float y, float z, float *rotation){    
     float xPoint[3] {3, 0, 0};
     float yPoint[3] {0, 3, 0};
     float zPoint[3] {0, 0, 3};
     float *array[3] {xPoint, yPoint, zPoint};
     
     glPushMatrix();
-    (follow) ? glTranslatef(x, y, z) : glTranslatef(0, 0, -2); //does exis follow ship or not
+    // replace axis
+    glTranslatef(x, y, z);
     glMultMatrixf(rotation);
-    // draw exis
+    // draw axis
     glLineWidth(3);
     glBegin(GL_LINES);
     for (int a = 0; a < 3; a++){
         glColor3fv(array[a]);
-        //#######
-        glVertex3f(0, 0, 0);
-        glVertex3fv(array[a]);
+        glVertex3f(0, 0, 0); // zero point
+        glVertex3fv(array[a]); //axis point
     }
     glEnd();
     glPopMatrix();
@@ -280,13 +279,10 @@ int main(void)
     moon.setRotateSpeed(-2.0f);
 
     Object spaceship;
-    // spaceship.newModel("models/Carrier-T.obj");
-    // spaceship.newMaterials("models/Carrier-T.mtl");
     spaceship.newModel("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.obj");
     spaceship.newMaterials("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.mtl");
     spaceship.setScale(0.02f);
     spaceship.setRotate(8.0f);
-    // spaceship.draw();
 
     // prepering everything for rotationMatrices
     rotMatrices coupleMatrices;
@@ -331,8 +327,8 @@ int main(void)
         }
 
         // drawing axis
-        drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr(), true);
-        drawCoord(0, 0, 0, spaceship.rotationPosition.ptr(), false);
+        drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr());
+        drawCoord(0, 0, 0, spaceship.rotationPosition.ptr());
         // drawing objects
         int tex = glGetUniformLocation(program2, "tex");
         glUseProgram(program2);
