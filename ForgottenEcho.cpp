@@ -288,20 +288,16 @@ int main(void)
     GLuint program2 = loadShaider(
         R"cut(
             uniform sampler2D tex;
-            // varying vec2 st;
-            varying vec4 color;
+            varying vec2 st;
             void main(){
                 gl_Position = ftransform();
-                color = texture2D(tex, st);
-                st = gl_MultiTexCoord0;
+                st = gl_MultiTexCoord0.st;
             }
         )cut",
         R"cut(
             uniform sampler2D tex;
             varying vec2 st;
-            varying vec4 color;
             void main(){
-                // gl_FragColor = color;
                 gl_FragColor = texture2D(tex, st);
             }
         )cut"
