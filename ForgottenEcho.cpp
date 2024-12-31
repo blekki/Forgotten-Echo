@@ -64,19 +64,19 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     }
 
     //###### rotate keys ######
-    //keys right and left
+    //keys E and Q
     if (key == GLFW_KEY_Q)
         keyAction("action: key Q", ACTION_ROLL_CW, (action == 1 || action == 2));
     if (key == GLFW_KEY_E)
         keyAction("action: key E", ACTION_ROLL_CCW, (action == 1 || action == 2));
 
-    //keys up and down
+    //keys right and left
     if (key == GLFW_KEY_LEFT)
         keyAction("action: key left", ACTION_YAW_CW, (action == 1 || action == 2));
     if (key == GLFW_KEY_RIGHT)
         keyAction("action: key right", ACTION_YAW_CCW, (action == 1 || action == 2));
 
-    //keys E and Q
+    //keys up and down
     if (key == GLFW_KEY_UP)
         keyAction("action: key up", ACTION_PITCH_UP, (action == 1 || action == 2));
     if (key == GLFW_KEY_DOWN)
@@ -98,15 +98,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 }
 
 GLuint loadShaider(string vertexSource, string fragmentSource){
-    // Create an empty vertex shader handle
+    // ### vectex shader ###
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    // Send the vertex shader source code to GL
-    // Note that std::string's .c_str is NULL character terminated.
     const GLchar *source = (const GLchar *)vertexSource.c_str();
     glShaderSource(vertexShader, 1, &source, 0);
-
-    // Compile the vertex shader
     glCompileShader(vertexShader);
 
     GLint isCompiled = 0;
@@ -115,30 +110,17 @@ GLuint loadShaider(string vertexSource, string fragmentSource){
     {
         GLint maxLength = 0;
         glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
+        vector<GLchar> infoLog(maxLength);
         glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-        
-        // We don't need the shader anymore.
         glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
-        cout << "infolog: " << (char*) infoLog.data() << endl;
-        
-        // In this simple program, we'll just leave
+        cout << "infolog: " << (char*) infoLog.data() << endl;        
         return 0;
     }
 
-    // Create an empty fragment shader handle
+    // ### fragment shader ###
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Send the fragment shader source code to GL
-    // Note that std::string's .c_str is NULL character terminated.
     source = (const GLchar *)fragmentSource.c_str();
     glShaderSource(fragmentShader, 1, &source, 0);
-
-    // Compile the fragment shader
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
@@ -146,60 +128,36 @@ GLuint loadShaider(string vertexSource, string fragmentSource){
     {
         GLint maxLength = 0;
         glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
         std::vector<GLchar> infoLog(maxLength);
         glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-        
-        // We don't need the shader anymore.
         glDeleteShader(fragmentShader);
-        // Either of them. Don't leak shaders.
         glDeleteShader(vertexShader);
-
-        // Use the infoLog as you see fit.
         cout << "infolog: " << (char*) infoLog.data() << endl;
-        
-        // In this simple program, we'll just leave
         return 0;
     }
 
-    // Vertex and fragment shaders are successfully compiled.
-    // Now time to link them together into a program.
-    // Get a program object.
+    // ### repeiring shader ###
     GLuint program = glCreateProgram();
-
-    // Attach our shaders to our program
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
-
-    // Link our program
     glLinkProgram(program);
 
-    // Note the different functions here: glGetProgram* instead of glGetShader*.
     GLint isLinked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
     if (isLinked == GL_FALSE)
     {
         GLint maxLength = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
         std::vector<GLchar> infoLog(maxLength);
         glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-        
-        // We don't need the program anymore.
         glDeleteProgram(program);
-        // Don't leak shaders either.
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
-
-        // Use the infoLog as you see fit.
         cout << "infolog: " << (char*) infoLog.data() << endl;
-        // In this simple program, we'll just leave
         return 0;
     }
 
-    // Always detach shaders after a successful link.
+    // complite shader
     glDetachShader(program, vertexShader);
     glDetachShader(program, fragmentShader);
 
@@ -249,15 +207,14 @@ int main(void)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(basicWindow);
-    cout << glGetString(GL_VENDOR) << endl;
-    cout << glGetString(GL_VERSION) << endl;
+    cout << "GL_VENDOR :" << glGetString(GL_VENDOR) << endl;
+    cout << "GL_VERSION" << glGetString(GL_VERSION) << endl;
     if (glewInit()) {
         cout << "error: glew didn't run" << endl;
         exit(EXIT_FAILURE);
     }
-    // cout << glGetString(GL_EXTENSIONS) << endl;
     if (!strstr((const char*) glGetString(GL_EXTENSIONS), "GL_ARB_texture_non_power_of_two")){
-        cout << "у вас немає розширення" << endl;
+        cout << "You haven't needy extension for glew" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -419,10 +376,6 @@ int main(void)
             spaceship.addTranslateVec(Vec3(0,0,1));
         if (actionStatus & ACTION_MOVE_FORWARD)
             spaceship.addTranslateVec(Vec3(0,0,-1));
-
-        // glMultMatrixf(spaceship.rotationPosition.ptr());
-        // spaceship.draw();
-       
 
         // other needy actions
         glfwSwapBuffers(basicWindow);
