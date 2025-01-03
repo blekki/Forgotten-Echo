@@ -50,11 +50,17 @@ void Object::drawTriangles(){
                     float t = 1.0f - texcoordList.at(texturePoint).t;
                     glTexCoord2f(s, t);
 
-                    int vertexPoint = this->geometry.at(m)->triangles.at(tr).v[tv].position;
+                    {int normalPoint = this->geometry.at(m)->triangles.at(tr).v[tv].normal;
+                    float x = normalList.at(normalPoint).x;
+                    float y = normalList.at(normalPoint).y;
+                    float z = normalList.at(normalPoint).z;
+                    glNormal3f(x, y, z);}
+
+                    {int vertexPoint = this->geometry.at(m)->triangles.at(tr).v[tv].position;
                     float x = vertexList.at(vertexPoint).x;
                     float y = vertexList.at(vertexPoint).y;
                     float z = vertexList.at(vertexPoint).z;
-                    glVertex3f(x, y, z);
+                    glVertex3f(x, y, z);}
                 }
             }
             glEnd();

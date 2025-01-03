@@ -207,7 +207,7 @@ int main(void)
     }
     glfwMakeContextCurrent(basicWindow);
     cout << "GL_VENDOR :" << glGetString(GL_VENDOR) << endl;
-    cout << "GL_VERSION" << glGetString(GL_VERSION) << endl;
+    cout << "GL_VERSION : " << glGetString(GL_VERSION) << endl;
     if (glewInit()) {
         cout << "error: glew didn't run" << endl;
         exit(EXIT_FAILURE);
@@ -217,7 +217,7 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    GLuint program = loadShaider(
+    GLuint spaceshipShader = loadShaider(
         R"cut(
             void main(){
                 // gl_Vertex;
@@ -230,18 +230,26 @@ int main(void)
         R"cut(
             uniform float time;
             uniform vec2 dimensions;
+            // bool colorType;
+
             void main(){
-                vec2  p = 7.*(2.*gl_FragCoord.xy-dimensions.xy)/dimensions.y;
-                float m1 = sin(length(p)*0.3-time*0.3);
-                float m2 = sin(0.3*(length(p)*0.3-time*0.3));
-                float c1 = 0.012/abs(length(mod(p,2.0*m1)-m1)-0.3);
-                float c2 = 0.012/abs(length(mod(p,2.0*m2)-m2)-0.3);
-                gl_FragColor = vec4(vec3(1.,2.,8.)*c1+vec3(8.,2.,1.)*c2, 1.);
+                // vec2  p = 7.*(2.*gl_FragCoord.xy-dimensions.xy)/dimensions.y;
+                // float m1 = sin(length(p)*0.3-time*0.3);
+                // float m2 = sin(0.3*(length(p)*0.3-time*0.3));
+                // float c1 = 0.012/abs(length(mod(p,2.0*m1)-m1)-0.3);
+                // float c2 = 0.012/abs(length(mod(p,2.0*m2)-m2)-0.3);
+                // gl_FragColor = vec4(vec3(1.,2.,8.)*c1+vec3(8.,2.,1.)*c2, 1.);
+                
+                vec4 color;
+                float g;
+                g = mod(gl_FragCoord.x + gl_FragCoord.y, 2.0);
+                color = vec4(g, g, g, 1.0);
+                gl_FragColor = color;
             }
         )cut"
     );
 
-    GLuint program2 = loadShaider(
+    GLuint planetShader = loadShaider(
         R"cut(
             uniform sampler2D tex;
             varying vec2 st;
@@ -255,6 +263,43 @@ int main(void)
             varying vec2 st;
             void main(){
                 gl_FragColor = texture2D(tex, st);
+            }
+        )cut"
+    );
+
+    GLuint brightnestShader = loadShaider(
+        R"cut(
+            #version 120
+            varying vec3 currentVertex;
+            varying vec3 currentNormal;
+            varying vec2 st;
+
+            void main(){
+                currentVertex = vec3(gl_ModelViewMatrix * gl_Vertex);
+                currentNormal = mat3(gl_ModelViewMatrix) * gl_Normal;
+                // currentNormal = gl_Normal;
+                // currentVertex = gl_Vertex.xyz;
+
+                gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+                st = gl_MultiTexCoord0.st;
+            }
+        )cut",
+        R"cut(
+            varying vec3 currentVertex;
+            varying vec3 currentNormal;
+            uniform sampler2D tex;
+            varying vec2 st;
+            
+            void main(){
+                vec3 lightPos = vec3(40.0, 0.0, 0.0);
+                vec3 lightVec = normalize(lightPos - currentVertex);
+                vec3 normal = normalize(currentNormal);
+        
+                float result = max(dot(normal, lightVec), 0.1);
+
+                vec3 color = vec3(result, result, result);
+                // vec3 color = vec3(1.0, 1.0, 1.0);
+                gl_FragColor = texture2D(tex, st) * result;
             }
         )cut"
     );
@@ -330,18 +375,23 @@ int main(void)
         drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr());
         drawCoord(0, 0, 0, spaceship.rotationPosition.ptr());
         // drawing objects
-        int tex = glGetUniformLocation(program2, "tex");
-        glUseProgram(program2);
+        int tex = glGetUniformLocation(planetShader, "tex");
+        glUseProgram(planetShader);
         glUniform1i(tex, 0);
         mars.draw();
         moon.draw();
         glUseProgram(0);
         if (!firstPerson){
-            int time = glGetUniformLocation(program, "time");
-            int dimensions = glGetUniformLocation(program, "dimensions");
-            glUseProgram(program);
-            glUniform1f(time, glfwGetTime());
-            glUniform2f(dimensions, width, height);
+            // use shader for spaceship
+            // int time = glGetUniformLocation(spaceshipShader, "time");
+            // int dimensions = glGetUniformLocation(spaceshipShader, "dimensions");
+            // glUseProgram(spaceshipShader);
+            // glUniform1f(time, glfwGetTime());
+            // glUniform2f(dimensions, width, height);
+            int tex = glGetUniformLocation(spaceshipShader, "tex");
+            glUseProgram(brightnestShader);
+            glUniform1i(tex, 0);
+            // draw spaceship
             spaceship.draw();
             glUseProgram(0);
         }
