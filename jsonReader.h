@@ -6,14 +6,14 @@
 class JsonReader{
     private:
         void readJsonPlanet(Planet *planet, string path);
-        void readJsonSpaceship(Object *spaceship, string path);
+        void readJsonSpaceship(Object *object, string path);
 
     public:
         void getPlanet(Planet *planet, string path){
             readJsonPlanet(planet, path);
         }
         
-        void getSpaceship(Object *spaceship, string path){
-            readJsonSpaceship(spaceship, path);
+        void getSpaceship(Object *object, string path){
+            readJsonSpaceship(object, path);
         }
 };

@@ -8,6 +8,7 @@
         }
     ],
     "scale": 0.02,
-    "model.obj": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.obj",
-    "model.mtl": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.mtl"
+    "path": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/",
+    "model.obj": "P1ionarrayfrigate.obj",
+    "model.mtl": "P1ionarrayfrigate.mtl"
 }

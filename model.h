@@ -14,7 +14,9 @@ using namespace std;
 
 class Model{
     protected:
+    public:
         int ID = 0;
+        string path;
 
         struct Triangle
         {
@@ -41,6 +43,7 @@ class Model{
 
         void setModel(string fileName);
         void setMaterials(string fileName);
+        void setPath(string path);
 
     public:
         virtual void newModel(string fileName){
@@ -50,11 +53,15 @@ class Model{
             setMaterials(fileName);
         }
 
+        void newPath(string path){
+            setPath(path);
+        }
 
         Model(){};
         virtual ~Model(){};
     
     protected:
+    
     public:
         vector<xyz_t> vertexList;
         vector<st_t> texcoordList;

@@ -25,7 +25,7 @@ void JsonReader::readJsonPlanet(Planet *planet, string path){
     file.close();
 }
 
-void JsonReader::readJsonSpaceship(Object *spaceship, string path){
+void JsonReader::readJsonSpaceship(Object *object, string path){
     using json = nlohmann::json;
     ifstream file(path);
     json data = json::parse(file);
@@ -33,15 +33,18 @@ void JsonReader::readJsonSpaceship(Object *spaceship, string path){
     float x = {data["position"][0]["x"]};
     float y = {data["position"][0]["y"]};
     float z = {data["position"][0]["z"]};
-    spaceship->setPosition(x, y, z);
+    object->setPosition(x, y, z);
 
     float scale = {data["scale"]};
-    spaceship->setScale(scale);
+    object->setScale(scale);
+
+    string folder = {data["path"]};
+    object->newPath(folder);
 
     string obj = {data["model.obj"]};
-    spaceship->newModel(obj);
+    object->newModel(folder + obj);
     string mtl = {data["model.mtl"]};
-    spaceship->newMaterials(mtl);
+    object->newMaterials(folder + mtl);
 
     file.close();
 }

@@ -321,6 +321,8 @@ int main(void)
 
     Object spaceship;
     jsonReader.getSpaceship(&spaceship, "characters/objects/myship.json");
+    Object mothership;
+    jsonReader.getSpaceship(&mothership, "characters/objects/mothership.json");
 
     // prepering everything for rotationMatrices
     rotMatrices coupleMatrices;
@@ -373,6 +375,7 @@ int main(void)
         glUniform1i(tex, 0);
         mars.draw();
         moon.draw();
+        mothership.draw();
         glUseProgram(0);
         if (!firstPerson){
             // use shader for spaceship

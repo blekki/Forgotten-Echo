@@ -8,6 +8,7 @@
 
 class Object: public Model{
     public:
+        string name;
         // coordinates
         xyz_t position;
 

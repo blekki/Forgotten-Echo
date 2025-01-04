@@ -1,0 +1,14 @@
+{
+    "name": "Mothership",
+    "position": [
+        {
+            "x": -50.0,
+            "y": 0.0,
+            "z": -10.0 
+        }
+    ],
+    "scale": 0.05,
+    "path": "models/Other/Research Station/lod0/",
+    "model.obj": "Researchstation.obj",
+    "model.mtl": "Researchstation.mtl"
+}

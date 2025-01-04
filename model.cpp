@@ -9,11 +9,15 @@
 
 using namespace std;
 
+void Model::setPath(string path){
+    this->path = path;
+}
+
 void Model::setMaterials(string fileName){
     ifstream input(fileName);
     string textline;
 
-    string path = "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/";
+    // string path = "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/";
 
     // materialList.push_back(0);
     string materialName;
@@ -30,7 +34,7 @@ void Model::setMaterials(string fileName){
             input >> textureName;
 
             if (materialList[materialName].textureID == 0){ 
-                int textureID = SOIL_load_OGL_texture((path + textureName).c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+                int textureID = SOIL_load_OGL_texture((this->path + textureName).c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
                 cout << "setMaterial: " << textureID << " : " << textureName << endl;
                 materialList[materialName].textureID = textureID;
             }
