@@ -1,0 +1,13 @@
+{
+    "name": "Mars",
+    "position": [
+        {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -600.0 
+        }
+    ],
+    "scale": 400,
+    "rotateSpeed": 0.7,
+    "texture": "solarsystemscope/2k_mars.jpg"
+}

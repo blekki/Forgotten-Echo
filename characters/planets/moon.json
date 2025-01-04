@@ -1,0 +1,13 @@
+{
+    "name": "Moon",
+    "position": [
+        {
+            "x": 600.0,
+            "y": 270.0,
+            "z": -100
+        }
+    ],
+    "scale": 30,
+    "rotateSpeed": 1.4,
+    "texture": "solarsystemscope/2k_moon.jpg"
+}

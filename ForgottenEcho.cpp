@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <cmath>
 #include <cstring>
@@ -10,13 +11,13 @@
 #include <GL/glu.h>
 // #include <glad/glad.h>
 
-
 #include "primal.h"
 #include "sphere.h"
 #include "planet.h"
 #include "model.h"
 #include "object.h"
 #include "particlebox.h"
+#include "jsonReader.h"
 
 
 using namespace std;
@@ -310,24 +311,16 @@ int main(void)
     // key enter function
     glfwSetKeyCallback(basicWindow, key_callback);
 
+
+    JsonReader jsonReader;
     //planets creating
     Planet mars;
-    mars.setTexture("solarsystemscope/2k_mars.jpg");
-    mars.setScale(100.0f);
-    mars.setPosition(0.0f, 0.0f, -400.0f);
-    mars.setRotateSpeed(1.5f);
-
+    jsonReader.getPlanet(&mars, "characters/planets/mars.json");
     Planet moon;
-    moon.setTexture("solarsystemscope/2k_moon.jpg");
-    moon.setScale(15.0f);
-    moon.setPosition(50.0f, -30.0f, -300.0f);
-    moon.setRotateSpeed(-2.0f);
+    jsonReader.getPlanet(&moon, "characters/planets/moon.json");
 
     Object spaceship;
-    spaceship.newModel("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.obj");
-    spaceship.newMaterials("models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.mtl");
-    spaceship.setScale(0.02f);
-    spaceship.setRotate(8.0f);
+    jsonReader.getSpaceship(&spaceship, "characters/objects/myship.json");
 
     // prepering everything for rotationMatrices
     rotMatrices coupleMatrices;

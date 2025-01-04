@@ -18,7 +18,7 @@ class Planet: Sphere{
         float rotateSpeed = 0.0001f;
 
     public:
-        void setTexture(char* texture);
+        void setTexture(string texture);
         void setPosition(float x, float y, float z);
         void setRotateSpeed(float rotateSpeed);
         void setScale(float radius);

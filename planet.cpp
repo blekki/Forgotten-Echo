@@ -24,8 +24,8 @@ void Planet::setScale(float scale){
     this->scale = scale;
 }
 
-void Planet::setTexture(char* texture){
-    textureID = SOIL_load_OGL_texture(texture, SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
+void Planet::setTexture(string texture){
+    textureID = SOIL_load_OGL_texture(texture.c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
     cout << "setTexture: " << textureID << endl;
 }
 

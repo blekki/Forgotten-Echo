@@ -1,0 +1,13 @@
+{
+    "name": "MyShip",
+    "position": [
+        {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0 
+        }
+    ],
+    "scale": 0.02,
+    "model.obj": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.obj",
+    "model.mtl": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/P1ionarrayfrigate.mtl"
+}
