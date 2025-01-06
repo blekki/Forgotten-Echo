@@ -16,4 +16,6 @@ class JsonReader{
         void getSpaceship(Object *object, string path){
             readJsonSpaceship(object, path);
         }
+
+        void testReader(Object *object, string path);
 };

@@ -19,3 +19,4 @@ void rotMatrices::declareMatrix(Matrix4* matrix4, Matrix4* opposMatrix4, Vec3 fr
 
 	// return rotationMatrix(qued);
 }
+

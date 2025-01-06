@@ -313,7 +313,7 @@ int main(void)
 
 
     JsonReader jsonReader;
-    //planets creating
+    // planets creating
     Planet mars;
     jsonReader.getPlanet(&mars, "characters/planets/mars.json");
     Planet moon;
@@ -323,6 +323,8 @@ int main(void)
     jsonReader.getSpaceship(&spaceship, "characters/objects/myship.json");
     Object mothership;
     jsonReader.getSpaceship(&mothership, "characters/objects/mothership.json");
+    Object testObj;
+    jsonReader.getSpaceship(&testObj, "characters/objects/test.json");
 
     // prepering everything for rotationMatrices
     rotMatrices coupleMatrices;
@@ -370,12 +372,13 @@ int main(void)
         drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr());
         drawCoord(0, 0, 0, spaceship.rotationPosition.ptr());
         // drawing objects
-        int tex = glGetUniformLocation(planetShader, "tex");
-        glUseProgram(planetShader);
+        int tex = glGetUniformLocation(spaceshipShader, "tex");
+        glUseProgram(brightnestShader);
         glUniform1i(tex, 0);
         mars.draw();
         moon.draw();
         mothership.draw();
+        testObj.draw();
         glUseProgram(0);
         if (!firstPerson){
             // use shader for spaceship
@@ -392,7 +395,7 @@ int main(void)
             glUseProgram(0);
         }
         
-        // particle.setBoxPosition(spaceship.x, spaceship.y, glfwGetTime() * 0.9f);
+        // create new particalBox around own spaceship
         particle.newBoxPosition(spaceship.position.x, spaceship.position.y, spaceship.position.z);
         particle.draw();
 

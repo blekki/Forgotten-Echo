@@ -31,9 +31,6 @@ class rotMatrices{
         }
 
         void newMatrices(){
-            // cwRoll = declareMatrix(cwRoll, vecUp, vecRight);
-            // cwYaw = declareMatrix(cwYaw, vecRight, vecForward);
-            // upPitch = declareMatrix(upPitch, vecForward, vecRight);
             declareMatrix(&cwRoll, &ccwRoll, vecUp, vecRight);
             declareMatrix(&cwYaw, &ccwYaw, vecForward, vecRight);
             declareMatrix(&upPitch, &downPitch, vecForward, vecUp);

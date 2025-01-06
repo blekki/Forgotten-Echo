@@ -1,21 +1,20 @@
 #pragma once
+#include <math.h>
 #include "model.h"
 #include <GLFW/glfw3.h>
 
 #include "qued.h"
 #include "matrices.h"
 #include "structures/xyz.h"
+#include "structures/vec3.h"
 
 class Object: public Model{
     public:
         string name;
-        // coordinates
         xyz_t position;
-
-        // rotate position
         Matrix4 rotationPosition;
-
         float scale = 1.0f;
+
 
         void drawTriangles();
 
@@ -47,6 +46,32 @@ class Object: public Model{
             position.x += translateVec.x / 5.0f;
             position.y += translateVec.y / 5.0f;
             position.z += translateVec.z / 5.0f;
+        }
+
+        void preparation(float rotX, float rotY, float rotZ){
+            constexpr float PI_DIV_180 = 3.1415 / 180.0f;
+            
+            Matrix4 basicRotate;
+            Qued qued;
+            // axis primal vectors
+            Vec3 fromX(1, 0, 0);
+            Vec3 fromY(0, 1, 0);
+            Vec3 fromZ(0, 0, 1);
+            // new position vectors
+            Vec3 toX(cos(rotX * PI_DIV_180), sin(rotX * PI_DIV_180), 0);
+            Vec3 toY(0, cos(rotY * PI_DIV_180), sin(rotY * PI_DIV_180));
+            Vec3 toZ(sin(rotZ * PI_DIV_180), 0, cos(rotZ * PI_DIV_180));
+            
+            // make new rotate matrix
+            qued.newQued(fromX, toX);
+            basicRotate = multiplyMatrix(basicRotate, rotationMatrix(qued));
+            qued.newQued(fromY, toY);
+            basicRotate = multiplyMatrix(basicRotate, rotationMatrix(qued));
+            qued.newQued(fromZ, toZ);
+            basicRotate = multiplyMatrix(basicRotate, rotationMatrix(qued));
+
+            // push new matrix
+            rotationPosition = multiplyMatrix(rotationPosition, basicRotate);
         }
 
         virtual ~Object(){};
