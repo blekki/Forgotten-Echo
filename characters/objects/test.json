@@ -1,0 +1,21 @@
+{
+    "name": "MyShip",
+    "position": [
+        {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -15.0 
+        }
+    ],
+    "rotate": [
+        {
+            "x_axis": 0,
+            "y_axis": 0,
+            "z_axis": 0
+        }
+    ],
+    "scale": 0.02,
+    "path": "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/",
+    "model.obj": "P1ionarrayfrigate.obj",
+    "model.mtl": "P1ionarrayfrigate.mtl"
+}

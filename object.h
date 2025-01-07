@@ -61,7 +61,7 @@ class Object: public Model{
             Vec3 toX(cos(rotX * PI_DIV_180), sin(rotX * PI_DIV_180), 0);
             Vec3 toY(0, cos(rotY * PI_DIV_180), sin(rotY * PI_DIV_180));
             Vec3 toZ(sin(rotZ * PI_DIV_180), 0, cos(rotZ * PI_DIV_180));
-            
+
             // make new rotate matrix
             qued.newQued(fromX, toX);
             basicRotate = multiplyMatrix(basicRotate, rotationMatrix(qued));
