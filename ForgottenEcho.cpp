@@ -271,35 +271,42 @@ int main(void)
     GLuint brightnestShader = loadShaider(
         R"cut(
             #version 120
-            varying vec3 currentVertex;
+            #define gl_ViewMatrix gl_ModelViewMatrix
+            varying vec4 currentVertex;
             varying vec3 currentNormal;
+            varying vec4 lightVertex;
+            uniform vec4 lightPos;
+            uniform mat4 modelMatrix;
             varying vec2 st;
 
             void main(){
-                currentVertex = vec3(gl_ModelViewMatrix * gl_Vertex);
-                currentNormal = mat3(gl_ModelViewMatrix) * gl_Normal;
+                currentVertex = modelMatrix * gl_Vertex;
+                currentNormal = mat3(modelMatrix) * gl_Normal;
+                lightVertex = lightPos;
+
+
                 // currentNormal = gl_Normal;
                 // currentVertex = gl_Vertex.xyz;
 
-                gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+                gl_Position = gl_ProjectionMatrix * gl_ViewMatrix * currentVertex;
                 st = gl_MultiTexCoord0.st;
             }
         )cut",
         R"cut(
-            varying vec3 currentVertex;
+            varying vec4 currentVertex;
             varying vec3 currentNormal;
+            varying vec4 lightVertex;
+            
             uniform sampler2D tex;
             varying vec2 st;
             
             void main(){
-                vec3 lightPos = vec3(40.0, 0.0, 0.0);
-                vec3 lightVec = normalize(lightPos - currentVertex);
+                vec3 lightVec = normalize(lightVertex.xyz- currentVertex.xyz);
                 vec3 normal = normalize(currentNormal);
         
                 float result = max(dot(normal, lightVec), 0.1);
 
                 vec3 color = vec3(result, result, result);
-                // vec3 color = vec3(1.0, 1.0, 1.0);
                 gl_FragColor = texture2D(tex, st) * result;
             }
         )cut"
@@ -372,36 +379,41 @@ int main(void)
         drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr());
         drawCoord(0, 0, 0, spaceship.rotationPosition.ptr());
         // drawing objects
-        int tex = glGetUniformLocation(spaceshipShader, "tex");
+        int tex = glGetUniformLocation(brightnestShader, "tex");
+        int pos = glGetUniformLocation(brightnestShader, "lightPos");
+        int matrix = glGetUniformLocation(brightnestShader, "modelMatrix");
         glUseProgram(brightnestShader);
         glUniform1i(tex, 0);
-        mars.draw();
-        moon.draw();
+        glUniform4f(pos, sun.getX(), sun.getY(), sun.getZ(), 1);
+        Matrix4 modelMatrix;
+        // glUniform3f(pos, lightBox.getX(0), lightBox.getY(0), lightBox.getZ(0));
+        sun.lightInit();
+        sun.lightMat(spaceship.rotationPosition);
+        // mars.draw();
+        // moon.draw();
+        // sun.draw();
+
+        modelMatrix = mothership.makeModelMatrix();
+        glUniformMatrix4fv(matrix, 1, false, modelMatrix.ptr());
         mothership.draw();
-        testObj.draw();
-        glUseProgram(0);
-        if (!firstPerson){
-            // use shader for spaceship
-            // int time = glGetUniformLocation(spaceshipShader, "time");
-            // int dimensions = glGetUniformLocation(spaceshipShader, "dimensions");
-            // glUseProgram(spaceshipShader);
-            // glUniform1f(time, glfwGetTime());
-            // glUniform2f(dimensions, width, height);
-            int tex = glGetUniformLocation(spaceshipShader, "tex");
-            glUseProgram(brightnestShader);
-            glUniform1i(tex, 0);
-            // draw spaceship
-            spaceship.draw();
-            glUseProgram(0);
-        }
         
-        // create new particalBox around own spaceship
+        modelMatrix = testObj.makeModelMatrix();
+        glUniformMatrix4fv(matrix, 1, false, modelMatrix.ptr());
+        testObj.draw();
+        
+        if (!firstPerson){
+            spaceship.draw();
+        }
+
+        glUseProgram(0);
+        
+        // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.position.x, spaceship.position.y, spaceship.position.z);
         particle.draw();
 
 
 
-        // a few actions for rotation an our object
+        // a few actions for replace in space our spaceship and lightBox
         if (actionStatus & ACTION_ROLL_CCW)
             spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
         if (actionStatus & ACTION_ROLL_CW)

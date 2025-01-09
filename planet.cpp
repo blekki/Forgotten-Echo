@@ -29,6 +29,24 @@ void Planet::setTexture(string texture){
     cout << "setTexture: " << textureID << endl;
 }
 
+// a pack of returning position XYZ
+//#####
+float Planet::getX(){
+    // return position.x;
+    return position.x;
+}
+
+float Planet::getY(){
+    // return position.y;
+    return position.y;
+}
+
+float Planet::getZ(){
+    // return position.z;
+    return position.z;
+}
+//##########
+
 //draw a triangle with texture
 void Planet::vertex(float a[]){
     float x = a[0];

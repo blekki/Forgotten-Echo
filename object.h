@@ -28,9 +28,10 @@ class Object: public Model{
         
         void draw(){
             glPushMatrix();
-            glTranslated(position.x, position.y, position.z);
-            glScalef(scale, scale, scale);
-            glMultMatrixf(rotationPosition.ptr());
+            // glTranslated(position.x, position.y, position.z);
+            // glScalef(scale, scale, scale);
+            // glMultMatrixf(rotationPosition.ptr());
+
             // glRotatef(angleX * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
             drawTriangles();
             glPopMatrix();
@@ -46,6 +47,22 @@ class Object: public Model{
             position.x += translateVec.x / 5.0f;
             position.y += translateVec.y / 5.0f;
             position.z += translateVec.z / 5.0f;
+        }
+
+        Matrix4 makeModelMatrix(){
+            Matrix4 matrix;
+            glPushMatrix();
+            glLoadIdentity();
+            glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());
+            glTranslated(position.x, position.y, position.z);
+            glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());
+            glScalef(scale, scale, scale);
+            glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());
+            // glMultMatrixf(rotationPosition.ptr());
+            glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());
+            glPopMatrix();
+            return matrix;
+
         }
 
         void preparation(float rotX, float rotY, float rotZ){
