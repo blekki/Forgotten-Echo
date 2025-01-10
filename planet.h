@@ -9,9 +9,7 @@ class Planet: Sphere{
     private:
         int ID = 0;
         int textureID = 0;
-        //position
         xyz_t position;
-        
         //other characteristics
         float scale = 1.0f;
         float orbitSpeed = 30.0f;
@@ -22,6 +20,10 @@ class Planet: Sphere{
         void setPosition(float x, float y, float z);
         void setRotateSpeed(float rotateSpeed);
         void setScale(float radius);
+        float getX();
+        float getY();
+        float getZ();
+        xyz_t getXYZ();
 
         virtual void draw() override;
         

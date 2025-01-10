@@ -32,18 +32,19 @@ void Planet::setTexture(string texture){
 // a pack of returning position XYZ
 //#####
 float Planet::getX(){
-    // return position.x;
     return position.x;
 }
 
 float Planet::getY(){
-    // return position.y;
     return position.y;
 }
 
 float Planet::getZ(){
-    // return position.z;
     return position.z;
+}
+
+xyz_t Planet::getXYZ(){
+    return position;
 }
 //##########
 
