@@ -338,10 +338,10 @@ int main(void)
         glMatrixMode(GL_MODELVIEW);
         
         // follow for spaceship
-        Vec3 whereIam {spaceship.position.x, spaceship.position.y, spaceship.position.z};
-        Vec3 forward = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 0, -1});
+        Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
+        Vec3 forward = multiplyMatrixVec(spaceship.getRotate(), Vec3 {0, 0, -1});
         Vec3 to = whereIam + forward;
-        Vec3 preUp = multiplyMatrixVec(spaceship.rotationPosition, Vec3 {0, 1, 0});
+        Vec3 preUp = multiplyMatrixVec(spaceship.getRotate(), Vec3 {0, 1, 0});
         if (firstPerson == 1){
             glLoadIdentity();
             gluLookAt(whereIam.x, whereIam.y, whereIam.z,
@@ -390,7 +390,7 @@ int main(void)
         glUseProgram(0);
         
         // replace particalBox around your spaceship
-        particle.newBoxPosition(spaceship.position.x, spaceship.position.y, spaceship.position.z);
+        particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
         particle.draw();
 
 
