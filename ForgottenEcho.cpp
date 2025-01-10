@@ -165,27 +165,6 @@ GLuint loadShaider(string vertexSource, string fragmentSource){
     return program;
 }
 
-void drawCoord(float x, float y, float z, float *rotation){    
-    float xPoint[3] {3, 0, 0};
-    float yPoint[3] {0, 3, 0};
-    float zPoint[3] {0, 0, 3};
-    float *array[3] {xPoint, yPoint, zPoint};
-    
-    glPushMatrix();
-    // replace axis
-    glTranslatef(x, y, z);
-    glMultMatrixf(rotation);
-    // draw axis
-    glLineWidth(3);
-    glBegin(GL_LINES);
-    for (int a = 0; a < 3; a++){
-        glColor3fv(array[a]);
-        glVertex3f(0, 0, 0); // zero point
-        glVertex3fv(array[a]); //axis point
-    }
-    glEnd();
-    glPopMatrix();
-}
 
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
@@ -320,6 +299,7 @@ int main(void)
 
 
     JsonReader jsonReader;
+    Primal primal;
     // planets creating
     Planet mars;
     jsonReader.getPlanet(&mars, "characters/planets/mars.json");
@@ -376,8 +356,10 @@ int main(void)
         }
 
         // drawing axis
-        drawCoord(spaceship.position.x, spaceship.position.y, spaceship.position.z, spaceship.rotationPosition.ptr());
-        drawCoord(0, 0, 0, spaceship.rotationPosition.ptr());
+        
+        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotate().ptr());
+        primal.drawCoord();
+
         // drawing objects
         int tex = glGetUniformLocation(brightnestShader, "tex");
         int pos = glGetUniformLocation(brightnestShader, "lightPos");

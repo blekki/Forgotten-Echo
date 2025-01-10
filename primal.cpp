@@ -3,6 +3,50 @@
 
 #include "primal.h"
 
+using namespace std;
+
+void Primal::createFollowCoord(float x, float y, float z, float *rotation){
+    float xPoint[3] {3, 0, 0};
+    float yPoint[3] {0, 3, 0};
+    float zPoint[3] {0, 0, 3};
+    float *array[3] {xPoint, yPoint, zPoint};
+    
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glMultMatrixf(rotation);
+    // draw axis
+    glLineWidth(3);
+    glBegin(GL_LINES);
+    for (int a = 0; a < 3; a++){
+        glColor3fv(array[a]);
+        glVertex3f(0, 0, 0); // zero point
+        glVertex3fv(array[a]); //axis point
+    }
+    glEnd();
+    glPopMatrix();
+}
+
+void Primal::createCoord(){
+    float xPoint[3] {3, 0, 0};
+    float yPoint[3] {0, 3, 0};
+    float zPoint[3] {0, 0, 3};
+    float *array[3] {xPoint, yPoint, zPoint};
+    
+    // draw axis
+    glLineWidth(4);
+    glPushAttrib(GL_ENABLE_BIT);
+    glLineStipple(1, 0xCCCC);
+    glEnable(GL_LINE_STIPPLE);
+    glBegin(GL_LINES);
+    for (int a = 0; a < 3; a++){
+        glColor3fv(array[a]);
+        glVertex3f(0, 0, 0); // zero point
+        glVertex3fv(array[a]); //axis point
+    }
+    glEnd();
+    glPopAttrib();
+}
+
 //draw simple 2d triangle
 void Primal::createTriangle()
 {
