@@ -18,6 +18,8 @@
 #include "object.h"
 #include "particlebox.h"
 #include "jsonReader.h"
+#include "entity.h"
+#include "spaceship.h"
 
 
 using namespace std;
@@ -98,74 +100,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 }
 
-GLuint loadShaider(string vertexSource, string fragmentSource){
-    // ### vectex shader ###
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    const GLchar *source = (const GLchar *)vertexSource.c_str();
-    glShaderSource(vertexShader, 1, &source, 0);
-    glCompileShader(vertexShader);
-
-    GLint isCompiled = 0;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-    if(isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-        vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-        glDeleteShader(vertexShader);
-        cout << "infolog: " << (char*) infoLog.data() << endl;        
-        return 0;
-    }
-
-    // ### fragment shader ###
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    source = (const GLchar *)fragmentSource.c_str();
-    glShaderSource(fragmentShader, 1, &source, 0);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-        std::vector<GLchar> infoLog(maxLength);
-        glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-        glDeleteShader(fragmentShader);
-        glDeleteShader(vertexShader);
-        cout << "infolog: " << (char*) infoLog.data() << endl;
-        return 0;
-    }
-
-    // ### repeiring shader ###
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-
-    GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
-    if (isLinked == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-        glDeleteProgram(program);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        cout << "infolog: " << (char*) infoLog.data() << endl;
-        return 0;
-    }
-
-    // complite shader
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
-
-    return program;
-}
-
-
 //##############################################
 //<><><><><><><><> MAIN PROGRAM <><><><><><><><>
 int main(void)
@@ -197,99 +131,37 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    GLuint spaceshipShader = loadShaider(
-        R"cut(
-            void main(){
-                // gl_Vertex;
+    // GLuint spaceshipShader = loadShaider(
+    //     R"cut(
+    //         void main(){
+    //             // gl_Vertex;
 
-                // gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-                // gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
-                gl_Position = ftransform();
-            }
-        )cut",
-        R"cut(
-            uniform float time;
-            uniform vec2 dimensions;
-            // bool colorType;
+    //             // gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    //             // gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+    //             gl_Position = ftransform();
+    //         }
+    //     )cut",
+    //     R"cut(
+    //         uniform float time;
+    //         uniform vec2 dimensions;
+    //         // bool colorType;
 
-            void main(){
-                // vec2  p = 7.*(2.*gl_FragCoord.xy-dimensions.xy)/dimensions.y;
-                // float m1 = sin(length(p)*0.3-time*0.3);
-                // float m2 = sin(0.3*(length(p)*0.3-time*0.3));
-                // float c1 = 0.012/abs(length(mod(p,2.0*m1)-m1)-0.3);
-                // float c2 = 0.012/abs(length(mod(p,2.0*m2)-m2)-0.3);
-                // gl_FragColor = vec4(vec3(1.,2.,8.)*c1+vec3(8.,2.,1.)*c2, 1.);
+    //         void main(){
+    //             // vec2  p = 7.*(2.*gl_FragCoord.xy-dimensions.xy)/dimensions.y;
+    //             // float m1 = sin(length(p)*0.3-time*0.3);
+    //             // float m2 = sin(0.3*(length(p)*0.3-time*0.3));
+    //             // float c1 = 0.012/abs(length(mod(p,2.0*m1)-m1)-0.3);
+    //             // float c2 = 0.012/abs(length(mod(p,2.0*m2)-m2)-0.3);
+    //             // gl_FragColor = vec4(vec3(1.,2.,8.)*c1+vec3(8.,2.,1.)*c2, 1.);
                 
-                vec4 color;
-                float g;
-                g = mod(gl_FragCoord.x + gl_FragCoord.y, 2.0);
-                color = vec4(g, g, g, 1.0);
-                gl_FragColor = color;
-            }
-        )cut"
-    );
-
-    GLuint planetShader = loadShaider(
-        R"cut(
-            uniform sampler2D tex;
-            varying vec2 st;
-            void main(){
-                gl_Position = ftransform();
-                st = gl_MultiTexCoord0.st;
-            }
-        )cut",
-        R"cut(
-            uniform sampler2D tex;
-            varying vec2 st;
-            void main(){
-                gl_FragColor = texture2D(tex, st);
-            }
-        )cut"
-    );
-
-    GLuint brightnestShader = loadShaider(
-        R"cut(
-            #version 120
-            #define gl_ViewMatrix gl_ModelViewMatrix
-            varying vec4 currentVertex;
-            varying vec3 currentNormal;
-            varying vec4 lightVertex;
-            uniform vec4 lightPos;
-            uniform mat4 modelMatrix;
-            varying vec2 st;
-
-            void main(){
-                currentVertex = modelMatrix * gl_Vertex;
-                currentNormal = mat3(modelMatrix) * gl_Normal;
-                lightVertex = lightPos;
-
-
-                // currentNormal = gl_Normal;
-                // currentVertex = gl_Vertex.xyz;
-
-                gl_Position = gl_ProjectionMatrix * gl_ViewMatrix * currentVertex;
-                st = gl_MultiTexCoord0.st;
-            }
-        )cut",
-        R"cut(
-            varying vec4 currentVertex;
-            varying vec3 currentNormal;
-            varying vec4 lightVertex;
-            
-            uniform sampler2D tex;
-            varying vec2 st;
-            
-            void main(){
-                vec3 lightVec = normalize(lightVertex.xyz- currentVertex.xyz);
-                vec3 normal = normalize(currentNormal);
-        
-                float result = max(dot(normal, lightVec), 0.1);
-
-                vec3 color = vec3(result, result, result);
-                gl_FragColor = texture2D(tex, st) * result;
-            }
-        )cut"
-    );
+    //             vec4 color;
+    //             float g;
+    //             g = mod(gl_FragCoord.x + gl_FragCoord.y, 2.0);
+    //             color = vec4(g, g, g, 1.0);
+    //             gl_FragColor = color;
+    //         }
+    //     )cut"
+    // );
 
     //enable gl functions
     glEnable(GL_DEPTH_TEST);
@@ -305,6 +177,8 @@ int main(void)
     jsonReader.getPlanet(&mars, "characters/planets/mars.json");
     Planet moon;
     jsonReader.getPlanet(&moon, "characters/planets/moon.json");
+    Planet sun;
+    jsonReader.getPlanet(&sun, "characters/planets/sun.json");
 
     Object spaceship;
     jsonReader.getSpaceship(&spaceship, "characters/objects/myship.json");
@@ -313,13 +187,12 @@ int main(void)
     Object testObj;
     jsonReader.getSpaceship(&testObj, "characters/objects/test.json");
 
-    // prepering everything for rotationMatrices
-    rotMatrices coupleMatrices;
-    coupleMatrices.newMatrices();
-
     Primal primalObj;
     ParticleBox particle;
     particle.newGenerate();
+
+    Brightness brightnessShader;
+    PlanetShader planetShader;
 
     // loop
     float angle = 0.0f;
@@ -339,9 +212,9 @@ int main(void)
         
         // follow for spaceship
         Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
-        Vec3 forward = multiplyMatrixVec(spaceship.getRotate(), Vec3 {0, 0, -1});
+        Vec3 forward = multiplyMatrixVec(spaceship.getRotation(), Vec3 {0, 0, -1});
         Vec3 to = whereIam + forward;
-        Vec3 preUp = multiplyMatrixVec(spaceship.getRotate(), Vec3 {0, 1, 0});
+        Vec3 preUp = multiplyMatrixVec(spaceship.getRotation(), Vec3 {0, 1, 0});
         if (firstPerson == 1){
             glLoadIdentity();
             gluLookAt(whereIam.x, whereIam.y, whereIam.z,
@@ -356,38 +229,29 @@ int main(void)
         }
 
         // drawing axis
-        
-        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotate().ptr());
+        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotation().ptr());
         primal.drawCoord();
 
-        // drawing objects
-        int tex = glGetUniformLocation(brightnestShader, "tex");
-        int pos = glGetUniformLocation(brightnestShader, "lightPos");
-        int matrix = glGetUniformLocation(brightnestShader, "modelMatrix");
-        glUseProgram(brightnestShader);
-        glUniform1i(tex, 0);
-        glUniform4f(pos, sun.getX(), sun.getY(), sun.getZ(), 1);
-        Matrix4 modelMatrix;
-        // glUniform3f(pos, lightBox.getX(0), lightBox.getY(0), lightBox.getZ(0));
-        sun.lightInit();
-        sun.lightMat(spaceship.rotationPosition);
-        // mars.draw();
-        // moon.draw();
-        // sun.draw();
+        // draw objects (spaceships)
+        glUseProgram(brightnessShader.getShaderID());
+        brightnessShader.setSun(sun.getXYZ());
+        mothership.draw(brightnessShader);
 
-        modelMatrix = mothership.makeModelMatrix();
-        glUniformMatrix4fv(matrix, 1, false, modelMatrix.ptr());
-        mothership.draw();
-        
-        modelMatrix = testObj.makeModelMatrix();
-        glUniformMatrix4fv(matrix, 1, false, modelMatrix.ptr());
-        testObj.draw();
+        testObj.draw(brightnessShader);
         
         if (!firstPerson){
-            spaceship.draw();
+            spaceship.draw(brightnessShader);
         }
 
+        // draw planets
+        glUseProgram(planetShader.getShaderID());
+        planetShader.setSun(sun.getXYZ());
+        mars.draw(planetShader);
+        moon.draw(planetShader);
+        sun.draw(planetShader);
+
         glUseProgram(0);
+
         
         // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
@@ -397,24 +261,24 @@ int main(void)
 
         // a few actions for replace in space our spaceship and lightBox
         if (actionStatus & ACTION_ROLL_CCW)
-            spaceship.addRotateMatrix(coupleMatrices.getRoll(false));
+            spaceship.roll(false);
         if (actionStatus & ACTION_ROLL_CW)
-            spaceship.addRotateMatrix(coupleMatrices.getRoll(true));
+            spaceship.roll(true);
         
         if (actionStatus & ACTION_YAW_CCW)
-            spaceship.addRotateMatrix(coupleMatrices.getYaw(false));
+            spaceship.yaw(false);
         if (actionStatus & ACTION_YAW_CW)
-            spaceship.addRotateMatrix(coupleMatrices.getYaw(true));
+            spaceship.yaw(true);
         
         if (actionStatus & ACTION_PITCH_UP)
-            spaceship.addRotateMatrix(coupleMatrices.getPitch(false));
+            spaceship.pitch(false);
         if (actionStatus & ACTION_PITCH_DOWN)
-            spaceship.addRotateMatrix(coupleMatrices.getPitch(true));
+            spaceship.pitch(true);
         
         if (actionStatus & ACTION_MOVE_BACK)
-            spaceship.addTranslateVec(Vec3(0,0,1));
+            spaceship.shift(0, 0, 1);
         if (actionStatus & ACTION_MOVE_FORWARD)
-            spaceship.addTranslateVec(Vec3(0,0,-1));
+            spaceship.shift(0, 0, -1);
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

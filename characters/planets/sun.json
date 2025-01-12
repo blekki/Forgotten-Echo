@@ -1,0 +1,13 @@
+{
+    "name": "Sun",
+    "position": [
+        {
+            "x": 800,
+            "y": 0,
+            "z": 0
+        }
+    ],
+    "scale": 30,
+    "rotateSpeed": 1.0,
+    "texture": "solarsystemscope/2k_sun.jpg"
+}

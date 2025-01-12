@@ -2,7 +2,8 @@
 
 using namespace std;
 
-class Sphere{
+class Sphere
+{
     private:
         const int SPHERE_RESOLUTION = 5;
         int sphereID;

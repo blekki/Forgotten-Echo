@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <cmath>
 
-#define GLFW_INCLUDE_NONE
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
+
 #include "sphere.h"
 
 //normalize 3-component vector (up to 1.0f)

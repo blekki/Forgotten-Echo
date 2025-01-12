@@ -1,15 +1,17 @@
 #pragma once
-#include "sphere.h"
-
 #include "structures/xyz.h"
+#include "shader/planetShader.h"
+
+#include "sphere.h"
+#include "entity.h"
 
 using namespace std;
 
-class Planet: Sphere{
+class Planet: public Entity, public Sphere
+{
     private:
         int ID = 0;
         int textureID = 0;
-        xyz_t position;
         //other characteristics
         float scale = 1.0f;
         float orbitSpeed = 30.0f;
@@ -17,13 +19,14 @@ class Planet: Sphere{
 
     public:
         void setTexture(string texture);
-        void setPosition(float x, float y, float z);
         void setRotateSpeed(float rotateSpeed);
         void setScale(float radius);
-        float getX();
-        float getY();
-        float getZ();
-        xyz_t getXYZ();
+        Matrix4 makeModelMatrix();
+        
+        void draw(PlanetShader planetShader){
+            planetShader.setModelMatrix(makeModelMatrix());
+            draw();
+        }
 
         virtual void draw() override;
         

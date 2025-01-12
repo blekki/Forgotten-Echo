@@ -1,7 +1,4 @@
 #pragma once
-// #include <iostream>
-// #include <stdlib.h>
-// #include <fstream>
 #include <vector>
 #include <string>
 #include <map>
@@ -12,8 +9,10 @@
 
 using namespace std;
 
-class Model{
+class Model
+{
     protected:
+    
     public:
         int ID = 0;
         string path;
@@ -41,19 +40,19 @@ class Model{
             vector<Triangle> triangles;
         };
 
-        void setModel(string fileName);
-        void setMaterials(string fileName);
-        void setPath(string path);
+        void setModel(string fileName); //todo: loadModel
+        void setMaterials(string fileName); //todo: loadMaterials
+        void setPath(string path); //todo: setTexturePath
 
     public:
-        virtual void newModel(string fileName){
+        virtual void newModel(string fileName){ //todo: delete
             setModel(fileName);
         }
-        virtual void newMaterials(string fileName){
+        virtual void newMaterials(string fileName){ //todo: delete
             setMaterials(fileName);
         }
 
-        void newPath(string path){
+        void newPath(string path){ //todo: delete
             setPath(path);
         }
 

@@ -2,7 +2,8 @@
 
 #include "qued.h"
 
-class rotMatrices{
+class RotationMatrixPack //todo: rename
+{
     private:
         Matrix4 cwRoll;
         Matrix4 ccwRoll;
@@ -10,10 +11,6 @@ class rotMatrices{
         Matrix4 ccwYaw;
         Matrix4 upPitch;
         Matrix4 downPitch;
-
-        Vec3 vecUp {0, 1, 0};
-        Vec3 vecRight {1, 0, 0};
-        Vec3 vecForward {0, 0, -1};
 
         void declareMatrix(Matrix4* matrix4, Matrix4* opposMatrix4, Vec3 from, Vec3 to);
 
@@ -30,10 +27,13 @@ class rotMatrices{
             return (whatKindSide ? upPitch : downPitch);
         }
 
-        void newMatrices(){
+        RotationMatrixPack(){
+            Vec3 vecRight   {1, 0, 0};
+            Vec3 vecUp      {0, 1, 0};
+            Vec3 vecForward {0, 0, -1};
+
             declareMatrix(&cwRoll, &ccwRoll, vecUp, vecRight);
             declareMatrix(&cwYaw, &ccwYaw, vecForward, vecRight);
             declareMatrix(&upPitch, &downPitch, vecForward, vecUp);
         };
-    
 };

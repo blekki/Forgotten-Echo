@@ -3,7 +3,6 @@
 #include <math.h>
 
 class Vec3{
-    private:
     public:
         float x;
         float y;
@@ -51,5 +50,4 @@ class Vec3{
             y *= coef;
             z *= coef;
         }
-        // friend class Qued;
 };
