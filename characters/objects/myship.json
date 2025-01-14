@@ -7,11 +7,11 @@
             "z": 0.0 
         }
     ],
-    "rotate": [
+    "rotation_vec": [
         {
             "x_axis": 0,
             "y_axis": 0,
-            "z_axis": 0
+            "z_axis": -1
         }
     ],
     "scale": 0.02,

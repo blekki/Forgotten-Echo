@@ -7,8 +7,8 @@ class Entity
     protected:
         string name;
         xyz_t position;
-        Matrix4 rotation; // todo: rename to rotation (rotate)
-        static RotationMatrixPack coupleMatrices; //error with static
+        Matrix4 rotation;
+        static RotationMatrixPack coupleMatrices;
 
     // private:
         Brightness brightnessShader;
@@ -22,8 +22,6 @@ class Entity
         xyz_t getXYZ();
         Matrix4 getRotation();
 
-        void prepareRotation(float rotX, float rotY, float rotZ);
-
         // function for rotate object
         void addRotateMatrix(Matrix4 matrix){
             rotation = multiplyMatrix(rotation, matrix);
@@ -36,9 +34,7 @@ class Entity
             position.z += translateVec.z / 5.0f;
         }
 
-        void preparation(float rotX, float rotY, float rotZ){ // todo: rename setEulerRotation
-            prepareRotation(rotX, rotY, rotZ);
-        }
+        void setRotatationPosition(float x, float y, float z);
 
         // use rotation matrices
         void roll(bool cw){
