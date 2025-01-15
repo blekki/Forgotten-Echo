@@ -23,8 +23,9 @@ class Object: public Model, public Entity
         void setScale(float scale);
         Matrix4 makeModelMatrix();
 
-        virtual void draw(Brightness &brightnessShader){
-            brightnessShader.setModelMatrix(makeModelMatrix());
+        // virtual void draw(Brightness &brightnessShader){
+        virtual void draw(){
+            // brightnessShader.setModelMatrix(makeModelMatrix());
             drawTriangles();
         }
 

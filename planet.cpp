@@ -56,10 +56,10 @@ void Planet::vertex(float a[]){
 
 void Planet::draw(){
     if (ID == 0){
-            ID = glGenLists(1);
-            glNewList(ID, GL_COMPILE);
-            Sphere::draw();
-            glEndList();
+        ID = glGenLists(1);
+        glNewList(ID, GL_COMPILE);
+        Sphere::draw();
+        glEndList();
     }
     glColor3f(1.0f, 1.0f, 1.0f);
     

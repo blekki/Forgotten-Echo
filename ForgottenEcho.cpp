@@ -174,18 +174,20 @@ int main(void)
     Primal primal;
     // planets creating
     Planet mars;
-    jsonReader.getPlanet(&mars, "characters/planets/mars.json");
+    jsonReader.readJsonPlanet(&mars, "characters/planets/mars.json");
     Planet moon;
-    jsonReader.getPlanet(&moon, "characters/planets/moon.json");
-    Planet sun;
-    jsonReader.getPlanet(&sun, "characters/planets/sun.json");
+    jsonReader.readJsonPlanet(&moon, "characters/planets/moon.json");
+    Planet mercury;
+    jsonReader.readJsonPlanet(&mercury, "characters/planets/mercury.json");
+    Sun sun;
+    jsonReader.readJsonSun(&sun, "characters/planets/sun.json");
 
-    Object spaceship;
-    jsonReader.getSpaceship(&spaceship, "characters/objects/myship.json");
-    Object mothership;
-    jsonReader.getSpaceship(&mothership, "characters/objects/mothership.json");
-    Object testObj;
-    jsonReader.getSpaceship(&testObj, "characters/objects/test.json");
+    Spaceship spaceship;
+    jsonReader.readJsonSpaceship(&spaceship, "characters/objects/myship.json");
+    Spaceship mothership;
+    jsonReader.readJsonSpaceship(&mothership, "characters/objects/mothership.json");
+    Spaceship testObj;
+    jsonReader.readJsonSpaceship(&testObj, "characters/objects/test.json");
 
     Primal primalObj;
     ParticleBox particle;
@@ -228,17 +230,11 @@ int main(void)
                       0, 1, 0);
         }
 
-        // drawing axis
-        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotation().ptr());
-        primal.drawCoord();
-
         // draw objects (spaceships)
         glUseProgram(brightnessShader.getShaderID());
         brightnessShader.setSun(sun.getXYZ());
         mothership.draw(brightnessShader);
-
         testObj.draw(brightnessShader);
-        
         if (!firstPerson){
             spaceship.draw(brightnessShader);
         }
@@ -248,14 +244,17 @@ int main(void)
         planetShader.setSun(sun.getXYZ());
         mars.draw(planetShader);
         moon.draw(planetShader);
-        sun.draw(planetShader);
-
+        mercury.draw(planetShader);
         glUseProgram(0);
 
         
         // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
         particle.draw();
+
+        // drawing axis
+        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotation().ptr());
+        primal.drawCoord();
 
 
 
