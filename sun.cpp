@@ -36,16 +36,20 @@ void Sun::draw(){
     Matrix4 newRotation;
     newRotation = rotationMatrix(qued);
 
-    Vec3 v1(-1.0,  1.0, -10);
-    Vec3 v2(-1.0, -1.0, -10);
-    Vec3 v3(1.0, -1.0, -10);
-    Vec3 v4(1.0,  1.0, -10);
+    Vec3 v1(-1.0,  1.0, 0);
+    Vec3 v2(-1.0, -1.0, 0);
+    Vec3 v3(1.0, -1.0, 0);
+    Vec3 v4(1.0,  1.0, 0);
 
     Vec3 realVec1 = multiplyMatrixVec(newRotation, v1);
     Vec3 realVec2 = multiplyMatrixVec(newRotation, v2);
     Vec3 realVec3 = multiplyMatrixVec(newRotation, v3);
     Vec3 realVec4 = multiplyMatrixVec(newRotation, v4);
 
+    glPushMatrix();
+    glTranslatef(position.x, position.y, position.z);
+    glScalef(scale, scale, scale);
+    
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex3f(realVec1.x, realVec1.y, realVec1.z);
@@ -56,4 +60,6 @@ void Sun::draw(){
     glTexCoord2f(1, 0);
     glVertex3f(realVec4.x, realVec4.y, realVec4.z);
     glEnd();
+    
+    glPopMatrix();
 }

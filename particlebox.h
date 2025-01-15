@@ -10,11 +10,11 @@
 using namespace std;
 
 // constants
-const int PARTICLE_COUNT = 1000;
+const int PARTICLE_COUNT = 200;
 
 class ParticleBox{
     private:
-        float radius = 10;
+        float radius = 5;
         xyz_t position {0, 0, 0};
         xyz_t differPos {0, 0, 0};
 
