@@ -4,10 +4,10 @@
         {
             "x": 0.0,
             "y": 0.0,
-            "z": -600.0 
+            "z": -800.0
         }
     ],
-    "scale": 400,
+    "scale": 500,
     "rotateSpeed": 0.7,
     "texture": "solarsystemscope/2k_mars.jpg"
 }
