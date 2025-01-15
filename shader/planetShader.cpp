@@ -27,7 +27,6 @@ PlanetShader::PlanetShader(){
                 vertex = gl_Vertex.xyz;
 
                 gl_Position = gl_ProjectionMatrix * gl_ViewMatrix * currentVertex;
-                // st = vec2(phi, theta);
             }
         )cut",
         R"cut(

@@ -20,6 +20,9 @@
 #include "jsonReader.h"
 #include "entity.h"
 #include "spaceship.h"
+#include "sun.h"
+
+#include "shader/sunShader.h"
 
 
 using namespace std;
@@ -195,11 +198,53 @@ int main(void)
 
     Brightness brightnessShader;
     PlanetShader planetShader;
+    SunShader sunShader;
+    // sunShader.SunShader2();
+
+    GLuint coronaTexture;
+    glGenTextures(1, &coronaTexture);
+    glBindTexture(GL_TEXTURE_2D, coronaTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLuint framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, coronaTexture, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // loop
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glViewport(0, 0, 256, 256);
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+        
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glUseProgram(sunShader.getShaderID());
+        sunShader.setTime(glfwGetTime() / 10.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-1, -1);
+        glVertex2f(-1,  1);
+        glVertex2f( 1,  1);
+        glVertex2f( 1, -1);
+        glEnd();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+
+
         // size of window
         glfwGetFramebufferSize(basicWindow, &width, &height);
         glViewport(0, 0, width, height);
@@ -247,7 +292,15 @@ int main(void)
         mercury.draw(planetShader);
         glUseProgram(0);
 
-        
+        // draw sun dynamic texture
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBindTexture(GL_TEXTURE_2D, coronaTexture);
+        glEnable(GL_TEXTURE_2D);
+        sun.draw();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBlendFunc(GL_ONE, GL_ZERO);
+
+        glUseProgram(0);
         // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
         particle.draw();

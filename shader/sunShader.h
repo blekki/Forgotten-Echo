@@ -2,11 +2,13 @@
 
 #include "shader.h"
 
-class PlanetShader: public Shader
+class SunShader: public Shader
 {
     private:
         int sunID;
         int texID;
+        int positionID;
+        int timeID;
         int modelMatrixID;
         int uniformLocation(string variableName);
 
@@ -15,9 +17,19 @@ class PlanetShader: public Shader
             Shader::setVec4(sunID, position);
         }
 
-        void setModelMatrix(Matrix4 matrix4){
-            Shader::setMatrix4(modelMatrixID, matrix4);
+        void setPosition(xyz_t position){
+            Shader::setVec4(positionID, position);
         }
 
-        PlanetShader();
+        void setTime(float time){
+            Shader::setFloat(timeID, time);
+        }
+
+        void setModelMatrix(Matrix4 modelMatrix){
+            Shader::setMatrix4(modelMatrixID, modelMatrix);
+        }
+
+        void SunShader2();
+
+        SunShader();
 };
