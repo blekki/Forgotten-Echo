@@ -16,10 +16,10 @@ class Entity
     public:
         void setPosition(float x, float y, float z);
         // void setRotate(float angleX); 
-        float getX();
-        float getY();
-        float getZ();
-        xyz_t getXYZ();
+        virtual float getX();
+        virtual float getY();
+        virtual float getZ();
+        virtual xyz_t getXYZ();
         Matrix4 getRotation();
 
         // function for rotate object

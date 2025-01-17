@@ -14,11 +14,12 @@ void Sun::setScale(float scale){
     this->scale = scale;
 }
 
-Matrix4 Sun::makeModelMatrix(){
+Matrix4 Sun::makeModelMatrix(xyz_t follow){
     Matrix4 matrix;
     glPushMatrix();
     glLoadIdentity();
-    glTranslated(position.x, position.y, position.z);
+    // glTranslated(position.x + follow.x, position.y + follow.y, position.z + follow.z);
+    glTranslatef(position.x, position.y, position.z);
     glScalef(scale, scale, scale);
     glMultMatrixf(rotation.ptr());
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());
@@ -26,8 +27,40 @@ Matrix4 Sun::makeModelMatrix(){
     return matrix;
 }
 
-//draw a triangle with texture
-void Sun::draw(){
+void Sun::draw(SunShader &sunShader, xyz_t follow){
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glViewport(0, 0, 256, 256);
+    glDisable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
+
+    glUseProgram(sunShader.getShaderID());
+    sunShader.setTime(glfwGetTime());
+    glBegin(GL_QUADS);
+    glVertex2f(-1, -1);
+    glVertex2f(-1,  1);
+    glVertex2f( 1,  1);
+    glVertex2f( 1, -1);
+    glEnd();
+    glUseProgram(0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, screen_width, screen_height); //todo: put value from global variable
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBindTexture(GL_TEXTURE_2D, coronaTexture);
+    glEnable(GL_TEXTURE_2D);
+    // glPushMatrix();
+    // glTranslatef(follow.x, follow.y, follow.z);
+    draw(follow); //<><><>
+    // glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBlendFunc(GL_ONE, GL_ZERO);
+}
+
+// draw a triangle with shader texture
+void Sun::draw(xyz_t follow){
     Vec3 from(0, 0, -1);
     Vec3 to(position.x, position.y, position.z);
     to.normalize();
@@ -47,9 +80,8 @@ void Sun::draw(){
     Vec3 realVec4 = multiplyMatrixVec(newRotation, v4);
 
     glPushMatrix();
-    glTranslatef(position.x, position.y, position.z);
+    glTranslatef(position.x + follow.x, position.y + follow.y, position.z +  + follow.z);
     glScalef(scale, scale, scale);
-    
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
     glVertex3f(realVec1.x, realVec1.y, realVec1.z);
@@ -60,6 +92,21 @@ void Sun::draw(){
     glTexCoord2f(1, 0);
     glVertex3f(realVec4.x, realVec4.y, realVec4.z);
     glEnd();
-    
     glPopMatrix();
+}
+
+Sun::Sun(){
+    glGenTextures(1, &coronaTexture);
+    glBindTexture(GL_TEXTURE_2D, coronaTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, coronaTexture, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

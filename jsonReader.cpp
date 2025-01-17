@@ -1,7 +1,10 @@
 #include "fstream"
 
+#include "ForgottenEcho.h"
 #include "jsonReader.h"
 #include "json/single_include/nlohmann/json.hpp"
+
+#include "spaceship.h"
 
 void JsonReader::readJsonPlanet(Planet *planet, string path){
     using json = nlohmann::json;
@@ -39,7 +42,13 @@ void JsonReader::readJsonSun(Sun *sun, string path){
     file.close();
 }
 
-void JsonReader::readJsonSpaceship(Object *object, string path){
+void applyCallback(const NewtonBody* const body, dFloat timestep, int threadIndex){
+    void *userData = NewtonBodyGetUserData(body);
+    Spaceship *spaceship = (Spaceship *) userData;
+    spaceship->ApplyForceAndTorque();
+}
+
+void JsonReader::readJsonSpaceship(Spaceship *object, string path){
     using json = nlohmann::json;
     ifstream file(path);
     json data = json::parse(file);
@@ -65,4 +74,19 @@ void JsonReader::readJsonSpaceship(Object *object, string path){
     object->newMaterials(folder + mtl);
 
     file.close();
+
+    // todo: get real model size
+    NewtonCollision *collision = NewtonCreateBox(world, 0.1, 0.1, 0.1, 0, NULL);
+    Matrix4 worldMatrix;
+    worldMatrix = object->getRotation();
+    worldMatrix.ptr()[12] = object->getX();
+    worldMatrix.ptr()[13] = object->getY();
+    worldMatrix.ptr()[14] = object->getZ();
+    NewtonBody *body = NewtonCreateDynamicBody(world, collision, worldMatrix.ptr());
+    float weight = 1;
+    NewtonBodySetMassProperties(body, weight, collision);
+    NewtonBodySetForceAndTorqueCallback(body, applyCallback);
+
+    NewtonDestroyCollision(collision);
+    object->setNewtonBody(body);
 }

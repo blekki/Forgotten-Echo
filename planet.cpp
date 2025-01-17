@@ -29,11 +29,11 @@ void Planet::setTexture(string texture){
     cout << "setTexture: " << textureID << endl;
 }
 
-Matrix4 Planet::makeModelMatrix(){
+Matrix4 Planet::makeModelMatrix(xyz_t follow){
     Matrix4 matrix;
     glPushMatrix();
     glLoadIdentity();
-    glTranslated(position.x, position.y, position.z);
+    glTranslated(position.x + follow.x, position.y + follow.y, position.z + follow.z);
     glScalef(scale, scale, scale);
     glMultMatrixf(rotation.ptr());
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix.ptr());

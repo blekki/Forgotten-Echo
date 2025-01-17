@@ -21,10 +21,10 @@ class Planet: public Entity, public Sphere
         void setTexture(string texture);
         void setRotateSpeed(float rotateSpeed);
         void setScale(float radius);
-        Matrix4 makeModelMatrix();
+        Matrix4 makeModelMatrix(xyz_t follow);
         
-        void draw(PlanetShader planetShader){
-            planetShader.setModelMatrix(makeModelMatrix());
+        void draw(PlanetShader planetShader, xyz_t follow){
+            planetShader.setModelMatrix(makeModelMatrix(follow));
             draw();
         }
 
