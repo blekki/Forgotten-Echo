@@ -29,6 +29,11 @@ void Shader::setVec4(int index, xyz_t vec4){
     glUniform4f(index, vec4.x, vec4.y, vec4.z, 1);
 }
 
+int Shader::uniformLocation(string variableName){
+    int index = glGetUniformLocation(programID, variableName.c_str());
+    return index;
+}
+
 void Shader::loadShader(string vertexSource, string fragmentSource){
     // ### vectex shader ###
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);

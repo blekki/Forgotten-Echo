@@ -10,7 +10,6 @@ class SunShader: public Shader
         int positionID;
         int timeID;
         int modelMatrixID;
-        int uniformLocation(string variableName);
 
     public:
         void setSun(xyz_t position){
@@ -28,8 +27,6 @@ class SunShader: public Shader
         void setModelMatrix(Matrix4 modelMatrix){
             Shader::setMatrix4(modelMatrixID, modelMatrix);
         }
-
-        void SunShader2();
 
         SunShader();
 };

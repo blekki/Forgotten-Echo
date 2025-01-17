@@ -3,11 +3,6 @@
 #include "shader.h"
 #include "brightness.h"
 
-int Brightness::uniformLocation(string variableName){
-    int index = glGetUniformLocation(programID, variableName.c_str());
-    return index;
-}
-
 Brightness::Brightness(){
     loadShader(
         R"cut(
@@ -49,8 +44,8 @@ Brightness::Brightness(){
         )cut"
     );
 
-    texID = uniformLocation("tex");
+    texID = Shader::uniformLocation("tex");
     glUniform1i(texID, 0);
-    sunID = uniformLocation("lightPos");
-    modelMatrixID = uniformLocation("modelMatrix");
+    sunID = Shader::uniformLocation("lightPos");
+    modelMatrixID = Shader::uniformLocation("modelMatrix");
 }

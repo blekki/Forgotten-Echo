@@ -13,7 +13,7 @@ class Shader
     protected:
         GLuint programID;
 
-        // GLuint load(string vertexSource, string fragmentSource);
+        void loadShader(string vertexSource, string fragmentSource);
         void setFloat(int index, float value); // glUniform1d()
         void setInteger(int index, int value);
         void setMatrix4(int index, Matrix4 &matrix4);
@@ -23,7 +23,7 @@ class Shader
 
     public:
         GLuint getShaderID();
-        void loadShader(string vertexSource, string fragmentSource);
+        // void loadShader(string vertexSource, string fragmentSource);
         // GLuint loadShaider(string vertexSource, string fragmentSource){
         //     return load(vertexSource, fragmentSource);
         // }

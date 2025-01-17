@@ -3,10 +3,6 @@
 #include "shader.h"
 #include "planetShader.h"
 
-int PlanetShader::uniformLocation(string variableName){
-    int index = glGetUniformLocation(programID, variableName.c_str());
-    return index;
-}
 
 PlanetShader::PlanetShader(){
     loadShader(
@@ -38,7 +34,8 @@ PlanetShader::PlanetShader(){
             varying vec3 vertex;
             
             void main(){
-                vec3 lightVec = normalize(lightVertex.xyz- currentVertex.xyz);
+                vec3 zeroVertex = vec3(0.0, 0.0, 0.0);
+                vec3 lightVec = normalize(lightVertex.xyz- zeroVertex);
                 vec3 normal = normalize(currentNormal);
         
                 float result = max(dot(normal, lightVec), 0.1);
@@ -57,8 +54,8 @@ PlanetShader::PlanetShader(){
         )cut"
     );
 
-    texID = uniformLocation("tex");
+    texID = Shader::uniformLocation("tex");
     glUniform1i(texID, 0);
-    sunID = uniformLocation("lightPos");
-    modelMatrixID = uniformLocation("modelMatrix");
+    sunID = Shader::uniformLocation("lightPos");
+    modelMatrixID = Shader::uniformLocation("modelMatrix");
 }

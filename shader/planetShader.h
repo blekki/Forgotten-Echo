@@ -8,7 +8,6 @@ class PlanetShader: public Shader
         int sunID;
         int texID;
         int modelMatrixID;
-        int uniformLocation(string variableName);
 
     public:
         void setSun(xyz_t position){

@@ -3,17 +3,11 @@
 #include "shader.h"
 #include "sunShader.h"
 
-int SunShader::uniformLocation(string variableName){
-    int index = glGetUniformLocation(programID, variableName.c_str());
-    return index;
-}
 
 SunShader::SunShader(){
     loadShader(
         R"cut(
             #version 120
-
-            // uniform mat4 modelMatrix;
 
             void main()
             {
@@ -54,11 +48,12 @@ SunShader::SunShader(){
 
                 float brightness	= freqs[1] * 0.25 + freqs[2] * 0.25;
                 float radius		= 0.24 + brightness * 0.2;
+                // float radius = 0.0;
                 float invRadius 	= 1.0/radius;
                 
                 vec3 orange			= vec3( 0.8, 0.65, 0.3 );
                 vec3 orangeRed		= vec3( 0.8, 0.35, 0.1 );
-                float time		= iTime * 0.1;
+                float time		= iTime * 0.01;
                 float aspect	= 1.0;
                 vec2 uv			= gl_FragCoord.xy / vec2(256, 256);
                 vec2 p 			= -0.5 + uv;
@@ -108,32 +103,15 @@ SunShader::SunShader(){
                 
                 float starGlow	= min( max( 1.0 - dist * ( 1.0 - brightness ), 0.0 ), 1.0 );
                 vec3 rgb	= vec3( f * ( 0.75 + brightness * 0.3 ) * orange ) + starSphere + corona * orange + starGlow * orangeRed;
-                float lr = length(r);
+                // float lr = length(r);
                 float a = clamp(1.0 - ((length(r) - 1.0) / 2.6), 0.0, 1.0);
 
                 gl_FragColor = vec4(rgb, a);
-                // gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
             }
         )cut"
     );
 
-    texID = uniformLocation("tex0");
+    texID = Shader::uniformLocation("tex0");
     glUniform1i(texID, 0);
-    timeID = uniformLocation("iTime");
-    modelMatrixID = uniformLocation("modelMatrix");
-}
-
-void SunShader::SunShader2(){
-    loadShader(
-        R"cut(
-            void main(){
-                gl_Position = gl_Vertex;
-            }
-        )cut",
-        R"cut(
-            void main(){
-                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-            }
-        )cut"
-    );
+    timeID = Shader::uniformLocation("iTime");
 }
