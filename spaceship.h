@@ -22,6 +22,7 @@ class Spaceship: public Object
         virtual float getY() override;
         virtual float getZ() override;
         virtual xyz_t getXYZ() override;
+        virtual Matrix4 makeModelMatrix() override;
         
         virtual void draw(Brightness &brightnessShader){
             if (body == 0){

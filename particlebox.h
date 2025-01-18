@@ -9,21 +9,22 @@
 
 using namespace std;
 
-// constants
-const int PARTICLE_COUNT = 200;
+// constant
+// const int PARTICLE_COUNT = 200;
 
 class ParticleBox{
     private:
+        const int PARTICLE_COUNT = 200;
         float radius = 5;
         xyz_t position {0, 0, 0};
-        xyz_t differPos {0, 0, 0};
+        xyz_t deltaPos {0, 0, 0};
 
         vector<xyz_t> particleGroup;
 
         void setBoxPosition(float x, float y, float z);
         void drawparticle();
-        void checkPosition(xyz_t *particle, xyz_t differPos);
-        void normalizeToRadius(xyz_t *particle, float distance);
+        void changePosition(xyz_t *particle, xyz_t differPos);
+        void doubleReplaceParticles(xyz_t *particle, float distance);
         void generate();
 
     public:

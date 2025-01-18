@@ -21,7 +21,7 @@ class Object: public Model, public Entity
 
     public:
         void setScale(float scale);
-        Matrix4 makeModelMatrix();
+        virtual Matrix4 makeModelMatrix();
 
         // virtual void draw(Brightness &brightnessShader){
         virtual void draw(){

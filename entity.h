@@ -37,8 +37,8 @@ class Entity
         void setRotatationPosition(float x, float y, float z);
 
         // use rotation matrices
-        void roll(bool cw){
-            addRotateMatrix(coupleMatrices.getRoll(cw));
+        Vec3 roll(bool cw, Vec3 rightUp){
+            return multiplyMatrixVec(coupleMatrices.getRoll(cw), rightUp);
         }
 
         void yaw(bool cw){

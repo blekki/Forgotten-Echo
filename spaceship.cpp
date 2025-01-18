@@ -52,12 +52,21 @@ xyz_t Spaceship::getXYZ(){
     position.z = bodyMatrix.ptr()[14];
     return position;
 }
+
+Matrix4 Spaceship::makeModelMatrix(){ //right now works bad :(
+    if (body == 0)
+        return Object::makeModelMatrix();
+    
+    Matrix4 bodyMatrix;
+    NewtonBodyGetMatrix(body, bodyMatrix.ptr());
+    return bodyMatrix;
+}
 // #end of pack
 
 // check and use movement
 void Spaceship::ApplyForceAndTorque(){
     if (underControl){
-        Vec3 movement;
+        Vec3 movement {0, 0, 0};
 
         if (currentActionStatus & ACTION_MOVE_FORWARD){
             Vec3 forward(0, 0, -1);
@@ -92,5 +101,16 @@ void Spaceship::ApplyForceAndTorque(){
         // use movement vector on spaceship
         float vec[3] {movement.x, movement.y, movement.z};
         NewtonBodySetForce(body, vec);
+        
+        //#####
+        Vec3 rotation {0, 0, 0};
+
+        if (currentActionStatus & ACTION_ROLL_CW){
+            Vec3 rotate {1, 0, 0};
+            rotation = rotation + roll(true, rotate);
+        }
+
+        float rot[3] {rotation.x, rotation.y, rotation.z};
+        NewtonBodyAddTorque(body, rot);
     }
 }

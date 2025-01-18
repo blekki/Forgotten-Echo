@@ -20,21 +20,21 @@ void ParticleBox::generate(){
 }
 
 void ParticleBox::setBoxPosition(float x, float y, float z){
-    differPos.x = x - position.x;
-    differPos.y = y - position.y;
-    differPos.z = z - position.z;
+    deltaPos.x = x - position.x;
+    deltaPos.y = y - position.y;
+    deltaPos.z = z - position.z;
     position.x = x;
     position.y = y;
     position.z = z;
 }
 
-void ParticleBox::checkPosition(xyz_t *particle, xyz_t differPos){
-    particle->x -= differPos.x;
-    particle->y -= differPos.y;
-    particle->z -= differPos.z;
+void ParticleBox::changePosition(xyz_t *particle, xyz_t deltaPos){
+    particle->x -= deltaPos.x;
+    particle->y -= deltaPos.y;
+    particle->z -= deltaPos.z;
 }
 
-void ParticleBox::normalizeToRadius(xyz_t *particle, float distance){
+void ParticleBox::doubleReplaceParticles(xyz_t *particle, float distance){
     float coef = radius / sqrt(distance);
     particle->x -= particle->x * coef * 2;
     particle->y -= particle->y * coef * 2;
@@ -44,22 +44,22 @@ void ParticleBox::drawparticle(){
     glPointSize(2);
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_POINTS);
-    
+
     for (int i = 0; i < PARTICLE_COUNT; i++){
-        ParticleBox::checkPosition(&particleGroup.at(i), differPos);
+        ParticleBox::changePosition(&particleGroup.at(i), deltaPos);
         
         //checking if particle out the range (out of radius)
         float distance = particleGroup.at(i).x * particleGroup.at(i).x +
-                            particleGroup.at(i).y * particleGroup.at(i).y +
-                            particleGroup.at(i).z * particleGroup.at(i).z;
+                         particleGroup.at(i).y * particleGroup.at(i).y +
+                         particleGroup.at(i).z * particleGroup.at(i).z;
         if (distance > radius * radius)
-            ParticleBox::normalizeToRadius(&particleGroup.at(i), distance);
+            ParticleBox::doubleReplaceParticles(&particleGroup.at(i), distance);
 
         glVertex3f(particleGroup.at(i).x, particleGroup.at(i).y, particleGroup.at(i).z);
 
     }
-    differPos.x = 0;
-    differPos.y = 0;
-    differPos.z = 0;
+    deltaPos.x = 0;
+    deltaPos.y = 0;
+    deltaPos.z = 0;
     glEnd();
 }
