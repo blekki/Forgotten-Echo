@@ -203,6 +203,7 @@ int main(void)
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
+        //Newton dynamic calculation -------------------
         float currentTime = glfwGetTime();
         float delta = currentTime - time;
         time = currentTime;
@@ -214,12 +215,18 @@ int main(void)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
+        //prerender pass --------------------------------
+        sun.prerender(sunShader);
+        //render pass -----------------------------------
 
         // size of window
         glfwGetFramebufferSize(basicWindow, &screen_width, &screen_height);
         glViewport(0, 0, screen_width, screen_height);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
 
         // basic matrixes
         glMatrixMode(GL_PROJECTION);
@@ -264,8 +271,8 @@ int main(void)
         mercury.draw(planetShader, spaceship.getXYZ());
         glUseProgram(0);
 
-        sun.draw(sunShader, spaceship.getXYZ());
-        glViewport(0, 0, screen_width, screen_height);
+        sun.draw(spaceship.getXYZ());
+        // glViewport(0, 0, screen_width, screen_height);
         
         // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
@@ -278,10 +285,10 @@ int main(void)
 
 
         // a few actions for replace in space our spaceship and lightBox
-        if (actionStatus & ACTION_ROLL_CCW)
-            spaceship.roll(false);
-        if (actionStatus & ACTION_ROLL_CW)
-            spaceship.roll(true);
+        // if (actionStatus & ACTION_ROLL_CCW)
+        //     spaceship.roll(false);
+        // if (actionStatus & ACTION_ROLL_CW)
+        //     spaceship.roll(true);
         
         if (actionStatus & ACTION_YAW_CCW)
             spaceship.yaw(false);
