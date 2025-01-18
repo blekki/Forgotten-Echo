@@ -240,10 +240,13 @@ int main(void)
         Vec3 to = whereIam + forward;
         Vec3 preUp = multiplyMatrixVec(spaceship.getRotation(), Vec3 {0, 1, 0});
         if (firstPerson == 1){
+            // spaceship.makeModelMatrix();
             glLoadIdentity();
-            gluLookAt(whereIam.x, whereIam.y, whereIam.z,
-                      to.x, to.y, to.z,
-                      preUp.x, preUp.y, preUp.z);
+            glLoadMatrixf(spaceship.makeModelMatrix().ptr());
+            // glLoadIdentity();
+            // gluLookAt(whereIam.x, whereIam.y, whereIam.z,
+            //           to.x, to.y, to.z,
+            //           preUp.x, preUp.y, preUp.z);
         }
         else{
             glLoadIdentity();
@@ -290,15 +293,15 @@ int main(void)
         // if (actionStatus & ACTION_ROLL_CW)
         //     spaceship.roll(true);
         
-        if (actionStatus & ACTION_YAW_CCW)
-            spaceship.yaw(false);
-        if (actionStatus & ACTION_YAW_CW)
-            spaceship.yaw(true);
+        // if (actionStatus & ACTION_YAW_CCW)
+        //     spaceship.yaw(false);
+        // if (actionStatus & ACTION_YAW_CW)
+        //     spaceship.yaw(true);
         
-        if (actionStatus & ACTION_PITCH_UP)
-            spaceship.pitch(false);
-        if (actionStatus & ACTION_PITCH_DOWN)
-            spaceship.pitch(true);
+        // if (actionStatus & ACTION_PITCH_UP)
+        //     spaceship.pitch(false);
+        // if (actionStatus & ACTION_PITCH_DOWN)
+        //     spaceship.pitch(true);
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

@@ -67,35 +67,38 @@ Matrix4 Spaceship::makeModelMatrix(){ //right now works bad :(
 void Spaceship::ApplyForceAndTorque(){
     if (underControl){
         Vec3 movement {0, 0, 0};
+        Matrix4 bodyMatrix;
+        NewtonBodyGetMatrix(body, bodyMatrix.ptr());
+        
 
         if (currentActionStatus & ACTION_MOVE_FORWARD){
             Vec3 forward(0, 0, -1);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
 
         if (currentActionStatus & ACTION_MOVE_BACK){
             Vec3 forward(0, 0, 1);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
 
         if (currentActionStatus & ACTION_MOVE_LEFT){
             Vec3 forward(-1, 0, 0);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
         
         if (currentActionStatus & ACTION_MOVE_RIGHT){
             Vec3 forward(1, 0, 0);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
 
         if (currentActionStatus & ACTION_MOVE_UP){
             Vec3 forward(0, 1, 0);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
 
         if (currentActionStatus & ACTION_MOVE_DOWN){
             Vec3 forward(0, -1, 0);
-            movement = movement + multiplyMatrixVec(rotation, forward);
+            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
         }
 
         // use movement vector on spaceship
@@ -106,8 +109,33 @@ void Spaceship::ApplyForceAndTorque(){
         Vec3 rotation {0, 0, 0};
 
         if (currentActionStatus & ACTION_ROLL_CW){
-            Vec3 rotate {1, 0, 0};
-            rotation = rotation + roll(true, rotate);
+            Vec3 rotate {0.01, 0, 0};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
+        }
+
+        if (currentActionStatus & ACTION_ROLL_CCW){
+            Vec3 rotate {-0.01, 0, 0};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
+        }
+
+        if (currentActionStatus & ACTION_YAW_CW){
+            Vec3 rotate {0, 0.01, 0};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
+        }
+
+        if (currentActionStatus & ACTION_YAW_CCW){
+            Vec3 rotate {0, -0.01, 0};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
+        }
+
+        if (currentActionStatus & ACTION_PITCH_UP){
+            Vec3 rotate {0, 0, 0.01};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
+        }
+
+        if (currentActionStatus & ACTION_PITCH_DOWN){
+            Vec3 rotate {0, 0, -0.01};
+            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
         }
 
         float rot[3] {rotation.x, rotation.y, rotation.z};
