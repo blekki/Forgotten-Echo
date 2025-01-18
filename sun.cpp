@@ -27,7 +27,7 @@ Matrix4 Sun::makeModelMatrix(xyz_t follow){
     return matrix;
 }
 
-void Sun::draw(SunShader &sunShader, xyz_t follow){
+void Sun::prerender(SunShader &sunShader){
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glViewport(0, 0, 256, 256);
     glDisable(GL_BLEND);
@@ -44,19 +44,6 @@ void Sun::draw(SunShader &sunShader, xyz_t follow){
     glUseProgram(0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, screen_width, screen_height); //todo: put value from global variable
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindTexture(GL_TEXTURE_2D, coronaTexture);
-    glEnable(GL_TEXTURE_2D);
-    // glPushMatrix();
-    // glTranslatef(follow.x, follow.y, follow.z);
-    draw(follow); //<><><>
-    // glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBlendFunc(GL_ONE, GL_ZERO);
 }
 
 // draw a triangle with shader texture
@@ -78,6 +65,9 @@ void Sun::draw(xyz_t follow){
     Vec3 realVec2 = multiplyMatrixVec(newRotation, v2);
     Vec3 realVec3 = multiplyMatrixVec(newRotation, v3);
     Vec3 realVec4 = multiplyMatrixVec(newRotation, v4);
+
+    glBindTexture(GL_TEXTURE_2D, coronaTexture);
+    glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
     glTranslatef(position.x + follow.x, position.y + follow.y, position.z +  + follow.z);

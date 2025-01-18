@@ -19,7 +19,7 @@ class Sun: public Entity
     public:
         void setScale(float scale);
         void draw(xyz_t follow);
-        void draw(SunShader &sunShader, xyz_t follow);
+        void prerender(SunShader &sunShader);
 
         int screen_width;
         int screen_height;

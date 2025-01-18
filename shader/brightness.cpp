@@ -39,7 +39,7 @@ Brightness::Brightness(){
                 float result = max(dot(normal, lightVec), 0.1);
 
                 vec3 color = vec3(result, result, result);
-                gl_FragColor = texture2D(tex, st) * result;
+                gl_FragColor = vec4(texture2D(tex, st).rgb * result, 1.0);
             }
         )cut"
     );

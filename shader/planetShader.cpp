@@ -49,7 +49,7 @@ PlanetShader::PlanetShader(){
                 vec2 st = vec2(phi, theta);
 
                 vec3 color = vec3(result, result, result);
-                gl_FragColor = texture2D(tex, st) * result;
+                gl_FragColor = vec4(texture2D(tex, st).rgb * result, 1.0);
             }
         )cut"
     );
