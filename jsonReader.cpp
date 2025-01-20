@@ -1,8 +1,7 @@
 #include "fstream"
 
-#include "ForgottenEcho.h"
+#include <nlohmann/json.hpp>
 #include "jsonReader.h"
-#include "json/single_include/nlohmann/json.hpp"
 
 #include "spaceship.h"
 
