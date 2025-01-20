@@ -44,6 +44,28 @@ class Vec3{
             return *this;
         }
 
+        Vec3 operator*(const float other){
+            Vec3 newVec;
+            newVec.x = x * other;
+            newVec.y = y * other;
+            newVec.z = z * other;
+            return newVec;
+        }
+
+        Vec3& operator+=(const Vec3 other){
+            x += other.x;
+            y += other.y;
+            z += other.z;
+            return *this;
+        }
+
+        Vec3& operator-=(const Vec3 other){
+            x -= other.x;
+            y -= other.y;
+            z -= other.z;
+            return *this;
+        }
+
         void normalize(){
             float coef = 1.0f / sqrt((x * x) + (y * y) + (z * z));
             x *= coef;

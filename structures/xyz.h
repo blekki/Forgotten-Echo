@@ -15,4 +15,32 @@ struct xyz_t{
         y = 0.0f;
         z = 0.0f;
     }
+
+    xyz_t& operator+(const xyz_t other){
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
+    xyz_t& operator-(const xyz_t other){
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
+
+    xyz_t& operator+=(const xyz_t other){
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
+    xyz_t& operator-=(const xyz_t other){
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
 };
