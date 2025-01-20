@@ -15,6 +15,18 @@ void Spaceship::setNewtonBody(NewtonBody *body){
     NewtonBodySetUserData(body, this);
 }
 
+void Spaceship::setSpeedUp(float forward, float right, float up){
+    this->forwardSpeedUp = Vec3(0, 0, -forward);
+    this->rightSpeedUp = Vec3(-right, 0, 0);
+    this->upSpeedUp = Vec3(0, up, 0);
+}
+
+void Spaceship::setRotationSpeedUp(float roll, float yaw, float pitch){
+    this->rollSpeedUp = Vec3(0, 0, roll);
+    this->yawSpeedUp = Vec3(0, yaw, 0);
+    this->pitchSpeedUp = Vec3(pitch, 0, 0);
+}
+
 // pack of return position functions
 float Spaceship::getX(){
     if (body == 0) 
@@ -65,79 +77,46 @@ Matrix4 Spaceship::makeModelMatrix(){ //right now works bad :(
 
 // check and use movement
 void Spaceship::ApplyForceAndTorque(){
-    if (underControl){
+    if (underControl) {
+        //### movement
         Vec3 movement {0, 0, 0};
-        Matrix4 bodyMatrix;
-        NewtonBodyGetMatrix(body, bodyMatrix.ptr());
-        
+        if (currentActionStatus & ACTION_MOVE_FORWARD)
+            movement += multiplyMatrixVec(makeModelMatrix(), forwardSpeedUp);
+        if (currentActionStatus & ACTION_MOVE_BACK)
+            movement -= multiplyMatrixVec(makeModelMatrix(), forwardSpeedUp);
 
-        if (currentActionStatus & ACTION_MOVE_FORWARD){
-            Vec3 forward(0, 0, -1);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
+        if (currentActionStatus & ACTION_MOVE_LEFT)
+            movement += multiplyMatrixVec(makeModelMatrix(), rightSpeedUp);
+        if (currentActionStatus & ACTION_MOVE_RIGHT)
+            movement -= multiplyMatrixVec(makeModelMatrix(), rightSpeedUp);
 
-        if (currentActionStatus & ACTION_MOVE_BACK){
-            Vec3 forward(0, 0, 1);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
-
-        if (currentActionStatus & ACTION_MOVE_LEFT){
-            Vec3 forward(-1, 0, 0);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
-        
-        if (currentActionStatus & ACTION_MOVE_RIGHT){
-            Vec3 forward(1, 0, 0);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
-
-        if (currentActionStatus & ACTION_MOVE_UP){
-            Vec3 forward(0, 1, 0);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
-
-        if (currentActionStatus & ACTION_MOVE_DOWN){
-            Vec3 forward(0, -1, 0);
-            movement = movement + multiplyMatrixVec(bodyMatrix, forward);
-        }
+        if (currentActionStatus & ACTION_MOVE_UP)
+            movement += multiplyMatrixVec(makeModelMatrix(), upSpeedUp);
+        if (currentActionStatus & ACTION_MOVE_DOWN)
+            movement -= multiplyMatrixVec(makeModelMatrix(), upSpeedUp);
 
         // use movement vector on spaceship
         float vec[3] {movement.x, movement.y, movement.z};
         NewtonBodySetForce(body, vec);
         
-        //#####
+        //##### rotation
         Vec3 rotation {0, 0, 0};
+        if (currentActionStatus & ACTION_ROLL_CW)
+            rotation += multiplyMatrixVec(makeModelMatrix(), rollSpeedUp);
+        if (currentActionStatus & ACTION_ROLL_CCW)
+            rotation -= multiplyMatrixVec(makeModelMatrix(), rollSpeedUp);
 
-        if (currentActionStatus & ACTION_ROLL_CW){
-            Vec3 rotate {0.01, 0, 0};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
+        if (currentActionStatus & ACTION_YAW_CW)
+            rotation += multiplyMatrixVec(makeModelMatrix(), yawSpeedUp);
+        if (currentActionStatus & ACTION_YAW_CCW)
+            rotation -= multiplyMatrixVec(makeModelMatrix(), yawSpeedUp);
 
-        if (currentActionStatus & ACTION_ROLL_CCW){
-            Vec3 rotate {-0.01, 0, 0};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
+        if (currentActionStatus & ACTION_PITCH_UP)
+            rotation += multiplyMatrixVec(makeModelMatrix(), pitchSpeedUp);
+        if (currentActionStatus & ACTION_PITCH_DOWN)
+            rotation -= multiplyMatrixVec(makeModelMatrix(), pitchSpeedUp);
 
-        if (currentActionStatus & ACTION_YAW_CW){
-            Vec3 rotate {0, 0.01, 0};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
-
-        if (currentActionStatus & ACTION_YAW_CCW){
-            Vec3 rotate {0, -0.01, 0};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
-
-        if (currentActionStatus & ACTION_PITCH_UP){
-            Vec3 rotate {0, 0, 0.01};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
-
-        if (currentActionStatus & ACTION_PITCH_DOWN){
-            Vec3 rotate {0, 0, -0.01};
-            rotation = rotation + multiplyMatrixVec(bodyMatrix, rotate);
-        }
-
+        // use rotation vector on spaceship
         float rot[3] {rotation.x, rotation.y, rotation.z};
         NewtonBodyAddTorque(body, rot);
     }

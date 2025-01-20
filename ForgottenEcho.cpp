@@ -203,6 +203,10 @@ int main(void)
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
+        // xyz_t one {1, 0, 0};
+        // xyz_t two {2, 0, 0};
+        // two = two + one;
+
         //Newton dynamic calculation -------------------
         float currentTime = glfwGetTime();
         float delta = currentTime - time;
@@ -231,27 +235,24 @@ int main(void)
         // basic matrixes
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(60.0f, screen_width / (float) screen_height, 0.1f, 1000.0f);
+        gluPerspective(65.0f, screen_width / (float) screen_height, 0.1f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
         
         // follow for spaceship
         Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
-        Vec3 forward = multiplyMatrixVec(spaceship.getRotation(), Vec3 {0, 0, -1});
+        Vec3 forward = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 0, -1});
         Vec3 to = whereIam + forward;
-        Vec3 preUp = multiplyMatrixVec(spaceship.getRotation(), Vec3 {0, 1, 0});
+        Vec3 preUp = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 1, 0});
         if (firstPerson == 1){
-            // spaceship.makeModelMatrix();
             glLoadIdentity();
-            glLoadMatrixf(spaceship.makeModelMatrix().ptr());
-            // glLoadIdentity();
-            // gluLookAt(whereIam.x, whereIam.y, whereIam.z,
-            //           to.x, to.y, to.z,
-            //           preUp.x, preUp.y, preUp.z);
+            gluLookAt(whereIam.x, whereIam.y, whereIam.z,
+                      to.x, to.y, to.z,
+                      preUp.x, preUp.y, preUp.z);
         }
         else{
             glLoadIdentity();
             gluLookAt(50, 0, 0,
-                      to.x, to.y, to.z,
+                      spaceship.getX(), spaceship.getY(), spaceship.getZ(),
                       0, 1, 0);
         }
 
@@ -284,24 +285,6 @@ int main(void)
         // drawing axis
         primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotation().ptr());
         primal.drawCoord();
-
-
-
-        // a few actions for replace in space our spaceship and lightBox
-        // if (actionStatus & ACTION_ROLL_CCW)
-        //     spaceship.roll(false);
-        // if (actionStatus & ACTION_ROLL_CW)
-        //     spaceship.roll(true);
-        
-        // if (actionStatus & ACTION_YAW_CCW)
-        //     spaceship.yaw(false);
-        // if (actionStatus & ACTION_YAW_CW)
-        //     spaceship.yaw(true);
-        
-        // if (actionStatus & ACTION_PITCH_UP)
-        //     spaceship.pitch(false);
-        // if (actionStatus & ACTION_PITCH_DOWN)
-        //     spaceship.pitch(true);
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

@@ -48,45 +48,65 @@ void applyCallback(const NewtonBody* const body, dFloat timestep, int threadInde
     spaceship->ApplyForceAndTorque();
 }
 
-void JsonReader::readJsonSpaceship(Spaceship *object, string path){
+void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     using json = nlohmann::json;
     ifstream file(path);
     json data = json::parse(file);
 
+    // basic properties (position and scale)
     float x = {data["position"][0]["x"]};
     float y = {data["position"][0]["y"]};
     float z = {data["position"][0]["z"]};
     float scale = {data["scale"]};
+    spaceship->setPosition(x, y, z);
+    spaceship->setScale(scale);
 
-    float rotX = {data["rotation_vec"][0]["x_axis"]};
-    float rotY = {data["rotation_vec"][0]["y_axis"]};
-    float rotZ = {data["rotation_vec"][0]["z_axis"]};
-    object->setRotatationPosition(rotX, rotY, rotZ);
+    // read rotation position
+    float rotX = {data["rotation-vec"][0]["x-axis"]};
+    float rotY = {data["rotation-vec"][0]["y-axis"]};
+    float rotZ = {data["rotation-vec"][0]["z-axis"]};
+    spaceship->setRotatationPosition(rotX, rotY, rotZ);
 
+    // speed-up
+    float forwardSpeedUp = {data["speed-up"][0]["forward"]};
+    float rightSpeedUp = {data["speed-up"][0]["right"]};
+    float upSpeedUp = {data["speed-up"][0]["up"]};
+    spaceship->setSpeedUp(forwardSpeedUp, rightSpeedUp, upSpeedUp);
+
+    // rotation speed-up
+    float rollSpeedUp = {data["rotation-speed-up"][0]["roll"]};
+    float yawSpeedUp = {data["rotation-speed-up"][0]["yaw"]};
+    float pitchSpeedUp = {data["rotation-speed-up"][0]["pitch"]};
+    spaceship->setRotationSpeedUp(rollSpeedUp, yawSpeedUp, pitchSpeedUp);
+
+    // read model place and name
     string folder = {data["path"]};
     string obj = {data["model.obj"]};
     string mtl = {data["model.mtl"]};
-
-    object->setPosition(x, y, z);
-    object->setScale(scale);
-    object->newPath(folder);
-    object->newModel(folder + obj);
-    object->newMaterials(folder + mtl);
+    spaceship->newPath(folder);
+    spaceship->newModel(folder + obj);
+    spaceship->newMaterials(folder + mtl);
 
     file.close();
 
-    // todo: get real model size
-    NewtonCollision *collision = NewtonCreateBox(world, 0.1, 0.1, 0.1, 0, NULL);
+    // todo: get a real model size
+    NewtonCollision *collision = NewtonCreateBox(world, 0.1, 0.1, 0.1, 0, NULL); // <-- need update
     Matrix4 worldMatrix;
-    worldMatrix = object->getRotation();
-    worldMatrix.ptr()[12] = object->getX();
-    worldMatrix.ptr()[13] = object->getY();
-    worldMatrix.ptr()[14] = object->getZ();
+    worldMatrix = spaceship->getRotation();
+    worldMatrix.ptr()[12] = spaceship->getX();
+    worldMatrix.ptr()[13] = spaceship->getY();
+    worldMatrix.ptr()[14] = spaceship->getZ();
     NewtonBody *body = NewtonCreateDynamicBody(world, collision, worldMatrix.ptr());
     float weight = 1;
     NewtonBodySetMassProperties(body, weight, collision);
     NewtonBodySetForceAndTorqueCallback(body, applyCallback);
 
+    // set a few world properties
+    NewtonBodySetLinearDamping(body, 0.9f);
+    float vec[3] {0.9, 0.9, 0.9};
+    NewtonBodySetAngularDamping(body, vec);
+
+    // connect collition to the object
     NewtonDestroyCollision(collision);
-    object->setNewtonBody(body);
+    spaceship->setNewtonBody(body);
 }

@@ -70,7 +70,7 @@ void Sun::draw(xyz_t follow){
     glEnable(GL_TEXTURE_2D);
 
     glPushMatrix();
-    glTranslatef(position.x + follow.x, position.y + follow.y, position.z +  + follow.z);
+    glTranslatef(position.x + follow.x, position.y + follow.y, position.z + follow.z);
     glScalef(scale, scale, scale);
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
@@ -83,6 +83,8 @@ void Sun::draw(xyz_t follow){
     glVertex3f(realVec4.x, realVec4.y, realVec4.z);
     glEnd();
     glPopMatrix();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Sun::Sun(){

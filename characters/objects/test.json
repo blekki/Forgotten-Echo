@@ -7,11 +7,25 @@
             "z": -15.0
         }
     ],
-    "rotation_vec": [
+    "rotation-vec": [
         {
-            "x_axis": 0,
-            "y_axis": 0,
-            "z_axis": -1
+            "x-axis": 0,
+            "y-axis": 0,
+            "z-axis": -1
+        }
+    ],
+    "speed-up": [
+        {
+            "forward": 1,
+            "right": 1,
+            "up": 1
+        }
+    ],
+    "rotation-speed-up": [
+        {
+            "roll": 0.01,
+            "yaw": 0.01,
+            "pitch": 0.01
         }
     ],
     "scale": 0.02,

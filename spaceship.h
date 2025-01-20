@@ -11,12 +11,22 @@ class Spaceship: public Object
         bool underControl;
         int currentActionStatus;
         
+        Vec3 forwardSpeedUp;
+        Vec3 rightSpeedUp;
+        Vec3 upSpeedUp;
+        
+        Vec3 rollSpeedUp;
+        Vec3 yawSpeedUp;
+        Vec3 pitchSpeedUp;
+        
         NewtonBody *body;
 
     public:
         void setControlStatus(bool status);
         void pushActionStatus(int status);
         void setNewtonBody(NewtonBody *body);
+        void setSpeedUp(float forward, float right, float up);
+        void setRotationSpeedUp(float roll, float yaw, float pitch);
 
         virtual float getX() override;
         virtual float getY() override;
