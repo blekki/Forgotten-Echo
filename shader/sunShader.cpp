@@ -47,8 +47,8 @@ SunShader::SunShader(){
                 freqs[3] = texture2D(tex0, vec2( 0.30, 0.25 )).x;
 
                 float brightness	= freqs[1] * 0.25 + freqs[2] * 0.25;
-                float radius		= 0.24 + brightness * 0.2;
-                // float radius = 0.0;
+                // float radius		= 0.24 + brightness * 0.2;
+                float radius = 0.0;
                 float invRadius 	= 1.0/radius;
                 
                 vec3 orange			= vec3( 0.8, 0.65, 0.3 );
