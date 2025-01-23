@@ -11,6 +11,11 @@
 #include <GL/glu.h>
 // #include <glad/glad.h>
 #include "Newton.h"
+// everything for soundtracks
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <opus/opusfile.h>
+#include <sched.h>
 
 #include "ForgottenEcho.h"
 
@@ -25,7 +30,9 @@
 #include "spaceship.h"
 #include "sun.h"
 
+#include "soundtrack.h"
 #include "shader/sunShader.h"
+
 
 
 using namespace std;
@@ -38,6 +45,7 @@ NewtonWorld *world;
 
 int actionStatus = ACTION_NOTHING;
 int firstPerson = 1;
+int mute = 1;
 
 //<><><> FUNCTIONS <><><>
 void keyAction(string logs, action_t actionType, bool pressed){
@@ -96,10 +104,15 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         keyAction("action: key left ctrl", ACTION_MOVE_DOWN, (action == 1 || action == 2));
 
     //###### view type ######
-    if (key == GLFW_KEY_1)
+    if (key == GLFW_KEY_1 && (action == 1))
         firstPerson = 1;
-    if (key == GLFW_KEY_2)
+    if (key == GLFW_KEY_2 && (action == 1))
         firstPerson = 0;
+    
+    if (key == GLFW_KEY_M && (action == 1)){
+        mute = (mute) ? false : true;
+        cout << "mute:" << mute << endl;
+    }
 
 }
 
@@ -112,6 +125,51 @@ int main(void)
     int newtonVersion = NewtonWorldGetVersion();
     cout << "NewtonVersion: " << newtonVersion / 100 << "." << newtonVersion % 100 << endl;
     NewtonSetSolverIterations(world, 1);
+
+    ALCdevice *dev = alcOpenDevice(NULL);
+    ALCcontext *ctx = alcCreateContext(dev, NULL);
+    alcMakeContextCurrent(ctx);
+    cout << "openAL version: " << alGetString(AL_VERSION) << endl;
+    cout << "openAL vendor: " << alGetString(AL_VENDOR) << endl;
+    cout << "openAL renderer: " << alGetString(AL_RENDERER) << endl;
+
+    // ALuint alBuffers;
+    // ALuint alSources;
+    // alGenBuffers(1, &alBuffers);
+    // alGenSources(1, &alSources);
+    
+    // alListener3f(AL_POSITION, 0, 0, 0);
+    // alListenerf(AL_GAIN, 1);
+    // int ok;
+    // auto file = op_open_file("media/ObservingTheStar.opus", &ok);
+    // if (ok != 0) {
+    //     cout << "opus file not readed" << endl;
+    //     return 0;
+    // }
+
+    // int channels = op_channel_count(file, -1);
+    // int pcm_size = op_pcm_total(file, -1);
+    // cout << "sound channels: " << channels << endl;
+    // cout << "sound pcm_size: " << pcm_size << endl;
+    // cout << "sound length (sec): " << pcm_size / 48000 << endl;
+
+    // short* buf = (short *) malloc(pcm_size * channels * sizeof(short));
+    // int ns = 0;
+    // int oldNs = ns;
+    // while (oldNs < pcm_size - 1) {
+    //     ns = op_read(file, &buf[oldNs * channels], pcm_size - oldNs, NULL);
+    //     if (ns == -1) return 10;
+    //     oldNs += ns;
+    // }
+
+    // op_free(file);
+
+    // alBufferData(alBuffers, AL_FORMAT_STEREO16, buf, pcm_size * channels * sizeof(short), 48000);
+    // alSourcei(alSources, AL_BUFFER, alBuffers);
+    // alSource3f(alSources, AL_POSITION, 0, 0, 0);
+    // alSourcef(alSources, AL_GAIN, 1);
+
+    // alSourcePlay(alSources);
 
     // check did glfw run or not
     if (!glfwInit()) {
@@ -193,26 +251,33 @@ int main(void)
     ParticleBox particle;
     particle.newGenerate();
 
+    Soundtrack soundtrack;
+    soundtrack.loadSound("media/ObservingTheStar.opus");
+    soundtrack.play();
+
     // shader preparation
     Brightness brightnessShader;
     PlanetShader planetShader;
     SunShader sunShader;
 
     float time = glfwGetTime();
+    bool ggg = true;
     // loop
     float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
     {
-        // xyz_t one {1, 0, 0};
-        // xyz_t two {2, 0, 0};
-        // two = two + one;
+        sched_yield();
 
         //Newton dynamic calculation -------------------
         float currentTime = glfwGetTime();
         float delta = currentTime - time;
         time = currentTime;
-
         NewtonUpdate(world, delta);
+
+        // int deltaPlus = (int) (glfwGetTime() * 1000);
+        // alSource3f(alSources, AL_POSITION, cos(glfwGetTime()) * 8.0f, 0, sin(glfwGetTime()) * 8.0f);
+        // soundtrack.play();
+        alSourcef(soundtrack.getSource(), AL_GAIN, mute);
         
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();

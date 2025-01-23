@@ -7,7 +7,7 @@ project(ForgottenEcho)
 add_executable(${PROJECT_NAME} ForgottenEcho.cpp primal.cpp sphere.cpp planet.cpp object.cpp entity.cpp model.cpp qued.cpp matrices.cpp particlebox.cpp jsonReader.cpp 
                                sun.cpp spaceship.cpp
                                shader/shader.cpp shader/brightness.cpp shader/planetShader.cpp shader/sunShader.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw GL SOIL GLU GLEW newton-dynamics)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw GL SOIL GLU GLEW newton-dynamics openal opus opusfile)
 # target_include_directories(${PROJECT_NAME} PUBLIC glad/glad)
 # target_link_libraries(${PROJECT_NAME} PUBLIC glad)
 
