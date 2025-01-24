@@ -101,7 +101,6 @@ void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     NewtonBodySetForceAndTorqueCallback(body, applyCallback);
 
     // set a few world properties
-    NewtonBodySetLinearDamping(body, 0.9f);
     float vec[3] {0.9, 0.9, 0.9};
     NewtonBodySetAngularDamping(body, vec);
 

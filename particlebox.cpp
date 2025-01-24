@@ -42,7 +42,7 @@ void ParticleBox::doubleReplaceParticles(xyz_t *particle, float distance){
 }
 void ParticleBox::drawparticle(){
     glPointSize(2);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    // glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_POINTS);
 
     for (int i = 0; i < PARTICLE_COUNT; i++){

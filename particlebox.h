@@ -14,7 +14,7 @@ using namespace std;
 
 class ParticleBox{
     private:
-        const int PARTICLE_COUNT = 300;
+        const int PARTICLE_COUNT = 100;
         float radius = 15;
         xyz_t position {0, 0, 0};
         xyz_t deltaPos {0, 0, 0};

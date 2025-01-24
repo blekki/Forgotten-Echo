@@ -35,7 +35,7 @@ void Model::setMaterials(string fileName){
 
             if (materialList[materialName].textureID == 0){ 
                 int textureID = SOIL_load_OGL_texture((this->path + textureName).c_str(), SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
-                cout << "setMaterial: " << textureID << " : " << textureName << endl;
+                // cout << "setMaterial: " << textureID << " : " << textureName << endl;
                 materialList[materialName].textureID = textureID;
             }
             input.get();
