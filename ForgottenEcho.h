@@ -19,7 +19,9 @@ enum action_t{
     ACTION_MOVE_LEFT = 256,
     ACTION_MOVE_RIGHT = 512,
     ACTION_MOVE_UP = 1024,
-    ACTION_MOVE_DOWN = 2048
+    ACTION_MOVE_DOWN = 2048,
+
+    ACTION_HANDING = 4096,
 };
 
 constexpr float PI_DIV_180 = 3.1415f / 180.0f;

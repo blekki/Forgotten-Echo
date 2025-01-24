@@ -9,7 +9,7 @@ class Spaceship: public Object
 {   
     private:
         bool underControl;
-        int currentActionStatus;
+        int actionStatus;
         
         Vec3 forwardSpeedUp;
         Vec3 rightSpeedUp;
@@ -18,15 +18,25 @@ class Spaceship: public Object
         Vec3 rollSpeedUp;
         Vec3 yawSpeedUp;
         Vec3 pitchSpeedUp;
+
+        Vec3 rollPermanentSpeed;
+        Vec3 yawPermanentSpeed;
+        Vec3 PitchPermanentSpeed;
         
         NewtonBody *body;
 
     public:
         void setControlStatus(bool status);
-        void pushActionStatus(int status);
+        void newActionStatus(int status);
+        void addActionStatus(int status);
+        void delActionStatus(int status);
+
         void setNewtonBody(NewtonBody *body);
         void setSpeedUp(float forward, float right, float up);
         void setRotationSpeedUp(float roll, float yaw, float pitch);
+
+        void setRotateHanding(float value3[3]);
+        void setHanding(float value);
 
         virtual float getX() override;
         virtual float getY() override;
@@ -52,6 +62,8 @@ class Spaceship: public Object
 
         Spaceship(){
             underControl = false;
+            actionStatus = ACTION_NOTHING;
+            actionStatus &= ACTION_HANDING;
             body = 0;
         };
 };

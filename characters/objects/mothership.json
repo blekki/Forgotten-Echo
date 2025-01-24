@@ -2,15 +2,15 @@
     "name": "Mothership",
     "position": [
         {
-            "x": -70.0,
+            "x": -220.0,
             "y": 0.0,
             "z": -20.0
         }
     ],
     "rotation-vec": [
         {
-            "x-axis": 1,
-            "y-axis": 0,
+            "x-axis": 0.8,
+            "y-axis": -0.4,
             "z-axis": 0
         }
     ],
@@ -23,9 +23,9 @@
     ],
     "rotation-speed-up": [
         {
-            "roll": 0.01,
-            "yaw": 0.01,
-            "pitch": 0.01
+            "roll": 0.0005,
+            "yaw": 0.0005,
+            "pitch": 0.0005
         }
     ],
     "scale": 0.03,

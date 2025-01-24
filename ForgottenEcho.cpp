@@ -43,7 +43,8 @@ int screen_height{400};
 
 NewtonWorld *world;
 
-int actionStatus = ACTION_NOTHING;
+// int actionStatus = ACTION_NOTHING;
+int actionStatus = ACTION_HANDING;
 int firstPerson = 1;
 int mute = 1;
 
@@ -102,6 +103,13 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         keyAction("action: key space", ACTION_MOVE_UP, (action == 1 || action == 2));
     if (key == GLFW_KEY_LEFT_CONTROL)
         keyAction("action: key left ctrl", ACTION_MOVE_DOWN, (action == 1 || action == 2));
+
+    if (key == GLFW_KEY_H && (action == 1)) {
+        if (actionStatus & ACTION_HANDING) {
+            actionStatus &= ~ACTION_HANDING;
+        }
+        else actionStatus |= ACTION_HANDING;
+    }
 
     //###### view type ######
     if (key == GLFW_KEY_1 && (action == 1))
@@ -245,6 +253,7 @@ int main(void)
     spaceship.setControlStatus(true);
     Spaceship mothership;
     jsonReader.readJsonSpaceship(&mothership, "characters/objects/mothership.json");
+    mothership.newActionStatus(ACTION_ROLL_CW);
     Spaceship testObj;
     jsonReader.readJsonSpaceship(&testObj, "characters/objects/test.json");
 
@@ -327,7 +336,7 @@ int main(void)
         mothership.draw(brightnessShader);
         testObj.draw(brightnessShader);
 
-        spaceship.pushActionStatus(actionStatus);
+        spaceship.newActionStatus(actionStatus);
         if (!firstPerson){
             spaceship.draw(brightnessShader);
         }

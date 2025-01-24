@@ -85,6 +85,8 @@ void Sun::draw(xyz_t follow){
     glPopMatrix();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Sun::Sun(){

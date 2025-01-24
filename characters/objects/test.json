@@ -23,9 +23,9 @@
     ],
     "rotation-speed-up": [
         {
-            "roll": 0.01,
-            "yaw": 0.01,
-            "pitch": 0.01
+            "roll": 0.001,
+            "yaw": 0.001,
+            "pitch": 0.001
         }
     ],
     "scale": 0.02,
