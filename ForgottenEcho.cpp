@@ -117,6 +117,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_2 && (action == 1))
         firstPerson = 0;
     
+    //###### mute musik ######
     if (key == GLFW_KEY_M && (action == 1)){
         mute = (mute) ? false : true;
         cout << "mute:" << mute << endl;
@@ -140,44 +141,6 @@ int main(void)
     cout << "openAL version: " << alGetString(AL_VERSION) << endl;
     cout << "openAL vendor: " << alGetString(AL_VENDOR) << endl;
     cout << "openAL renderer: " << alGetString(AL_RENDERER) << endl;
-
-    // ALuint alBuffers;
-    // ALuint alSources;
-    // alGenBuffers(1, &alBuffers);
-    // alGenSources(1, &alSources);
-    
-    // alListener3f(AL_POSITION, 0, 0, 0);
-    // alListenerf(AL_GAIN, 1);
-    // int ok;
-    // auto file = op_open_file("media/ObservingTheStar.opus", &ok);
-    // if (ok != 0) {
-    //     cout << "opus file not readed" << endl;
-    //     return 0;
-    // }
-
-    // int channels = op_channel_count(file, -1);
-    // int pcm_size = op_pcm_total(file, -1);
-    // cout << "sound channels: " << channels << endl;
-    // cout << "sound pcm_size: " << pcm_size << endl;
-    // cout << "sound length (sec): " << pcm_size / 48000 << endl;
-
-    // short* buf = (short *) malloc(pcm_size * channels * sizeof(short));
-    // int ns = 0;
-    // int oldNs = ns;
-    // while (oldNs < pcm_size - 1) {
-    //     ns = op_read(file, &buf[oldNs * channels], pcm_size - oldNs, NULL);
-    //     if (ns == -1) return 10;
-    //     oldNs += ns;
-    // }
-
-    // op_free(file);
-
-    // alBufferData(alBuffers, AL_FORMAT_STEREO16, buf, pcm_size * channels * sizeof(short), 48000);
-    // alSourcei(alSources, AL_BUFFER, alBuffers);
-    // alSource3f(alSources, AL_POSITION, 0, 0, 0);
-    // alSourcef(alSources, AL_GAIN, 1);
-
-    // alSourcePlay(alSources);
 
     // check did glfw run or not
     if (!glfwInit()) {
@@ -285,7 +248,6 @@ int main(void)
 
         // int deltaPlus = (int) (glfwGetTime() * 1000);
         // alSource3f(alSources, AL_POSITION, cos(glfwGetTime()) * 8.0f, 0, sin(glfwGetTime()) * 8.0f);
-        // soundtrack.play();
         alSourcef(soundtrack.getSource(), AL_GAIN, mute);
         
         glMatrixMode(GL_PROJECTION);
