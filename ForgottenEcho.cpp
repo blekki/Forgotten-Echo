@@ -348,7 +348,7 @@ int main(void)
         particle.draw();
 
         // drawing axis
-        primal.drawFollowCoord(spaceship.getX(), spaceship.getY(), spaceship.getZ(), spaceship.getRotation().ptr());
+        primal.drawFollowCoord(spaceship.makeModelMatrix());
         primal.drawCoord();
 
         // other needy actions

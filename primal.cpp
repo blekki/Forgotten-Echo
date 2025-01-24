@@ -1,19 +1,20 @@
 #include <math.h>
 #include <GL/gl.h>
 
+#include "matrices.h"
 #include "primal.h"
 
 using namespace std;
 
-void Primal::createFollowCoord(float x, float y, float z, float *rotation){
+void Primal::drawFollowCoord(Matrix4 matrix){
     float xPoint[3] {3, 0, 0};
     float yPoint[3] {0, 3, 0};
     float zPoint[3] {0, 0, 3};
     float *array[3] {xPoint, yPoint, zPoint};
     
     glPushMatrix();
-    glTranslatef(x, y, z);
-    glMultMatrixf(rotation);
+    // glTranslatef(matrix[13], matrix[1c4], matrix[15]);
+    glMultMatrixf(matrix.ptr());
     // draw axis
     glLineWidth(3);
     glBegin(GL_LINES);
@@ -26,7 +27,7 @@ void Primal::createFollowCoord(float x, float y, float z, float *rotation){
     glPopMatrix();
 }
 
-void Primal::createCoord(){
+void Primal::drawCoord(){
     float xPoint[3] {3, 0, 0};
     float yPoint[3] {0, 3, 0};
     float zPoint[3] {0, 0, 3};
@@ -48,7 +49,7 @@ void Primal::createCoord(){
 }
 
 //draw simple 2d triangle
-void Primal::createTriangle()
+void Primal::drawTriangle()
 {
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -61,7 +62,7 @@ void Primal::createTriangle()
 }
 
 // draw a 2d circle
-void Primal::createCircle(float radius)
+void Primal::drawCircle(float radius)
 {
     const float PiDiv180 = 3.1415f / 180.0f;
     float x = 0;
@@ -101,7 +102,7 @@ void sphereCap(int section, int position)
     glEnd();
 }
 
-void Primal::createSphere(int section) 
+void Primal::drawSphere(int section) 
 {
     //upper pole
     sphereCap(section, 1);
