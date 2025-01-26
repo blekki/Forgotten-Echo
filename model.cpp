@@ -13,13 +13,10 @@ void Model::setPath(string path){
     this->path = path;
 }
 
-void Model::setMaterials(string fileName){
+void Model::loadMaterials(string fileName){
     ifstream input(fileName);
     string textline;
 
-    // string path = "models/Turanic Raiders/Raiders Ion Array Frigate/lod0/";
-
-    // materialList.push_back(0);
     string materialName;
     while (getline(input, textline, ' ')) {
 
@@ -50,7 +47,7 @@ void Model::setMaterials(string fileName){
     input.close();
 }
 
-void Model::setModel(string fileName){
+void Model::loadModel(string fileName){
     ifstream input(fileName);
     string textline;
 

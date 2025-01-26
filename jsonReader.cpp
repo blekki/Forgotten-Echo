@@ -82,9 +82,9 @@ void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     string folder = {data["path"]};
     string obj = {data["model.obj"]};
     string mtl = {data["model.mtl"]};
-    spaceship->newPath(folder);
-    spaceship->newModel(folder + obj);
-    spaceship->newMaterials(folder + mtl);
+    spaceship->setPath(folder);
+    spaceship->loadModel(folder + obj);
+    spaceship->loadMaterials(folder + mtl);
 
     file.close();
 

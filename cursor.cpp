@@ -5,10 +5,10 @@
 #include "cursor.h"
 
 void Cursor::setX(double x){
-    this->xPos = x;
+    this->x = x;
 }
 void Cursor::setY(double y){
-    this->yPos = y * -1;
+    this->y = y * -1;
 }
 
 void Cursor::pushWindowSize(int x, int y){
@@ -17,27 +17,27 @@ void Cursor::pushWindowSize(int x, int y){
 }
 
 double Cursor::getX(){
-    return xPos;
+    return x;
 }
 double Cursor::getY(){
-    return yPos;
+    return y;
 }
 
 double Cursor::getTransformX(){
-    return (xPos - (screen_width / 2.0f));
+    return (x - (screen_width / 2.0f));
 }
 double Cursor::getTransformY(){
-    return (yPos + (screen_height / 2.0f));
+    return (y + (screen_height / 2.0f));
 }
 
 void Cursor::printXY(){
-    cout << Cursor::getTransformX() << " : " << Cursor::getTransformY() << endl;
+    cout << getTransformX() << " : " << getTransformY() << endl;
 }
 
 void Cursor::draw(){
     glColor3f(1.0f, 1.0f, 1.0f);
     glPushMatrix();
-    glTranslatef(xPos / screen_width, yPos / screen_height, 0); //todo: remake
+    glTranslatef(getTransformX() / screen_width, getTransformY() / screen_height, 0); //todo: remake
     glBegin(GL_LINES);
     glVertex2f(-0.2, 0);
     glVertex2f(0.2, 0);

@@ -12,8 +12,6 @@ using namespace std;
 class Model
 {
     protected:
-    
-    public:
         int ID = 0;
         string path;
 
@@ -40,28 +38,15 @@ class Model
             vector<Triangle> triangles;
         };
 
-        void setModel(string fileName); //todo: loadModel
-        void setMaterials(string fileName); //todo: loadMaterials
-        void setPath(string path); //todo: setTexturePath
-
     public:
-        virtual void newModel(string fileName){ //todo: delete
-            setModel(fileName);
-        }
-        virtual void newMaterials(string fileName){ //todo: delete
-            setMaterials(fileName);
-        }
-
-        void newPath(string path){ //todo: delete
-            setPath(path);
-        }
+        virtual void loadModel(string fileName);
+        virtual void loadMaterials(string fileName);
+        void setPath(string path);
 
         Model(){};
         virtual ~Model(){};
     
     protected:
-    
-    public:
         vector<xyz_t> vertexList;
         vector<st_t> texcoordList;
         vector<xyz_t> normalList;

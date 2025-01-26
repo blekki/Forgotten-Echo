@@ -5,8 +5,8 @@ using namespace std;
 class Cursor
 {
     private:
-        double xPos;
-        double yPos;
+        double x;
+        double y;
 
         // screen size
         int screen_width;
@@ -26,7 +26,7 @@ class Cursor
         void draw();
 
         Cursor(){
-            xPos = 0;
-            yPos = 0;
+            x = 0;
+            y = 0;
         }
 };

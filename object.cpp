@@ -27,7 +27,7 @@ Matrix4 Object::makeModelMatrix(){
 }
 
 //draw object on screen
-void Object::drawTriangles(){
+void Object::draw(){
     const int TRIANGLE_VERTICES = 3;
 
     glColor3f(1.0f, 1.0f, 1.0f);

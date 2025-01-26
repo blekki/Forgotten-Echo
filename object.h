@@ -17,21 +17,14 @@ class Object: public Model, public Entity
     protected:
         float scale;
 
-        void drawTriangles();
-
     public:
         void setScale(float scale);
         virtual Matrix4 makeModelMatrix();
 
-        // virtual void draw(Brightness &brightnessShader){
-        virtual void draw(){
-            // brightnessShader.setModelMatrix(makeModelMatrix());
-            drawTriangles();
-        }
+        virtual void draw();
 
         Object(){
             scale = 1.0f;
-            // розділити кватерніон на 90 градусів
         };
 
         virtual ~Object(){};

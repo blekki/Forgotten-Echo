@@ -36,35 +36,5 @@ class Entity
 
         void setRotatationPosition(float x, float y, float z);
 
-        // use rotation matrices
-        // Vec3 roll(bool cw){
-        //     Vec3 rotate {1, 0, 0};
-        //     return multiplyMatrixVec(coupleMatrices.getRoll(cw), rightUp);
-        // }
-
-        // Vec3 yaw(bool cw){
-        //     Vec3 rightForward {0, 1, 0};
-        //     return multiplyMatrixVec(coupleMatrices.getRoll(cw), rightForward);
-        // }
-
-        // Vec3 pitch(bool cw){
-        //     Vec3 forwardUp {0, 0, 1};
-        //     return multiplyMatrixVec(coupleMatrices.getRoll(cw), forwardUp);
-        // }
-
-        // void yaw(bool cw){
-        //     addRotateMatrix(coupleMatrices.getYaw(cw));
-        // }
-        
-        // void pitch(bool up){
-        //     addRotateMatrix(coupleMatrices.getPitch(up));
-        // }
-
-        // void shift(float x, float y, float z){
-        //     addTranslateVec(Vec3(x,y,z));
-        // }
-
-        Entity(){
-            // brightnessShader.init();
-        };
+        Entity(){};
 };
