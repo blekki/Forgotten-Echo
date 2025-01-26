@@ -38,7 +38,7 @@ PlanetShader::PlanetShader(){
                 vec3 lightVec = normalize(lightVertex.xyz- zeroVertex);
                 vec3 normal = normalize(currentNormal);
         
-                float result = max(dot(normal, lightVec), 0.1);
+                float result = max(dot(normal, lightVec), 0.05);
 
                 vec3 v = normalize(vertex);
                 float x = v.x;

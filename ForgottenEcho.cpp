@@ -30,6 +30,7 @@
 #include "spaceship.h"
 #include "sun.h"
 
+#include "cursor.h"
 #include "soundtrack.h"
 #include "shader/sunShader.h"
 
@@ -38,15 +39,15 @@
 using namespace std;
 
 //<><><> NEEDY CONSTANTS AND VARYABLES
-int screen_width{600};
-int screen_height{400};
+int screen_width {600};
+int screen_height {400};
 
 NewtonWorld *world;
+Cursor *cursorP;
 
-// int actionStatus = ACTION_NOTHING;
 int actionStatus = ACTION_HANDING;
-int firstPerson = 1;
-int mute = 1;
+int personView = 1;
+bool mute = true;
 
 //<><><> FUNCTIONS <><><>
 void keyAction(string logs, action_t actionType, bool pressed){
@@ -113,9 +114,9 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
     //###### view type ######
     if (key == GLFW_KEY_1 && (action == 1))
-        firstPerson = 1;
+        personView = 1;
     if (key == GLFW_KEY_2 && (action == 1))
-        firstPerson = 0;
+        personView = 0;
     
     //###### mute musik ######
     if (key == GLFW_KEY_M && (action == 1)){
@@ -123,6 +124,19 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         cout << "mute:" << mute << endl;
     }
 
+}
+
+static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods){
+    if (button == GLFW_MOUSE_BUTTON_LEFT && (action == 1)){
+        // cout << "it was pushed" << endl;
+        cursorP->printXY();
+    }
+}
+
+static void cursor_position_callback(GLFWwindow *window, double x, double y){
+    glfwGetCursorPos(window, &x, &y);
+    cursorP->setX(x);
+    cursorP->setY(y);
 }
 
 //##############################################
@@ -195,6 +209,8 @@ int main(void)
     glEnable(GL_TEXTURE_2D);
     // key enter function
     glfwSetKeyCallback(basicWindow, key_callback);
+    glfwSetMouseButtonCallback(basicWindow, mouse_button_callback);
+    glfwSetCursorPosCallback(basicWindow, cursor_position_callback);
 
 
     JsonReader jsonReader;
@@ -214,6 +230,7 @@ int main(void)
     Spaceship spaceship;
     jsonReader.readJsonSpaceship(&spaceship, "characters/objects/myship.json");
     spaceship.setControlStatus(true);
+    spaceship.pushWindowSize(&screen_width, &screen_height);
     Spaceship mothership;
     jsonReader.readJsonSpaceship(&mothership, "characters/objects/mothership.json");
     mothership.newActionStatus(ACTION_ROLL_CW);
@@ -232,22 +249,23 @@ int main(void)
     PlanetShader planetShader;
     SunShader sunShader;
 
+    Cursor cursor;
+    cursorP = &cursor;
+
+
     float time = glfwGetTime();
-    bool ggg = true;
     // loop
-    float angle = 0.0f;
     while (!glfwWindowShouldClose(basicWindow))
-    {
+    {   
         sched_yield();
 
-        //Newton dynamic calculation -------------------
+        //Newton dynamic calculation -------------------  : 3d state
         float currentTime = glfwGetTime();
-        float delta = currentTime - time;
+        float deltaTime = currentTime - time;
         time = currentTime;
-        NewtonUpdate(world, delta);
+        NewtonUpdate(world, deltaTime);
 
-        // int deltaPlus = (int) (glfwGetTime() * 1000);
-        // alSource3f(alSources, AL_POSITION, cos(glfwGetTime()) * 8.0f, 0, sin(glfwGetTime()) * 8.0f);
+
         alSourcef(soundtrack.getSource(), AL_GAIN, mute);
         
         glMatrixMode(GL_PROJECTION);
@@ -259,7 +277,7 @@ int main(void)
         sun.prerender(sunShader);
         //render pass -----------------------------------
 
-        // size of window
+        // size of window : void state/level
         glfwGetFramebufferSize(basicWindow, &screen_width, &screen_height);
         glViewport(0, 0, screen_width, screen_height);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -268,18 +286,18 @@ int main(void)
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
 
-        // basic matrixes
+        // basic matrixes : 3d state
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(65.0f, screen_width / (float) screen_height, 0.1f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
         
-        // follow for spaceship
+        // follow for spaceship : 3d state
         Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
         Vec3 forward = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 0, -1});
         Vec3 to = whereIam + forward;
         Vec3 preUp = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 1, 0});
-        if (firstPerson == 1){
+        if (personView == 1){
             glLoadIdentity();
             gluLookAt(whereIam.x, whereIam.y, whereIam.z,
                       to.x, to.y, to.z,
@@ -290,20 +308,24 @@ int main(void)
             gluLookAt(50, 0, 0,
                       spaceship.getX(), spaceship.getY(), spaceship.getZ(),
                       0, 1, 0);
-        }
+        }        
 
-        // draw objects (and spaceships)
+        // draw objects (and spaceships) : 3d state
         glUseProgram(brightnessShader.getShaderID());
         brightnessShader.setSun(sun.getXYZ());
         mothership.draw(brightnessShader);
         testObj.draw(brightnessShader);
 
         spaceship.newActionStatus(actionStatus);
-        if (!firstPerson){
+        cursor.pushWindowSize(screen_width, screen_height);
+        if (!personView){
             spaceship.draw(brightnessShader);
         }
+        else {
+            spaceship.mouseRotation(cursor.getTransformX(), cursor.getTransformY());
+        }
 
-        // draw planets
+        // draw planets : 3d state
         glUseProgram(planetShader.getShaderID());
         planetShader.setSun(sun.getXYZ());
         mars.draw(planetShader, spaceship.getXYZ());
@@ -312,15 +334,17 @@ int main(void)
         glUseProgram(0);
 
         sun.draw(spaceship.getXYZ());
-        // glViewport(0, 0, screen_width, screen_height);
         
         // replace particalBox around your spaceship
         particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
         particle.draw();
 
-        // drawing axis
+        // draw axis
         primal.drawFollowCoord(spaceship.makeModelMatrix());
         primal.drawCoord();
+
+        // draw cursor
+        cursor.draw();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

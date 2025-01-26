@@ -1,6 +1,9 @@
 #include "Newton.h"
 
 #include "spaceship.h"
+#include "structures/vec3.h"
+
+using namespace std;
 
 void Spaceship::setControlStatus(bool newStatus){
     this->underControl = newStatus;
@@ -91,6 +94,26 @@ void Spaceship::setHanding(float value){
     NewtonBodySetLinearDamping(body, value);
 }
 
+void Spaceship::pushWindowSize(int *width, int *height){
+    this->link_screen_width = width;
+    this->link_screen_height = height;
+}
+
+void Spaceship::mouseRotation(double mouseX, double mouseY){
+    if (abs(mouseX) < 40.0)
+        mouseX = 0.0;
+    if (abs(mouseY) < 40.0)
+        mouseY = 0.0;
+    Vec3 vec;
+    vec.y = 0;
+    vec.x = mouseY / 50000.0f;
+    vec.z = -mouseX / 100000.0f;
+    
+    // cout << vec.x << " : " << vec.y << " : " << vec.z << endl;
+
+    needToRotate = multiplyMatrixVec(makeModelMatrix(), vec);
+}
+
 // check and use movement
 void Spaceship::ApplyForceAndTorque(){
     // ###### movement ######
@@ -132,6 +155,9 @@ void Spaceship::ApplyForceAndTorque(){
         rotation -= multiplyMatrixVec(makeModelMatrix(), pitchSpeedUp);
 
     // use rotation vector on spaceship
+    if (underControl){
+        rotation = rotation + needToRotate;
+    }
     float rot[3] {rotation.x, rotation.y, rotation.z};
     NewtonBodyAddTorque(body, rot);
 

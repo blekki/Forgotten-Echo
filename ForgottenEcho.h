@@ -26,4 +26,5 @@ enum action_t{
 
 constexpr float PI_DIV_180 = 3.1415f / 180.0f;
 
-extern int actionStatus;
+extern int screen_width;
+extern int screen_height;
