@@ -106,7 +106,7 @@ void Spaceship::mouseRotation(double mouseX, double mouseY){
         mouseY = 0.0;
     Vec3 vec;
     vec.y = 0;
-    vec.x = mouseY / 50000.0f;
+    vec.x = -mouseY / 50000.0f;
     vec.z = -mouseX / 100000.0f;
     
     // cout << vec.x << " : " << vec.y << " : " << vec.z << endl;

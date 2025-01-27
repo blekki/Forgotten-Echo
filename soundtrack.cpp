@@ -48,5 +48,6 @@ void Soundtrack::loadSound(const char* path){
     alSourcei(alSource, AL_BUFFER, alBuffer);
     
     alSource3f(alSource, AL_POSITION, 5, 0, 0);
+    alSourcei(alSource, AL_LOOPING, 1);
     alSourcef(alSource, AL_GAIN, 1);
 }

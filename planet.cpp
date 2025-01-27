@@ -62,12 +62,6 @@ void Planet::draw(){
         glEndList();
     }
     glColor3f(1.0f, 1.0f, 1.0f);
-    
-
-    // // glRotatef(this->orbitSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // orbit rotate
-    // glRotatef(this->rotateSpeed * glfwGetTime(), 0.0f, 1.0f, 0.0f); // rotate around itself
-
     glBindTexture(GL_TEXTURE_2D, textureID);
     glCallList(ID);
-    // glPopMatrix();
 }

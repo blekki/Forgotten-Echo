@@ -9,20 +9,21 @@
 class Sun: public Entity
 {
     private:
-        int ID = 0;
-        float scale = 1.0f;        
+        float scale = 1.0f;
         GLuint coronaTexture;
         GLuint framebuffer;
+
+        int screen_width;
+        int screen_height;
 
         Matrix4 makeModelMatrix(xyz_t follow);
 
     public:
         void setScale(float scale);
-        void draw(xyz_t follow);
-        void prerender(SunShader &sunShader);
+        void pushWindowSize(GLFWwindow *window);
 
-        int screen_width;
-        int screen_height;
+        void prerender(SunShader &sunShader);
+        void draw(xyz_t follow);
 
         Sun();
 };

@@ -14,11 +14,14 @@ void Sun::setScale(float scale){
     this->scale = scale;
 }
 
+void Sun::pushWindowSize(GLFWwindow *window){
+    glfwGetFramebufferSize(window, &screen_width, &screen_height);
+}
+
 Matrix4 Sun::makeModelMatrix(xyz_t follow){
     Matrix4 matrix;
     glPushMatrix();
     glLoadIdentity();
-    // glTranslated(position.x + follow.x, position.y + follow.y, position.z + follow.z);
     glTranslatef(position.x, position.y, position.z);
     glScalef(scale, scale, scale);
     glMultMatrixf(rotation.ptr());
