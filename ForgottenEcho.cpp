@@ -19,16 +19,18 @@
 
 #include "ForgottenEcho.h"
 
-#include "primal.h"
-#include "sphere.h"
-#include "planet.h"
-#include "model.h"
-#include "object.h"
-#include "particlebox.h"
-#include "jsonReader.h"
-#include "entity.h"
-#include "spaceship.h"
-#include "sun.h"
+// #include "primal.h"
+// #include "sphere.h"
+// #include "planet.h"
+// #include "model.h"
+// #include "object.h"
+// #include "particlebox.h"
+// #include "jsonReader.h"
+// #include "entity.h"
+// #include "spaceship.h"
+// #include "sun.h"
+#include "marsLocation.h"
+#include "shopstate.h"
 
 #include "cursor.h"
 #include "soundtrack.h"
@@ -41,7 +43,7 @@ using namespace std;
 //<><><> NEEDY CONSTANTS AND VARYABLES
 int screen_width {600};
 int screen_height {400};
-
+int level = 0;
 NewtonWorld *world;
 Cursor *cursorP;
 
@@ -63,8 +65,11 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 {
     //close application
     if (key == GLFW_KEY_ESCAPE && action == 1) {
+        if (level != 1){
         cout << "action: window was closed" << endl;
         glfwSetWindowShouldClose(window, true);
+        }
+        else level = 0;
     }
 
     //###### keys for rotation ######
@@ -122,6 +127,11 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_M && (action == 1)){
         mute = (mute) ? false : true;
         cout << "mute:" << mute << endl;
+    }
+
+    if (key == GLFW_KEY_N && (action == 1)){ // todo: remove
+        level = (level) ? 0 : 1;
+        cout << "level:" << mute << endl;
     }
 
 }
@@ -204,7 +214,7 @@ int main(void)
     //     )cut"
     // );
 
-    //enable gl functions
+    // enable gl functions
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     // key enter function
@@ -213,44 +223,16 @@ int main(void)
     glfwSetCursorPosCallback(basicWindow, cursor_position_callback);
 
 
-    JsonReader jsonReader;
-    Primal primal;
-    // planets creating
-    Planet mars;
-    jsonReader.readJsonPlanet(&mars, "characters/planets/mars.json");
-    Planet moon;
-    jsonReader.readJsonPlanet(&moon, "characters/planets/moon.json");
-    Planet mercury;
-    jsonReader.readJsonPlanet(&mercury, "characters/planets/mercury.json");
-    Sun sun;
-    jsonReader.readJsonSun(&sun, "characters/planets/sun.json");
-    sun.screen_width = screen_width; //todo: remove/make simpler
-    sun.screen_height = screen_height;
-
-    Spaceship spaceship;
-    jsonReader.readJsonSpaceship(&spaceship, "characters/objects/myship.json");
-    spaceship.setControlStatus(true);
-    spaceship.pushWindowSize(&screen_width, &screen_height);
-    Spaceship mothership;
-    jsonReader.readJsonSpaceship(&mothership, "characters/objects/mothership.json");
-    mothership.newActionStatus(ACTION_ROLL_CW);
-    Spaceship testObj;
-    jsonReader.readJsonSpaceship(&testObj, "characters/objects/test.json");
-
-    ParticleBox particle;
-    particle.newGenerate();
+    MarsLocation marsLocation;
+    marsLocation.pushWindowLink(basicWindow);
+    Shopstate shopstate;
 
     Soundtrack soundtrack;
     soundtrack.loadSound("media/ObservingTheStar.opus");
     soundtrack.play();
 
-    // shader preparation
-    Brightness brightnessShader;
-    PlanetShader planetShader;
-    SunShader sunShader;
 
-    Cursor cursor;
-    cursorP = &cursor;
+    cursorP = marsLocation.getCursorPtr();
 
 
     float time = glfwGetTime();
@@ -264,17 +246,28 @@ int main(void)
         float deltaTime = currentTime - time;
         time = currentTime;
         NewtonUpdate(world, deltaTime);
-
-
-        alSourcef(soundtrack.getSource(), AL_GAIN, mute);
         
+        // musik part
+        alSourcef(soundtrack.getSource(), AL_GAIN, mute);
+        // alSourcei(soundtrack.getSource(), AL_LOOPING, 1);
+        
+
+        // ------ prepareGamestate
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
         //prerender pass --------------------------------
-        sun.prerender(sunShader);
+        switch (level) {
+        case 0: marsLocation.prerender();
+            break;
+        case 1: shopstate.prerender();
+            break;
+        default:
+            break;
+        }
+
         //render pass -----------------------------------
 
         // size of window : void state/level
@@ -286,65 +279,21 @@ int main(void)
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
 
-        // basic matrixes : 3d state
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(65.0f, screen_width / (float) screen_height, 0.1f, 1000.0f);
-        glMatrixMode(GL_MODELVIEW);
-        
-        // follow for spaceship : 3d state
-        Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
-        Vec3 forward = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 0, -1});
-        Vec3 to = whereIam + forward;
-        Vec3 preUp = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 1, 0});
-        if (personView == 1){
-            glLoadIdentity();
-            gluLookAt(whereIam.x, whereIam.y, whereIam.z,
-                      to.x, to.y, to.z,
-                      preUp.x, preUp.y, preUp.z);
+        switch (level) {
+        case 0: 
+            {
+                marsLocation.prepareMatrix();
+                marsLocation.pushPersonView(personView);
+                marsLocation.newActionStatus(actionStatus);
+                marsLocation.render();        
+            }
+            break;
+        case 1:
+            shopstate.render();
+            break;
+        default:
+            break;
         }
-        else{
-            glLoadIdentity();
-            gluLookAt(50, 0, 0,
-                      spaceship.getX(), spaceship.getY(), spaceship.getZ(),
-                      0, 1, 0);
-        }        
-
-        // draw objects (and spaceships) : 3d state
-        glUseProgram(brightnessShader.getShaderID());
-        brightnessShader.setSun(sun.getXYZ());
-        mothership.draw(brightnessShader);
-        testObj.draw(brightnessShader);
-
-        spaceship.newActionStatus(actionStatus);
-        cursor.pushWindowSize(screen_width, screen_height);
-        if (!personView){
-            spaceship.draw(brightnessShader);
-        }
-        else {
-            spaceship.mouseRotation(cursor.getTransformX(), cursor.getTransformY());
-        }
-
-        // draw planets : 3d state
-        glUseProgram(planetShader.getShaderID());
-        planetShader.setSun(sun.getXYZ());
-        mars.draw(planetShader, spaceship.getXYZ());
-        moon.draw(planetShader, spaceship.getXYZ());
-        mercury.draw(planetShader, spaceship.getXYZ());
-        glUseProgram(0);
-
-        sun.draw(spaceship.getXYZ());
-        
-        // replace particalBox around your spaceship
-        particle.newBoxPosition(spaceship.getX(), spaceship.getY(), spaceship.getZ());
-        particle.draw();
-
-        // draw axis
-        primal.drawFollowCoord(spaceship.makeModelMatrix());
-        primal.drawCoord();
-
-        // draw cursor
-        cursor.draw();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);

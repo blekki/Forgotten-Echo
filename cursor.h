@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 using namespace std;
 
@@ -7,6 +10,7 @@ class Cursor
     private:
         double x;
         double y;
+        int textureID;
 
         // screen size
         int screen_width;
@@ -15,7 +19,8 @@ class Cursor
     public:
         void setX(double x);
         void setY(double y);
-        void pushWindowSize(int x, int y);
+        void loadTexture(string path);
+        void pushWindowSize(GLFWwindow *window);
         double getX();
         double getY();
         double getTransformX();
@@ -28,5 +33,6 @@ class Cursor
         Cursor(){
             x = 0;
             y = 0;
+            textureID = 0;
         }
 };

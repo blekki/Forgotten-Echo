@@ -5,6 +5,7 @@ project(ForgottenEcho)
 # include_directories(BEFORE PUBLIC ./lightning)
 # include_directories(BEFORE PUBLIC ./shader)
 add_executable(${PROJECT_NAME} ForgottenEcho.cpp primal.cpp sphere.cpp planet.cpp object.cpp entity.cpp model.cpp qued.cpp matrices.cpp particlebox.cpp jsonReader.cpp 
+                               zerostate.cpp gamestate3d.cpp marsLocation.cpp shopstate.cpp
                                sun.cpp spaceship.cpp
                                cursor.cpp
                                soundtrack.cpp
