@@ -26,10 +26,12 @@ class MarsLocation : public Gamestate3d
 
     public:
         void pushPersonView(int viewType);
-        void newActionStatus(int actionStatus);
+        virtual void pushActionStatus(int actionStatus) override;
 
-        void render();
-        void prerender();
+
+        void renderObjects();
+        virtual void prerender() override;
+        virtual void render() override;
 
         MarsLocation();
 };

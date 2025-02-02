@@ -19,22 +19,16 @@
 
 #include "ForgottenEcho.h"
 
-// #include "primal.h"
-// #include "sphere.h"
-// #include "planet.h"
-// #include "model.h"
-// #include "object.h"
-// #include "particlebox.h"
-// #include "jsonReader.h"
-// #include "entity.h"
-// #include "spaceship.h"
-// #include "sun.h"
 #include "marsLocation.h"
 #include "shopstate.h"
 
 #include "cursor.h"
 #include "soundtrack.h"
 #include "shader/sunShader.h"
+
+// tests
+#include "logicwire/board.h"
+#include "logicwire/logicwire.h"
 
 
 
@@ -50,6 +44,10 @@ Cursor *cursorP;
 int actionStatus = ACTION_HANDING;
 int personView = 1;
 bool mute = true;
+
+MarsLocation *marsLocation;
+Shopstate *shopstate;
+Zerostate *currentState;
 
 //<><><> FUNCTIONS <><><>
 void keyAction(string logs, action_t actionType, bool pressed){
@@ -130,7 +128,15 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     }
 
     if (key == GLFW_KEY_N && (action == 1)){ // todo: remove
-        level = (level) ? 0 : 1;
+        // currentState = (level) ? marsLocation : shopstate;
+        if (level){
+            currentState = marsLocation;
+            level = 0;
+        }
+        else {
+            currentState = shopstate;
+            level = 1;
+        }
         cout << "level:" << mute << endl;
     }
 
@@ -222,17 +228,37 @@ int main(void)
     glfwSetMouseButtonCallback(basicWindow, mouse_button_callback);
     glfwSetCursorPosCallback(basicWindow, cursor_position_callback);
 
-
-    MarsLocation marsLocation;
-    marsLocation.pushWindowLink(basicWindow);
-    Shopstate shopstate;
+    marsLocation = new MarsLocation;
+    marsLocation->pushWindowLink(basicWindow);
+    shopstate = new Shopstate;
+    shopstate->pushWindowLink(basicWindow);
+    currentState = marsLocation;
 
     Soundtrack soundtrack;
     soundtrack.loadSound("media/ObservingTheStar.opus");
     soundtrack.play();
 
+    cursorP = marsLocation->getCursorPtr();
 
-    cursorP = marsLocation.getCursorPtr();
+    LogicWire logicwire("                  "
+                        "  xx              "
+                        " xx oooooooooo    "
+                        "  xx o o   o o    "
+                        "      +     +     "
+                        "     ++ ++ ++     "
+                        "   +++ ++ ++ ++   "
+                        "   + ++ ++ ++ +   "
+                        "   +          +   "
+                        "   ++++++++++++   "
+                        "          +       "
+                        "                  ", 12);
+    logicwire.powerTheWire(1);
+    for (int i = 0; i < 5; i++) {
+        logicwire.simulate();
+        // debug
+        // cout << "------------------" << endl;
+        // logicwire.print();
+    }
 
 
     float time = glfwGetTime();
@@ -249,8 +275,6 @@ int main(void)
         
         // musik part
         alSourcef(soundtrack.getSource(), AL_GAIN, mute);
-        // alSourcei(soundtrack.getSource(), AL_LOOPING, 1);
-        
 
         // ------ prepareGamestate
         glMatrixMode(GL_PROJECTION);
@@ -259,14 +283,7 @@ int main(void)
         glLoadIdentity();
 
         //prerender pass --------------------------------
-        switch (level) {
-        case 0: marsLocation.prerender();
-            break;
-        case 1: shopstate.prerender();
-            break;
-        default:
-            break;
-        }
+        currentState->prerender();
 
         //render pass -----------------------------------
 
@@ -279,21 +296,8 @@ int main(void)
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
 
-        switch (level) {
-        case 0: 
-            {
-                marsLocation.prepareMatrix();
-                marsLocation.pushPersonView(personView);
-                marsLocation.newActionStatus(actionStatus);
-                marsLocation.render();        
-            }
-            break;
-        case 1:
-            shopstate.render();
-            break;
-        default:
-            break;
-        }
+        currentState->pushActionStatus(actionStatus);
+        currentState->render();
 
         // other needy actions
         glfwSwapBuffers(basicWindow);
@@ -301,6 +305,9 @@ int main(void)
     }
 
     // close everything
+    delete marsLocation;
+    delete shopstate;
+
     glfwDestroyWindow(basicWindow);
     glfwTerminate();
 

@@ -14,11 +14,13 @@ class Zerostate
         Cursor cursor;
     
     public:
+        virtual void prerender() = 0;
+        virtual void pushActionStatus(int actionStatus) = 0;
+        virtual void render() = 0;
         Cursor* getCursorPtr();
         void pushWindowLink(GLFWwindow *window);
 
         Zerostate(){
-            cursor.loadTexture("models/Light Interceptor-T/engine_back.bmp");
             screen_width = 600;
             screen_height = 400;
         }

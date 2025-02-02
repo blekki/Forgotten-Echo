@@ -17,11 +17,11 @@ void MarsLocation::pushPersonView(int viewType){
     this->personView = viewType;
 }
 
-void MarsLocation::newActionStatus(int actionStatus){
+void MarsLocation::pushActionStatus(int actionStatus){
     this->spaceship.newActionStatus(actionStatus);
 }
 
-void MarsLocation::render(){
+void MarsLocation::renderObjects(){
     Vec3 whereIam {spaceship.getX(), spaceship.getY(), spaceship.getZ()};
     Vec3 forward = multiplyMatrixVec(spaceship.makeModelMatrix(), Vec3 {0, 0, -1});
     Vec3 to = whereIam + forward;
@@ -72,6 +72,12 @@ void MarsLocation::render(){
 
     // draw cursor
     cursor.draw();
+}
+
+void MarsLocation::render(){
+    prepareMatrix();
+    pushPersonView(personView);
+    renderObjects();
 }
 
 MarsLocation::MarsLocation(){

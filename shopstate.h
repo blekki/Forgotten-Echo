@@ -9,9 +9,8 @@ class Shopstate: public Zerostate
         int status;
     
     public:
-        void render();
-        void prerender(){
-            return;
-        }
+        virtual void pushActionStatus(int actionStatus) override {};
+        virtual void render() override;
+        virtual void prerender() override;
         Shopstate();
 };

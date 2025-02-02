@@ -7,7 +7,12 @@
 
 using namespace std;
 
+void Shopstate::prerender(){
+    return;
+}
+
 void Shopstate::render(){
+    glColor3f(0.1, 0.1, 0.1);
     glOrtho(0, 1, 0, 1, -1, 1);
     glBegin(GL_QUADS);
     glVertex2f(0, 0);
