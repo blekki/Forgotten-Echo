@@ -16,11 +16,11 @@ class LogicWire
         vector<Gate> gates;
 
         Board map; // in the future: replace it to the LogicWire function
+        
+        void load(const char* circuit, int height);
     
     public:
-        // LogicWire(const char* circuit, int height);
         LogicWire(const char* image_source);
-        void load(const char* circuit, int height);
 
         void simulate();
         void powerTheWire(int id);

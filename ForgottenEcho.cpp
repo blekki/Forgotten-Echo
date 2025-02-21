@@ -240,18 +240,6 @@ int main(void)
 
     cursorP = marsLocation->getCursorPtr();
 
-    // LogicWire logicwire("                  "
-    //                     "  xx              "
-    //                     " xx oooooooooo    "
-    //                     "  xx o o   o o    "
-    //                     "      +     +     "
-    //                     "     ++ ++ ++     "
-    //                     "   +++ ++ ++ ++   "
-    //                     "   + ++ ++ ++ +   "
-    //                     "   +          +   "
-    //                     "   ++++++++++++   "
-    //                     "          +       "
-    //                     "                  ", 12);
     LogicWire logicwire("Sprite-0003.png");
     logicwire.powerTheWire(1);
     for (int i = 0; i < 5; i++) {

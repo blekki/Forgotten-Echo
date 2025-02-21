@@ -4,7 +4,6 @@
 #include <png++/png.hpp>
 
 
-// LogicWire::LogicWire(const char* circuit, int height){
 void LogicWire::load(const char* circuit, int height){
     board.load(circuit, height);
     map.emptyBoard(board.getHeight(), board.getWidth());
@@ -33,9 +32,9 @@ void LogicWire::load(const char* circuit, int height){
         }
     
     }
-    // board.print(); //for debug
-    // cout << "----------------" << endl;
-    // map.print(); //for debug
+    board.print(); //for debug
+    cout << "----------------" << endl;
+    map.print(); //for debug
 
     // searching gates
     wires.resize(wire+1); // "0" index for non existent wire
