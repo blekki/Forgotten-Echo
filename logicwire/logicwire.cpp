@@ -13,28 +13,78 @@ void LogicWire::load(const char* circuit, int height){
         for (int x = 1; x < board.getWidth() - 1; x++) {
             if (board(x, y) && !map(x, y)) {
                 wire++;
-                function<void(int, int)> walker;
+                function<void(int, int)> walker; 
+                                    // walker(x, y)
+                function<void(int, int, int)> bridge; 
+                                    // bridge(x, y, source_direction)
+                                    // left = 0
+                                    // right = 1
+                                    // top = 2
+                                    // bottom = 3
+                
+                    bridge = [&](int x, int y, int source) {
+                    long mask = 0x000000000;
+                    if(board(x-1, y-1)) mask |= 0x100000000;
+                    if(board(x  , y-1)) mask |= 0x010000000;
+                    if(board(x+1, y-1)) mask |= 0x001000000;
+                    if(board(x-1, y  )) mask |= 0x000100000;
+                    if(board(x  , y  )) mask |= 0x000010000;
+                    if(board(x+1, y  )) mask |= 0x000001000;
+                    if(board(x-1, y+1)) mask |= 0x000000100;
+                    if(board(x  , y+1)) mask |= 0x000000010;
+                    if(board(x+1, y+1)) mask |= 0x000000001;
+
+                    // bridge types
+                    if (mask == 0x010101010) {
+                        switch (source) {
+                            // from left
+                            case 0:
+                                walker(x+1, y);
+                                break;
+                            // from right
+                            case 1:
+                                walker(x-1, y);
+                                break;
+                            // from top
+                            case 2:
+                                walker(x, y-1);
+                                break;
+                            // from bottom
+                            case 3:
+                                walker(x, y+1);
+                                break;
+                            default: break;
+                        }   
+                    }
+                };
                 walker = [&](int x, int y) {
                     if (map(x,y))
                         return;
-                    map[y].addWire(x, wire);
-                    if (board(x+1, y))
-                        walker(x+1, y);
-                    if (board(x-1, y))
-                        walker(x-1, y);
-                    if (board(x, y+1))
-                        walker(x, y+1);
-                    if (board(x, y-1))
-                        walker(x, y-1);
+                    map[y].addWire(x, wire); //debug check: wire + 40
+                    // if (board(x+1, y))
+                    //     walker(x+1, y);
+                    // if (board(x-1, y))
+                    //     walker(x-1, y);
+                    // if (board(x, y+1))
+                    //     walker(x, y+1);
+                    // if (board(x, y-1))
+                    //     walker(x, y-1);
+                    
+                    // check bridge
+                    (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, 0);
+                    (board(x-1, y)) ? walker(x-1, y) : bridge(x-1, y, 1);
+                    (board(x, y+1)) ? walker(x, y+1) : bridge(x, y+1, 2);
+                    (board(x, y-1)) ? walker(x, y-1) : bridge(x, y-1, 3);
+                    
                 };
                 walker(x, y);
             }
         }
     
     }
-    board.print(); //for debug
-    cout << "----------------" << endl;
-    map.print(); //for debug
+    // board.print(); //for debug
+    // cout << "##############################" << endl;
+    // map.print(); //for debug
 
     // searching gates
     wires.resize(wire+1); // "0" index for non existent wire
@@ -59,7 +109,7 @@ void LogicWire::load(const char* circuit, int height){
                 // left-to-right
                 case 0x110101110:
                     gate++;
-                    gates.push_back(Gate(gate, map(x-1,y), map(x+1,y))); // -48 for convert char number into int
+                    gates.push_back(Gate(gate, map(x-1,y), map(x+1,y)));
                     break;
                 // right-to-left
                 case 0x011101011:
@@ -103,12 +153,13 @@ LogicWire::LogicWire(const char* image_name){
         }
     }
 
-    for (int a = 0; a < image.get_height(); a++) {
-        for (int b = 0; b < image.get_width(); b++) {
-            cout << circuit[a * image.get_width() + b];
-        }
-        cout << endl;
-    }
+    // show a circuit (debug)
+    // for (int a = 0; a < image.get_height(); a++) {
+    //     for (int b = 0; b < image.get_width(); b++) {
+    //         cout << circuit[a * image.get_width() + b];
+    //     }
+    //     cout << endl;
+    // }
     
     load(circuit.c_str(), image.get_height());
     
