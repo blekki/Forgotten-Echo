@@ -1,9 +1,11 @@
 #include "logicwire.h"
 #include <vector>
 #include <functional>
+#include <png++/png.hpp>
 
 
-LogicWire::LogicWire(const char* circuit, int height){
+// LogicWire::LogicWire(const char* circuit, int height){
+void LogicWire::load(const char* circuit, int height){
     board.load(circuit, height);
     map.emptyBoard(board.getHeight(), board.getWidth());
     
@@ -58,28 +60,59 @@ LogicWire::LogicWire(const char* circuit, int height){
                 // left-to-right
                 case 0x110101110:
                     gate++;
-                    gates.push_back(Gate(gate, (map(x-1,y) - 48), (map(x+1,y) - 48))); // -48 for convert char number into int
+                    gates.push_back(Gate(gate, map(x-1,y), map(x+1,y))); // -48 for convert char number into int
                     break;
                 // right-to-left
                 case 0x011101011:
                     gate++;
-                    gates.push_back(Gate(gate, (map(x+1,y) - 48), (map(x-1,y) - 48)));
+                    gates.push_back(Gate(gate, map(x+1,y), map(x-1,y)));
                     break;
                 // top-to-bottom
                 case 0x111101010:
                     gate++;
-                    gates.push_back(Gate(gate, (map(x,y-1) - 48), (map(x,y+1) - 48)));
+                    gates.push_back(Gate(gate, map(x,y-1), map(x,y+1)));
                     break;
                 // bottom-to-top
                 case 0x010101111:
                     gate++;
-                    gates.push_back(Gate(gate, (map(x,y+1) - 48), (map(x,y-1) - 48)));
+                    gates.push_back(Gate(gate, map(x,y+1), map(x,y-1)));
                     break;
                 default: break;
             }
         }
     }
     // cout << "gates count: " << gate << endl; // for debug
+}
+
+LogicWire::LogicWire(const char* image_name){
+    png::image<png::rgb_pixel> image(image_name);
+    string circuit = "";
+
+    for (int a = 0; a < image.get_height(); a++) {
+        for (int b = 0; b < image.get_width(); b++) {
+            int color_mesh = image[a][b].red +
+                             image[a][b].green +
+                             image[a][b].blue;
+
+            char symbol;
+            switch (color_mesh) {
+                case 255*3: symbol = '#'; break;
+                case 100*3: symbol = '@'; break;
+                default: symbol = ' '; break;
+            }
+            circuit.push_back(symbol);
+        }
+    }
+
+    for (int a = 0; a < image.get_height(); a++) {
+        for (int b = 0; b < image.get_width(); b++) {
+            cout << circuit[a * image.get_width() + b];
+        }
+        cout << endl;
+    }
+    
+    load(circuit.c_str(), image.get_height());
+    
 }
 
 void LogicWire::simulate(){
@@ -108,7 +141,7 @@ void LogicWire::print(){
 
     for (int y = 0; y < board.getHeight(); y++) {
         for (int x = 0; x < board.getWidth(); x++) {
-            int wire = (map(x, y) - 48);
+            int wire = map(x, y);
             char v = (board(x, y));
             cout << (wires[wire] ? bright : normal)
                     << (v ? v : ' ');

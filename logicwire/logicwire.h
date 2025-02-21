@@ -18,7 +18,9 @@ class LogicWire
         Board map; // in the future: replace it to the LogicWire function
     
     public:
-        LogicWire(const char* circuit, int height);
+        // LogicWire(const char* circuit, int height);
+        LogicWire(const char* image_source);
+        void load(const char* circuit, int height);
 
         void simulate();
         void powerTheWire(int id);

@@ -23,7 +23,7 @@ class Board
                     return ptr[i];
                 }
                 void addWire(int i, int wire) {
-                    ptr[i] = wire + 48; // 48 means 0 in ASCII
+                    ptr[i] = wire;
                 }
         };
 
