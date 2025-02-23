@@ -4,6 +4,8 @@
 
 #include "board.h"
 #include "gate.h"
+#include "input.h"
+#include "output.h"
 
 
 using namespace std;
@@ -12,6 +14,8 @@ class LogicWire
 {
     private:
         Board board;
+        vector<Input> inputs;
+        vector<Output> outputs;
         vector<bool> wires;
         vector<Gate> gates;
 
@@ -23,4 +27,6 @@ class LogicWire
         void simulate();
         void powerTheWire(int id);
         void print(); // in future i won't need it
+
+        void powerTheInput(int id, bool status);
 };

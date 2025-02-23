@@ -3,6 +3,12 @@
 #include <functional>
 #include <png++/png.hpp>
 
+enum direction_t{
+    RIGHT_DIRECTION,
+    LEFT_DIRECTION,
+    TOP_DIRECTION,
+    BOTTOM_DIRECTION,
+};
 
 // void LogicWire::load(const char* circuit, int height){
 LogicWire::LogicWire(const char* image_name){
@@ -20,9 +26,27 @@ LogicWire::LogicWire(const char* image_name){
     }
     board.load(circuit.c_str(), image.get_height());
     map.emptyBoard(image.get_height(), image.get_width());
+
+    // giving an id for every inputs and outputs
+    uint input = 0;
+    uint output = 0;
+    for (int y = 0; y < board.getHeight(); y++) { // input wires
+        if (board(0, y)) {
+            inputs.push_back(Input(input));
+            input++;
+            map[y].addWire(0, 0); // "0" id for imputs and outputss
+        }
+        
+        int last_x = board.getWidth() - 1;
+        if (board(last_x, y)) {
+            outputs.push_back(Output(output));
+            output++;
+            map[y].addWire(0, 0);
+        }
+    }
     
     // serching wires and bridges
-    int wire = 0;
+    unsigned short int wire = 0;
     wires.push_back(false); // "0" wire. Always turn off. it doesn't exist on circuit
     for (int y = 1; y < board.getHeight() - 1; y++) {
         for (int x = 1; x < board.getWidth() - 1; x++) {
@@ -34,10 +58,6 @@ LogicWire::LogicWire(const char* image_name){
                                     // walker(x, y)
                 function<void(int, int, int)> bridge; // checking for bridges
                                     // bridge(x, y, source_direction)
-                                    // left = 0
-                                    // right = 1
-                                    // top = 2
-                                    // bottom = 3
                 
                 bridge = [&](int x, int y, int source) {
                     long mask = 0x000000000;
@@ -54,17 +74,13 @@ LogicWire::LogicWire(const char* image_name){
                     // bridge types
                     if (mask == 0x010101010) {
                         switch (source) {
-                            // from left
-                            case 0:
+                            case RIGHT_DIRECTION:
                                 walker(x+1, y); break;
-                            // from right
-                            case 1:
+                            case LEFT_DIRECTION:
                                 walker(x-1, y); break;
-                            // from top
-                            case 2:
+                            case TOP_DIRECTION:
                                 walker(x, y+1); break;
-                            // from bottom
-                            case 3:
+                            case BOTTOM_DIRECTION:
                                 walker(x, y-1); break;
                             default: break;
                         }   
@@ -81,10 +97,10 @@ LogicWire::LogicWire(const char* image_name){
                         powerTheWire(wire);
                     
                     // check bridge
-                    (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, 0); //right  direction
-                    (board(x-1, y)) ? walker(x-1, y) : bridge(x-1, y, 1); //left   direction
-                    (board(x, y+1)) ? walker(x, y+1) : bridge(x, y+1, 2); //top    direction
-                    (board(x, y-1)) ? walker(x, y-1) : bridge(x, y-1, 3); //bottom direction
+                    (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, RIGHT_DIRECTION );
+                    (board(x-1, y)) ? walker(x-1, y) : bridge(x-1, y, LEFT_DIRECTION  );
+                    (board(x, y+1)) ? walker(x, y+1) : bridge(x, y+1, TOP_DIRECTION   );
+                    (board(x, y-1)) ? walker(x, y-1) : bridge(x, y-1, BOTTOM_DIRECTION);
                     
                 };
                 walker(x, y);
@@ -92,9 +108,24 @@ LogicWire::LogicWire(const char* image_name){
         }
     
     }
+
+    // connectiong inputs with wire
+    for (int row = 0; row < board.getHeight(); row++) {
+        int in = 0;
+
+        if (map(0, row)) {
+            inputs[in].setDrain(map(1, row));
+            in++;
+        }
+
+        int last_x = board.getWidth() - 1;
+        int out;
+        if (map(last_x, row)) {
+            outputs[out].setSource(map(last_x - 1, row));
+            out++;
+        }
+    }
     
-    // board.print(); //for debug
-    // cout << "##############################" << endl;
     // map.print(); //for debug (don't work now)
 
     // searching gates
@@ -141,15 +172,34 @@ LogicWire::LogicWire(const char* image_name){
     // cout << "gates count: " << gate << endl; // for debug
 }
 
+// ############# OTHER FUNCTIONS #############
+
+void LogicWire::powerTheInput(int id, bool status){
+    inputs[id].setPower(status);
+}
+
 void LogicWire::simulate(){
     vector<bool> new_states;
     new_states.resize(wires.size());
 
-    for (int i = 0; i < gates.size(); i++) {
-        Gate& gate = gates[i];
+    // input push power
+    for (uint i = 0; i < inputs.size(); i++) {
+        if (inputs[i].powerStatus())
+            new_states.at(inputs[i].getDrain()) = true;
+    }
+    // gate blocking power
+    for (uint g = 0; g < gates.size(); g++) {
+        Gate& gate = gates[g];
         bool source_powered = wires[gate.source];
         if (!source_powered)
             new_states.at(gate.drain) = true;
+    }
+    // output get power
+    for (uint a = 0; a < outputs.size(); a++) {
+        if (new_states[outputs[a].getSource()]) {
+            outputs[a].setPower(true);
+        }
+        else outputs[a].setPower(false);
     }
 
     wires = new_states;

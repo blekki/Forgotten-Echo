@@ -240,13 +240,14 @@ int main(void)
 
     cursorP = marsLocation->getCursorPtr();
 
-    LogicWire logicwire("logicwire/curcuits/Sprite-0005.png");
+    LogicWire logicwire("logicwire/curcuits/Sprite-0006.png");
     logicwire.print();
     for (int i = 0; i < 5; i++) {
-        // logicwire.simulate();
+        logicwire.powerTheInput(0, true);
+        logicwire.simulate();
         // debug
         // cout << "------------------" << endl;
-        // logicwire.print();
+        logicwire.print();
     }
 
 
