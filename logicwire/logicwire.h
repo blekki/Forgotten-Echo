@@ -17,8 +17,6 @@ class LogicWire
 
         Board map; // in the future: replace it to the LogicWire function
         
-        void load(const char* circuit, int height);
-    
     public:
         LogicWire(const char* image_source);
 

@@ -4,26 +4,42 @@
 #include <png++/png.hpp>
 
 
-void LogicWire::load(const char* circuit, int height){
-    board.load(circuit, height);
-    map.emptyBoard(board.getHeight(), board.getWidth());
+// void LogicWire::load(const char* circuit, int height){
+LogicWire::LogicWire(const char* image_name){
+    // image into board
+    png::image<png::rgb_pixel> image(image_name);
+    string circuit = "";
+    for (int a = 0; a < image.get_height(); a++) {
+        for (int b = 0; b < image.get_width(); b++) {
+            int color_hash = image[a][b].red +
+                             image[a][b].green +
+                             image[a][b].blue;
+            char symbol = (color_hash > 0) ? '#' : ' '; // wire = #, other = 0
+            circuit.push_back(symbol);
+        }
+    }
+    board.load(circuit.c_str(), image.get_height());
+    map.emptyBoard(image.get_height(), image.get_width());
     
+    // serching wires and bridges
     int wire = 0;
+    wires.push_back(false); // "0" wire. Always turn off. it doesn't exist on circuit
     for (int y = 1; y < board.getHeight() - 1; y++) {
         for (int x = 1; x < board.getWidth() - 1; x++) {
             if (board(x, y) && !map(x, y)) {
                 wire++;
+                wires.push_back(false);
                 // prepare functions
-                function<void(int, int)> walker; 
+                function<void(int, int)> walker; // <-- serching all wires
                                     // walker(x, y)
-                function<void(int, int, int)> bridge; 
+                function<void(int, int, int)> bridge; // checking for bridges
                                     // bridge(x, y, source_direction)
                                     // left = 0
                                     // right = 1
                                     // top = 2
                                     // bottom = 3
                 
-                    bridge = [&](int x, int y, int source) {
+                bridge = [&](int x, int y, int source) {
                     long mask = 0x000000000;
                     if(board(x-1, y-1)) mask |= 0x100000000;
                     if(board(x  , y-1)) mask |= 0x010000000;
@@ -40,20 +56,16 @@ void LogicWire::load(const char* circuit, int height){
                         switch (source) {
                             // from left
                             case 0:
-                                walker(x+1, y);
-                                break;
+                                walker(x+1, y); break;
                             // from right
                             case 1:
-                                walker(x-1, y);
-                                break;
+                                walker(x-1, y); break;
                             // from top
                             case 2:
-                                walker(x, y+1);
-                                break;
+                                walker(x, y+1); break;
                             // from bottom
                             case 3:
-                                walker(x, y-1);
-                                break;
+                                walker(x, y-1); break;
                             default: break;
                         }   
                     }
@@ -61,21 +73,18 @@ void LogicWire::load(const char* circuit, int height){
                 walker = [&](int x, int y) {
                     if (map(x,y))
                         return;
-                    map[y].addWire(x, wire); //for debug check try (wire + 40)
-                    // if (board(x+1, y))
-                    //     walker(x+1, y);
-                    // if (board(x-1, y))
-                    //     walker(x-1, y);
-                    // if (board(x, y+1))
-                    //     walker(x, y+1);
-                    // if (board(x, y-1))
-                    //     walker(x, y-1);
+                    map[y].addWire(x, wire); //for debug map.print() try addWire(wire + 48)
+                    uint color_hash = image[y][x].red +
+                                      image[y][x].green +
+                                      image[y][x].blue;
+                    if (color_hash == 255 * 3)
+                        powerTheWire(wire);
                     
                     // check bridge
-                    (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, 0);
-                    (board(x-1, y)) ? walker(x-1, y) : bridge(x-1, y, 1);
-                    (board(x, y+1)) ? walker(x, y+1) : bridge(x, y+1, 2);
-                    (board(x, y-1)) ? walker(x, y-1) : bridge(x, y-1, 3);
+                    (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, 0); //right  direction
+                    (board(x-1, y)) ? walker(x-1, y) : bridge(x-1, y, 1); //left   direction
+                    (board(x, y+1)) ? walker(x, y+1) : bridge(x, y+1, 2); //top    direction
+                    (board(x, y-1)) ? walker(x, y-1) : bridge(x, y-1, 3); //bottom direction
                     
                 };
                 walker(x, y);
@@ -83,14 +92,12 @@ void LogicWire::load(const char* circuit, int height){
         }
     
     }
+    
     // board.print(); //for debug
     // cout << "##############################" << endl;
     // map.print(); //for debug (don't work now)
 
     // searching gates
-    wires.resize(wire+1); // "0" index for non existent wire
-    // cout << "wires count: " << wire << endl; // for debug
-    
     int gate = 0;
     for (int y = 2; y < board.getHeight() - 2; y++) {
         for (int x = 2; x < board.getWidth() - 2; x++) {
@@ -132,40 +139,6 @@ void LogicWire::load(const char* circuit, int height){
         }
     }
     // cout << "gates count: " << gate << endl; // for debug
-}
-
-// convert png image into circuit
-LogicWire::LogicWire(const char* image_name){
-    png::image<png::rgb_pixel> image(image_name);
-    string circuit = "";
-
-    // check all row and column
-    for (int a = 0; a < image.get_height(); a++) {
-        for (int b = 0; b < image.get_width(); b++) {
-            int color_mesh = image[a][b].red + //todo: change color scheme
-                             image[a][b].green +
-                             image[a][b].blue;
-
-            char symbol;
-            switch (color_mesh) {
-                case 255*3: symbol = '@'; break;
-                case 100*3: symbol = '#'; break;
-                default: symbol = ' '; break;
-            }
-            circuit.push_back(symbol);
-        }
-    }
-
-    // show a circuit (debug)
-    // for (int a = 0; a < image.get_height(); a++) {
-    //     for (int b = 0; b < image.get_width(); b++) {
-    //         cout << circuit[a * image.get_width() + b];
-    //     }
-    //     cout << endl;
-    // }
-    
-    load(circuit.c_str(), image.get_height());
-    
 }
 
 void LogicWire::simulate(){
