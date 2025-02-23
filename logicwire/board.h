@@ -10,16 +10,17 @@ class Board
         // string name;
         int width;
         int height;
-        uint* board;
+        unsigned short int* board;
+        // uint* board;
 
     public:
         class Row
         {
             private:
-                uint *ptr;
+                unsigned short int *ptr;
             public:
-                Row(uint* ptr) : ptr(ptr){};
-                uint operator[](int i){
+                Row(unsigned short int* ptr) : ptr(ptr){};
+                unsigned short int operator[](int i){
                     return ptr[i];
                 }
                 void addWire(int i, int wire) {
@@ -32,7 +33,7 @@ class Board
         Board(){
             width = 0;
             height = 0;
-            uint* board = nullptr; // ???
+            unsigned short int* board = nullptr; // ???
         }
 
         ~Board(){
@@ -46,7 +47,7 @@ class Board
         void emptyBoard(int height, int width);
         void print();
 
-        uint operator()(int column, int row){
+        unsigned short int operator()(int column, int row){
             return board[row * width + column]; // literally board[row, column]
         }
 

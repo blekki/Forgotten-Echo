@@ -15,7 +15,7 @@ void Board::load(const char* circuit, int height){
         length++;
     this->width = (int) (length / height);
 
-    this->board = new uint[width * height];
+    this->board = new unsigned short int[width * height];
 
     if (circuit) {
         for (int i = 0; i < width * height; i++) {
@@ -27,7 +27,7 @@ void Board::load(const char* circuit, int height){
 void Board::emptyBoard(int height, int width){
     this->width = width;
     this->height = height;
-    this->board = new uint[width * height];
+    this->board = new unsigned short int[width * height];
 
     for (int i = 0; i < width * height; i++) {
         board[i] = 0;

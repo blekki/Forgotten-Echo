@@ -13,6 +13,7 @@ void LogicWire::load(const char* circuit, int height){
         for (int x = 1; x < board.getWidth() - 1; x++) {
             if (board(x, y) && !map(x, y)) {
                 wire++;
+                // prepare functions
                 function<void(int, int)> walker; 
                                     // walker(x, y)
                 function<void(int, int, int)> bridge; 
@@ -47,11 +48,11 @@ void LogicWire::load(const char* circuit, int height){
                                 break;
                             // from top
                             case 2:
-                                walker(x, y-1);
+                                walker(x, y+1);
                                 break;
                             // from bottom
                             case 3:
-                                walker(x, y+1);
+                                walker(x, y-1);
                                 break;
                             default: break;
                         }   
@@ -60,7 +61,7 @@ void LogicWire::load(const char* circuit, int height){
                 walker = [&](int x, int y) {
                     if (map(x,y))
                         return;
-                    map[y].addWire(x, wire); //debug check: wire + 40
+                    map[y].addWire(x, wire); //for debug check try (wire + 40)
                     // if (board(x+1, y))
                     //     walker(x+1, y);
                     // if (board(x-1, y))
@@ -84,7 +85,7 @@ void LogicWire::load(const char* circuit, int height){
     }
     // board.print(); //for debug
     // cout << "##############################" << endl;
-    // map.print(); //for debug
+    // map.print(); //for debug (don't work now)
 
     // searching gates
     wires.resize(wire+1); // "0" index for non existent wire
@@ -133,20 +134,22 @@ void LogicWire::load(const char* circuit, int height){
     // cout << "gates count: " << gate << endl; // for debug
 }
 
+// convert png image into circuit
 LogicWire::LogicWire(const char* image_name){
     png::image<png::rgb_pixel> image(image_name);
     string circuit = "";
 
+    // check all row and column
     for (int a = 0; a < image.get_height(); a++) {
         for (int b = 0; b < image.get_width(); b++) {
-            int color_mesh = image[a][b].red +
+            int color_mesh = image[a][b].red + //todo: change color scheme
                              image[a][b].green +
                              image[a][b].blue;
 
             char symbol;
             switch (color_mesh) {
-                case 255*3: symbol = '#'; break;
-                case 100*3: symbol = '@'; break;
+                case 255*3: symbol = '@'; break;
+                case 100*3: symbol = '#'; break;
                 default: symbol = ' '; break;
             }
             circuit.push_back(symbol);
