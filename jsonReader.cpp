@@ -10,12 +10,12 @@ void JsonReader::readJsonPlanet(Planet *planet, string path){
     ifstream file(path);
     json data = json::parse(file);
 
-    float x = {data["position"][0]["x"]};
-    float y = {data["position"][0]["y"]};
-    float z = {data["position"][0]["z"]};
-    float scale = {data["scale"]};
-    float rotateSpeed = {data["rotateSpeed"]};
-    string texture = {data["texture"]};
+    float x = data["position"][0]["x"];
+    float y = data["position"][0]["y"];
+    float z = data["position"][0]["z"];
+    float scale = data["scale"];
+    float rotateSpeed = data["rotateSpeed"];
+    string texture = data["texture"];
 
     planet->setPosition(x, y, z);
     planet->setScale(scale);
@@ -30,10 +30,10 @@ void JsonReader::readJsonSun(Sun *sun, string path){
     ifstream file(path);
     json data = json::parse(file);
 
-    float x = {data["position"][0]["x"]};
-    float y = {data["position"][0]["y"]};
-    float z = {data["position"][0]["z"]};
-    float scale = {data["scale"]};
+    float x = data["position"][0]["x"];
+    float y = data["position"][0]["y"];
+    float z = data["position"][0]["z"];
+    float scale = data["scale"];
 
     sun->setPosition(x, y, z);
     sun->setScale(scale);
@@ -53,35 +53,35 @@ void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     json data = json::parse(file);
 
     // basic properties (position and scale)
-    float x = {data["position"][0]["x"]};
-    float y = {data["position"][0]["y"]};
-    float z = {data["position"][0]["z"]};
-    float scale = {data["scale"]};
+    float x = data["position"][0]["x"];
+    float y = data["position"][0]["y"];
+    float z = data["position"][0]["z"];
+    float scale = data["scale"];
     spaceship->setPosition(x, y, z);
     spaceship->setScale(scale);
 
     // read rotation position
-    float rotX = {data["rotation-vec"][0]["x-axis"]};
-    float rotY = {data["rotation-vec"][0]["y-axis"]};
-    float rotZ = {data["rotation-vec"][0]["z-axis"]};
+    float rotX = data["rotation-vec"][0]["x-axis"];
+    float rotY = data["rotation-vec"][0]["y-axis"];
+    float rotZ = data["rotation-vec"][0]["z-axis"];
     spaceship->setRotatationPosition(rotX, rotY, rotZ);
 
     // speed-up
-    float forwardSpeedUp = {data["speed-up"][0]["forward"]};
-    float rightSpeedUp = {data["speed-up"][0]["right"]};
-    float upSpeedUp = {data["speed-up"][0]["up"]};
+    float forwardSpeedUp = data["speed-up"][0]["forward"];
+    float rightSpeedUp = data["speed-up"][0]["right"];
+    float upSpeedUp = data["speed-up"][0]["up"];
     spaceship->setSpeedUp(forwardSpeedUp, rightSpeedUp, upSpeedUp);
 
     // rotation speed-up
-    float rollSpeedUp = {data["rotation-speed-up"][0]["roll"]};
-    float yawSpeedUp = {data["rotation-speed-up"][0]["yaw"]};
-    float pitchSpeedUp = {data["rotation-speed-up"][0]["pitch"]};
+    float rollSpeedUp = data["rotation-speed-up"][0]["roll"];
+    float yawSpeedUp = data["rotation-speed-up"][0]["yaw"];
+    float pitchSpeedUp = data["rotation-speed-up"][0]["pitch"];
     spaceship->setRotationSpeedUp(rollSpeedUp, yawSpeedUp, pitchSpeedUp);
 
     // read model place and name
-    string folder = {data["path"]};
-    string obj = {data["model.obj"]};
-    string mtl = {data["model.mtl"]};
+    string folder = data["path"];
+    string obj = data["model.obj"];
+    string mtl = data["model.mtl"];
     spaceship->setPath(folder);
     spaceship->loadModel(folder + obj);
     spaceship->loadMaterials(folder + mtl);
@@ -107,4 +107,22 @@ void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     // connect collition to the object
     NewtonDestroyCollision(collision);
     spaceship->setNewtonBody(body);
+}
+
+void JsonReader::readJsonCircuit(Component *component, string path){
+    using json = nlohmann::json;
+    ifstream file(path);
+    json data = json::parse(file);
+
+    string name = data["name"];
+    component->setName(name);
+    
+    string circuit = data["circuit"];
+    component->loadCircuit(circuit.c_str());
+
+    uint width = data["width"];
+    uint height = data["height"];
+    uint consuming = data["consuming"];
+    component->setSize(width, height);
+    component->setConsuming(consuming);
 }

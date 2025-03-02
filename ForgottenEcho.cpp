@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <cstring>
-// #define GLFW_INCLUDE_NONE
+// everything for 3d
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
@@ -11,13 +11,16 @@
 #include <GL/glu.h>
 // #include <glad/glad.h>
 #include "Newton.h"
+
 // everything for soundtracks
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <opus/opusfile.h>
 #include <sched.h>
 
+// other
 #include "ForgottenEcho.h"
+#include "jsonReader.h" //todo: replace
 
 #include "marsLocation.h"
 #include "shopstate.h"
@@ -26,8 +29,7 @@
 #include "soundtrack.h"
 #include "shader/sunShader.h"
 
-// tests
-#include "logicwire/board.h"
+// everything for a logicwire
 #include "logicwire/logicwire.h"
 
 
@@ -240,14 +242,18 @@ int main(void)
 
     cursorP = marsLocation->getCursorPtr();
 
-    LogicWire logicwire("logicwire/curcuits/Sprite-0006.png");
-    logicwire.print();
+    JsonReader jsonReader;
+    Component component;
+    component.loadCircuit("logicwire/circuits/repeater.png");
+
+    component.powerTheInput(0, true);
+    component.print();
     for (int i = 0; i < 5; i++) {
-        logicwire.powerTheInput(0, true);
-        logicwire.simulate();
-        // debug
-        // cout << "------------------" << endl;
-        logicwire.print();
+        component.simulate();
+        component.print();
+
+        // antenna.simulate();
+        // antenna.print();
     }
 
 

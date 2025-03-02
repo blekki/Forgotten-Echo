@@ -1,0 +1,7 @@
+{
+    "name": "control",
+    "circuit": "logicwire/circuits/control.png",
+    "width": 2,
+    "height": 2,
+    "consuming": 3
+}

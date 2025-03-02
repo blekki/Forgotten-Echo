@@ -1,0 +1,7 @@
+{
+    "name": "repeater",
+    "circuit": "circuits/repeater.png",
+    "width": 3,
+    "height": 2,
+    "consuming": 7
+}

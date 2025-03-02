@@ -10,8 +10,7 @@ enum direction_t{
     BOTTOM_DIRECTION,
 };
 
-// void LogicWire::load(const char* circuit, int height){
-LogicWire::LogicWire(const char* image_name){
+void LogicWire::loadCircuit(const char* image_name){
     // image into board
     png::image<png::rgb_pixel> image(image_name);
     string circuit = "";
@@ -187,7 +186,7 @@ void LogicWire::simulate(){
         if (inputs[i].powerStatus())
             new_states.at(inputs[i].getDrain()) = true;
     }
-    // gate blocking power
+    // gate stop/push power
     for (uint g = 0; g < gates.size(); g++) {
         Gate& gate = gates[g];
         bool source_powered = wires[gate.source];
