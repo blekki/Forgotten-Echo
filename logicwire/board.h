@@ -36,9 +36,9 @@ class Board
             unsigned short int* board = nullptr; // ???
         }
 
-        ~Board(){
-            if (board) delete[] board;
-        }
+        // ~Board(){
+        //     if (board) delete[] board;
+        // }
 
         int getWidth();
         int getHeight();

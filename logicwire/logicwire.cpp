@@ -41,7 +41,7 @@ void LogicWire::loadCircuit(const char* image_name){
         if (board(last_x, y)) {
             outputs.push_back(Output(output));
             output++;
-            map[y].addWire(0, 0);
+            map[y].addWire(last_x, 0); //##################
         }
     }
     
@@ -110,15 +110,15 @@ void LogicWire::loadCircuit(const char* image_name){
     }
 
     // connecting inputs with wire
+    int in = 0;
+    int out = 0;
     for (int row = 0; row < board.getHeight(); row++) {
-        int in = 0;
         if (map(0, row)) {
             inputs[in].setLocalConnection(map(1, row));
             in++;
         }
 
         int last_x = board.getWidth() - 1;
-        int out;
         if (map(last_x, row)) {
             outputs[out].setLocalConnection(map(last_x - 1, row));
             out++;
@@ -177,10 +177,8 @@ void LogicWire::powerTheInput(int id, bool status){
 
 void LogicWire::simulate(){
     vector<bool> new_states;
-    // vector<bool> new_input_states;
     vector<bool> new_output_states;
     new_states.resize(wires.size());
-    // new_input_states.resize(inputs.size());
     new_output_states.resize(outputs.size());
 
     // input push power

@@ -31,6 +31,7 @@
 
 // everything for a logicwire
 #include "logicwire/logicwire.h"
+#include "logicwire/circuit.h"
 
 
 
@@ -243,17 +244,18 @@ int main(void)
     cursorP = marsLocation->getCursorPtr();
 
     JsonReader jsonReader;
-    Component component;
-    component.loadCircuit("logicwire/circuits/repeater.png");
 
-    component.powerTheInput(0, true);
-    component.print();
-    for (int i = 0; i < 5; i++) {
-        component.simulate();
-        component.print();
-
-        // antenna.simulate();
-        // antenna.print();
+    // component.powerTheInput(0, true);
+    // component.print();
+    Circuit scheme;
+    // scheme.schemes[1].powerTheInput(0, true);
+    for (int i = 0; i < 10; i++) {
+        scheme.schemes[1].powerTheInput(0, true);
+        scheme.simulate();
+        scheme.schemes[0].print();
+        scheme.schemes[1].print();
+        scheme.schemes[2].print();
+        cout << "-----------------" << endl;
     }
 
 

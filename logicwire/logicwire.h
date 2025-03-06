@@ -25,6 +25,18 @@ class LogicWire
     public:
         void loadCircuit(const char* image_source);
         void simulate();
+
+        uint getInputsCount(){
+            return inputs.size();
+        }
+
+        Input* getInput(uint id){
+            return &inputs.at(id);
+        }
+
+        Output* getOutput(uint id){
+            return &outputs.at(id);
+        }
         
         // circuits mustn't have open gate for user
         void powerTheWire(int id); //todo: remove (in future)

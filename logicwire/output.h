@@ -3,15 +3,13 @@
 #include <vector>
 
 #include "pin.h"
-#include "input.h"
 
 using namespace std;
 
 class Output : public Pin
 {
     private: 
-        uint connection;
-        // vector<Input> *connection;
+        uint localConnection;
         // 1. first index [0] means pin connected to the ground of void
         // 2. save connection only to circuit
 
@@ -21,6 +19,6 @@ class Output : public Pin
 
         Output(uint id){
             this->id = id;
-            connection = 0;
+            localConnection = 0;
         }
 };

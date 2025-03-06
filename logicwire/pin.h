@@ -11,12 +11,12 @@ class Pin
         bool power;
     
     public:
-        void newId(uint id);
+        // void newId(uint id);
         uint getId();
         void setPower(bool power);
         bool checkPower();
 
         Pin(){
-            power = false; // first power state always is FALSE
+            this->power = false; // first power state always is FALSE
         }
 };
