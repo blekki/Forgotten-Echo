@@ -9,13 +9,19 @@ using namespace std;
 class Input: public Pin
 {
     private:
-    
+        uint localConnection;
+        vector<uint> globalConnections;
+        // zero means it doesn't connected
+
     public:
-        void setDrain(uint drain);
-        uint getDrain();
-        
+
+        void setLocalConnection(uint wire_id);
+        uint getLocalConnection();
+        void addGlobalConnection(uint pin_id);
+
         Input(uint id){
             this->id = id;
-            connections.push_back(0);
+            localConnection = 0;
+            globalConnections.push_back(0);
         }
 };

@@ -2,10 +2,9 @@
 
 using namespace std;
 
-void Output::setSource(uint source){
-    this->source = source;
+void Output::setLocalConnection(uint wire_id){
+    this->connection = wire_id;
 }
-
-uint Output::getSource(){
-    return source;
+uint Output::getLocalConnection(){
+    return connection;
 }

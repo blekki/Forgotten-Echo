@@ -27,13 +27,14 @@ void LogicWire::loadCircuit(const char* image_name){
     map.emptyBoard(image.get_height(), image.get_width());
 
     // giving an id for every inputs and outputs
+    // addition, draw wire on board a place with pins
     uint input = 0;
     uint output = 0;
     for (int y = 0; y < board.getHeight(); y++) { // input wires
         if (board(0, y)) {
             inputs.push_back(Input(input));
             input++;
-            map[y].addWire(0, 0); // "0" id for imputs and outputss
+            map[y].addWire(0, 0); // "0" id for inputs and outputs
         }
         
         int last_x = board.getWidth() - 1;
@@ -108,25 +109,22 @@ void LogicWire::loadCircuit(const char* image_name){
     
     }
 
-    // connectiong inputs with wire
+    // connecting inputs with wire
     for (int row = 0; row < board.getHeight(); row++) {
         int in = 0;
-
         if (map(0, row)) {
-            inputs[in].setDrain(map(1, row));
+            inputs[in].setLocalConnection(map(1, row));
             in++;
         }
 
         int last_x = board.getWidth() - 1;
         int out;
         if (map(last_x, row)) {
-            outputs[out].setSource(map(last_x - 1, row));
+            outputs[out].setLocalConnection(map(last_x - 1, row));
             out++;
         }
     }
     
-    // map.print(); //for debug (don't work now)
-
     // searching gates
     int gate = 0;
     for (int y = 2; y < board.getHeight() - 2; y++) {
@@ -179,29 +177,37 @@ void LogicWire::powerTheInput(int id, bool status){
 
 void LogicWire::simulate(){
     vector<bool> new_states;
+    // vector<bool> new_input_states;
+    vector<bool> new_output_states;
     new_states.resize(wires.size());
+    // new_input_states.resize(inputs.size());
+    new_output_states.resize(outputs.size());
 
     // input push power
-    for (uint i = 0; i < inputs.size(); i++) {
-        if (inputs[i].powerStatus())
-            new_states.at(inputs[i].getDrain()) = true;
-    }
-    // gate stop/push power
-    for (uint g = 0; g < gates.size(); g++) {
-        Gate& gate = gates[g];
-        bool source_powered = wires[gate.source];
-        if (!source_powered)
-            new_states.at(gate.drain) = true;
-    }
-    // output get power
-    for (uint a = 0; a < outputs.size(); a++) {
-        if (new_states[outputs[a].getSource()]) {
-            outputs[a].setPower(true);
-        }
-        else outputs[a].setPower(false);
+    for (uint a = 0; a < inputs.size(); a++) {
+        if (inputs[a].checkPower())
+            new_states[inputs[a].getLocalConnection()] = true;
     }
 
+    // gate stop/push power
+    for (uint a = 0; a < gates.size(); a++) {
+        Gate& gate = gates[a];
+        bool source_powered = wires[gate.source];
+        if (!source_powered)
+            new_states[gate.drain] = true;
+    }
+
+    // output get power
+    for (uint a = 0; a < outputs.size(); a++) {
+        if (wires[outputs[a].getLocalConnection()])
+            new_output_states[a] = true;
+    }
+    
+    // apply changes
     wires = new_states;
+    for (uint a = 0; a < outputs.size(); a++) {
+        outputs[a].setPower(new_output_states[a]);
+    }
 }
 
 void LogicWire::powerTheWire(int id){

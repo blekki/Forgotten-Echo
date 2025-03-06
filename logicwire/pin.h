@@ -8,18 +8,15 @@ class Pin
 {
     protected:
         uint id;
-        bool power = false;
-
-        uint source = 0; //"0" means without connection
-        uint drain = 0;
-        vector<uint> connections; // zero index means wire connected to the "ground"
+        bool power;
     
     public:
-        void setID(uint id);
+        void newId(uint id);
+        uint getId();
         void setPower(bool power);
-        bool powerStatus();
+        bool checkPower();
 
-        void addConnection(uint output_id){
-            connections.push_back(output_id);
+        Pin(){
+            power = false; // first power state always is FALSE
         }
 };

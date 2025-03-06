@@ -20,8 +20,8 @@ class LogicWire
         vector<Gate> gates;
         vector<Output> outputs;
 
-        Board map; // in the future: replace it to the LogicWire function
-        
+        Board map; // save wires connection scheme on board
+
     public:
         void loadCircuit(const char* image_source);
         void simulate();
