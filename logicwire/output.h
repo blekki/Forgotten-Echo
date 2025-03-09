@@ -21,4 +21,8 @@ class Output : public Pin
             this->id = id;
             localConnection = 0;
         }
+
+        Output(){
+            Output(0);
+        };
 };

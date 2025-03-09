@@ -245,17 +245,15 @@ int main(void)
 
     JsonReader jsonReader;
 
-    // component.powerTheInput(0, true);
-    // component.print();
-    Circuit scheme;
-    // scheme.schemes[1].powerTheInput(0, true);
-    for (int i = 0; i < 10; i++) {
-        scheme.schemes[1].powerTheInput(0, true);
-        scheme.simulate();
-        scheme.schemes[0].print();
-        scheme.schemes[1].print();
-        scheme.schemes[2].print();
-        cout << "-----------------" << endl;
+    
+    Circuit circuit;
+    // circuit.powerControl();
+    circuit.print();
+    for (int i = 0; i < 15; i++) {
+        cout << i << ". -----------------" << endl;
+        circuit.powerControl();
+        circuit.simulate();
+        circuit.print();
     }
 
 

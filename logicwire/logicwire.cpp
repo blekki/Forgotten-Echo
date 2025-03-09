@@ -1,7 +1,8 @@
-#include "logicwire.h"
 #include <vector>
 #include <functional>
 #include <png++/png.hpp>
+
+#include "logicwire.h"
 
 enum direction_t{
     RIGHT_DIRECTION,
@@ -10,9 +11,10 @@ enum direction_t{
     BOTTOM_DIRECTION,
 };
 
-void LogicWire::loadCircuit(const char* image_name){
+void LogicWire::loadCircuit(const char* image_source){
+// LogicWire::LogicWire(const char* image_source){
     // image into board
-    png::image<png::rgb_pixel> image(image_name);
+    png::image<png::rgb_pixel> image(image_source);
     string circuit = "";
     for (int a = 0; a < image.get_height(); a++) {
         for (int b = 0; b < image.get_width(); b++) {
@@ -176,36 +178,53 @@ void LogicWire::powerTheInput(int id, bool status){
 }
 
 void LogicWire::simulate(){
-    vector<bool> new_states;
-    vector<bool> new_output_states;
-    new_states.resize(wires.size());
-    new_output_states.resize(outputs.size());
+    vector<bool> new_wire_states(wires.size());
+    vector<bool> new_output_states(outputs.size());
 
-    // input push power
+    // wires get power from inputs
     for (uint a = 0; a < inputs.size(); a++) {
         if (inputs[a].checkPower())
-            new_states[inputs[a].getLocalConnection()] = true;
+            new_wire_states[inputs[a].getLocalConnection()] = true;
+            cout << inputs[a].checkPower() << " ";
     }
 
-    // gate stop/push power
+    // gates stop/push power
     for (uint a = 0; a < gates.size(); a++) {
         Gate& gate = gates[a];
         bool source_powered = wires[gate.source];
+        // bool source_powered = new_wire_states[gate.source];
         if (!source_powered)
-            new_states[gate.drain] = true;
+            new_wire_states[gate.drain] = true;
     }
 
-    // output get power
+    // outputs get power from wires
     for (uint a = 0; a < outputs.size(); a++) {
-        if (wires[outputs[a].getLocalConnection()])
-            new_output_states[a] = true;
+        // if (wires[outputs[a].getLocalConnection()]) {
+        // here is an interesting mechanics. Use global connection as a gate
+
+        if (new_wire_states[outputs[a].getLocalConnection()]) { // global connection as one wire (without delay)
+            outputs[a].setPower(true);
+        } 
+        else outputs[a].setPower(false);
+        
+        cout << outputs[a].checkPower() << " ";
     }
+    cout << endl;
     
     // apply changes
-    wires = new_states;
-    for (uint a = 0; a < outputs.size(); a++) {
-        outputs[a].setPower(new_output_states[a]);
-    }
+    wires = new_wire_states;
+}
+
+uint LogicWire::getInputsCount(){
+    return inputs.size();
+}
+
+Input* LogicWire::getInput(uint id){
+    return &inputs.at(id);
+}
+
+Output* LogicWire::getOutput(uint id){
+    return &outputs.at(id);
 }
 
 void LogicWire::powerTheWire(int id){
@@ -227,4 +246,8 @@ void LogicWire::print(){
         }
         cout << reset << endl;
     }
+}
+
+LogicWire::LogicWire(const char* image_source){
+    loadCircuit(image_source);
 }
