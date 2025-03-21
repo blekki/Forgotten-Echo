@@ -12,19 +12,24 @@ class Circuit
         Output controlPin;
         vector<Component> schemes;
 
+        LogicWire* space_ptr;
+
     public:
         void powerTheInput(uint scheme_id, uint input_id);
-        void powerControl(){
-            controlPin.setPower(true);
-        }
+        void powerControlPin();
 
         void print(uint scheme_id);
         void print();
 
         void simulate();
 
+        void addSpacePtr(LogicWire* space_ptr){
+            this->space_ptr = space_ptr;
+        }
+
         // void connect(Input* input, Output* output){
         void connect();
+        void connectAntenna();
 
         Circuit();
 };

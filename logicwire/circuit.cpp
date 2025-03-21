@@ -5,6 +5,10 @@ void Circuit::powerTheInput(uint scheme_id, uint input_id){
     schemes[scheme_id].powerTheInput(input_id, true);
 }
 
+void Circuit::powerControlPin(){
+    controlPin.setPower(true);
+}
+
 void Circuit::print(uint scheme_id){
     schemes[scheme_id].print();
 }
@@ -18,6 +22,7 @@ void Circuit::print(){
 void Circuit::simulate(){
     // vector<vector<bool>> new_input_states;
 
+    // (global connections)
     for (uint a = 0; a < schemes.size(); a++) { // check every scheme
         vector<bool> new_input_states;
 
@@ -59,10 +64,11 @@ void Circuit::simulate(){
 // void connect(Input* input, Output* output){
 void Circuit::connect(){ // todo: make it more useful
     schemes[0].getInput(0)->addGlobalConnection(&controlPin);
-    
     schemes[1].getInput(0)->addGlobalConnection(schemes[0].getOutput(0));
     schemes[2].getInput(0)->addGlobalConnection(schemes[1].getOutput(0));
     // schemes[0].getInput(0)->addGlobalConnection(schemes[2].getOutput(0));
+
+    space_ptr->getInput(0)->addGlobalConnection(schemes[2].getOutput(0));
 }
 
 Circuit::Circuit(){ // todo: update that
@@ -72,8 +78,8 @@ Circuit::Circuit(){ // todo: update that
     Component second("logicwire/circuits/test-4.png");
     schemes.push_back(second);
 
-    Component third("logicwire/circuits/test-4.png");
+    Component third("logicwire/circuits/antenna.png");
     schemes.push_back(third);
 
-    connect();
+    // connect();
 }

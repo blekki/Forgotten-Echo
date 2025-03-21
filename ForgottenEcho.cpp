@@ -15,7 +15,7 @@
 // everything for soundtracks
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <opus/opusfile.h>
+// #include <opus/opusfile.h>
 #include <sched.h>
 
 // other
@@ -32,6 +32,7 @@
 // everything for a logicwire
 #include "logicwire/logicwire.h"
 #include "logicwire/circuit.h"
+#include "logicwire/system.h"
 
 
 
@@ -245,15 +246,26 @@ int main(void)
 
     JsonReader jsonReader;
 
-    
-    Circuit circuit;
-    // circuit.powerControl();
-    circuit.print();
-    for (int i = 0; i < 15; i++) {
-        cout << i << ". -----------------" << endl;
-        circuit.powerControl();
-        circuit.simulate();
+    // place for a testing
+    {
+        Circuit circuit;
+        
+        System space;
+        space.addSatellite(&circuit);
+
+        circuit.addSpacePtr(space.getSpacePtr());
+        circuit.connect();
+
+        // circuit.powerControl();
         circuit.print();
+        for (int i = 0; i < 15; i++) {
+            cout << i << ". -----------------" << endl;
+            circuit.powerControlPin();
+            // circuit.simulate();
+            space.simulate();
+            // circuit.print();
+            // space.print();
+        }
     }
 
 

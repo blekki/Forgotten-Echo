@@ -30,7 +30,10 @@ class LogicWire
         Input* getInput(uint id);
         Output* getOutput(uint id);
 
+        // constructors
+        LogicWire(){};
         LogicWire(const char* image_source);
+
         
         // circuits mustn't have open gate for user
         void powerTheWire(int id); //todo: remove (in future)

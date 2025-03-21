@@ -181,11 +181,12 @@ void LogicWire::simulate(){
     vector<bool> new_wire_states(wires.size());
     vector<bool> new_output_states(outputs.size());
 
-    // wires get power from inputs
+    // (local connection) wires get power from inputs
     for (uint a = 0; a < inputs.size(); a++) {
-        if (inputs[a].checkPower())
+        if (inputs[a].checkPower()) {
             new_wire_states[inputs[a].getLocalConnection()] = true;
-            cout << inputs[a].checkPower() << " ";
+            // cout << inputs[a].checkPower() << " ";
+        }
     }
 
     // gates stop/push power
@@ -197,7 +198,7 @@ void LogicWire::simulate(){
             new_wire_states[gate.drain] = true;
     }
 
-    // outputs get power from wires
+    // (local connection) outputs get power from wires
     for (uint a = 0; a < outputs.size(); a++) {
         // if (wires[outputs[a].getLocalConnection()]) {
         // here is an interesting mechanics. Use global connection as a gate
@@ -207,9 +208,9 @@ void LogicWire::simulate(){
         } 
         else outputs[a].setPower(false);
         
-        cout << outputs[a].checkPower() << " ";
+        // cout << outputs[a].checkPower() << " ";
     }
-    cout << endl;
+    // cout << endl;
     
     // apply changes
     wires = new_wire_states;

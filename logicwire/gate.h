@@ -11,12 +11,9 @@ class Gate
         const int drain;
 
     public:
+        void print();
+        
         Gate(int id, int source, int drain)
         :   id(id), source(source), drain(drain)
         {}
-
-        void print(){
-            cout << "gate " << id << ": " << source << " -> " << drain << endl;
-        }
-
 };
