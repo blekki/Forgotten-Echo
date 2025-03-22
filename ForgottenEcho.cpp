@@ -31,6 +31,8 @@
 
 // everything for a logicwire
 #include "logicwire/logicwire.h"
+#include "logicwire/logic_component.h"
+#include "logicwire/special_component.h"
 #include "logicwire/circuit.h"
 #include "logicwire/system.h"
 
@@ -247,23 +249,31 @@ int main(void)
     JsonReader jsonReader;
 
     // place for a testing
-    {
-        Circuit circuit;
+    {   
+        LogicComponent repeater("logicwire/circuits/repeater.png");
+        LogicComponent gate("logicwire/circuits/gate.png");
+        SpecialComponent antenna("logicwire/circuits/antenna.png");
         
-        System space;
-        space.addSatellite(&circuit);
+        Circuit circuit;
+        circuit.addComponent(repeater); // logic
+        circuit.addComponent(gate);     // logic
+        circuit.addComponent(antenna);  // special
 
-        circuit.addSpacePtr(space.getSpacePtr());
-        circuit.connect();
+        // System system;
+        // system.addSatellite(&circuit);
+
+        // circuit.addSpacePtr(system.getSpacePtr());
+        circuit.connect(circuit.getInput(0, 0), circuit.getControlPin());
+        circuit.connect(circuit.getInput(1, 0), circuit.getOutput(0, 0));
+        circuit.connect(circuit.getInput(2, 0), circuit.getOutput(1, 0));
 
         // circuit.powerControl();
         circuit.print();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 5; i++) {
             cout << i << ". -----------------" << endl;
             circuit.powerControlPin();
-            // circuit.simulate();
-            space.simulate();
-            // circuit.print();
+            circuit.simulate();
+            circuit.print();
             // space.print();
         }
     }

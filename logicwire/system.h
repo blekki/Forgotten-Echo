@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
-#include "circuit.h"
+#include "component.h"
 
 using namespace std;
 
 class System
 {
     private:
-        LogicWire space;
+        LogicComponent space;
         vector<Circuit*> circuits;
 
     public:
@@ -56,7 +56,6 @@ class System
             cout << space.getInput(0)->checkPower() << " " << space.getOutput(0)->checkPower() << endl;
         }
 
-        System() : space(){
-            space.loadCircuit("logicwire/circuits/space.png");
-        };
+        System() : space("logicwire/circuits/space.png")
+        {};
 };  

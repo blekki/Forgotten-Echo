@@ -18,4 +18,10 @@ class Component: public LogicWire
         Component(const char* image_source)
         :   LogicWire(image_source)
         {};
+
+        // new
+        virtual uint getInputsCount() = 0;
+        virtual Input* getInput(uint id) = 0;
+        virtual Output* getOutput(uint id) = 0;
+        // getSpaceInput()
 };

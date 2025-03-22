@@ -26,9 +26,9 @@ class LogicWire
         void loadCircuit(const char* image_source);
         void simulate();
 
-        uint getInputsCount();
-        Input* getInput(uint id);
-        Output* getOutput(uint id);
+        // uint getInputsCount();      //todo: remove
+        // Input* getInput(uint id);   //todo: remove
+        // Output* getOutput(uint id); //todo: remove
 
         // constructors
         LogicWire(){};

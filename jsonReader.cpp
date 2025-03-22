@@ -109,7 +109,7 @@ void JsonReader::readJsonSpaceship(Spaceship *spaceship, string path){
     spaceship->setNewtonBody(body);
 }
 
-void JsonReader::readJsonCircuit(Component *component, string path){
+void JsonReader::readJsonComponent(Component *component, string path){
     using json = nlohmann::json;
     ifstream file(path);
     json data = json::parse(file);
@@ -125,4 +125,10 @@ void JsonReader::readJsonCircuit(Component *component, string path){
     uint consuming = data["consuming"];
     component->setSize(width, height);
     component->setConsuming(consuming);
+}
+
+void JsonReader::readJsonCircuit(Component *Circuit, string path){
+    using json = nlohmann::json;
+    ifstream file(path);
+    json data = json::parse(file);
 }

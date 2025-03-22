@@ -60,7 +60,7 @@ void LogicWire::loadCircuit(const char* image_source){
                                     // walker(x, y)
                 function<void(int, int, int)> bridge; // checking for bridges
                                     // bridge(x, y, source_direction)
-                
+                // use functions
                 bridge = [&](int x, int y, int source) {
                     long mask = 0x000000000;
                     if(board(x-1, y-1)) mask |= 0x100000000;
@@ -216,17 +216,17 @@ void LogicWire::simulate(){
     wires = new_wire_states;
 }
 
-uint LogicWire::getInputsCount(){
-    return inputs.size();
-}
+// uint LogicWire::getInputsCount(){
+//     return inputs.size();
+// }
 
-Input* LogicWire::getInput(uint id){
-    return &inputs.at(id);
-}
+// Input* LogicWire::getInput(uint id){
+//     return &inputs.at(id);
+// }
 
-Output* LogicWire::getOutput(uint id){
-    return &outputs.at(id);
-}
+// Output* LogicWire::getOutput(uint id){
+//     return &outputs.at(id);
+// }
 
 void LogicWire::powerTheWire(int id){
     this->wires.at(id) = true;
