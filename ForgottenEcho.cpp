@@ -263,9 +263,11 @@ int main(void)
         // system.addSatellite(&circuit);
 
         // circuit.addSpacePtr(system.getSpacePtr());
-        circuit.connect(circuit.getInput(0, 0), circuit.getControlPin());
-        circuit.connect(circuit.getInput(1, 0), circuit.getOutput(0, 0));
-        circuit.connect(circuit.getInput(2, 0), circuit.getOutput(1, 0));
+        circuit.connectToControlPin(&repeater, 0);
+        circuit.connect(&gate, 0, &repeater, 0);
+        circuit.connect(&antenna, 0, &gate, 0);
+        circuit.generatePriorityTree();
+        // circuit.connect(&repeater, 0, &gate, 0);
 
         // circuit.powerControl();
         circuit.print();

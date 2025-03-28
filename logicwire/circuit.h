@@ -11,13 +11,15 @@ using namespace std;
 class Circuit
 {
     private:
-        Output controlPin;
-        vector<Component*> components;
+        Output controlPin = true;
 
         vector<LogicComponent> logicComponents;
         vector<SpecialComponent> specialComponents;
 
         LogicWire* space_ptr; //todo: replace to the Antenna class
+
+        vector<Component*> components; // pointer to all components (logic and special)
+        vector<Component*> priorityTree; // remember sequence priority
 
     public:
         void powerTheInput(uint scheme_id, uint input_id);
@@ -31,41 +33,32 @@ class Circuit
         void addSpacePtr(LogicWire* space_ptr){
             this->space_ptr = space_ptr;
         }
-        
-        // tests
-        void connect(Input* input, Output* output){
-            input->addGlobalConnection(output);
-        }
+
+
+        // test
+    
         Input* getInput(uint component_id, uint input_id){
             return components[component_id]->getInput(input_id);
         }
+
         Output* getOutput(uint component_id, uint output_id){
             return components[component_id]->getOutput(output_id);
         }
+
         Output* getControlPin(){
             return &controlPin;
         }
         
-        void addComponent(LogicComponent component){
-            logicComponents.push_back(component);
-            components.push_back(&logicComponents.back());
+        
+        void addComponent(LogicComponent component);
+        void addComponent(SpecialComponent component);
 
-            // debug
-            LogicComponent* ptr = &logicComponents.back();
-            cout << ptr << endl;
-        }
-        void addComponent(SpecialComponent component){
-            specialComponents.push_back(component);
-            components.push_back(&specialComponents.back());
-            
-            // debug
-            SpecialComponent* ptr = &specialComponents.back();
-            cout << ptr << endl;
-        }
+        void connect(Component* classWithInput,  uint input_index, 
+                     Component* classWithOutput, uint output_index);
+        
+        void connectToControlPin(Component* classWithInput,  uint input_index);
 
-        // void connect(Input* input, Output* output){
-        // void connect();
-        // void connectAntenna();
+        void generatePriorityTree();
 
         Circuit(){};
 };
