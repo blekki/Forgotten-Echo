@@ -214,6 +214,8 @@ void LogicWire::simulate(){
     
     // apply changes
     wires = new_wire_states;
+
+    print();
 }
 
 // uint LogicWire::getInputsCount(){

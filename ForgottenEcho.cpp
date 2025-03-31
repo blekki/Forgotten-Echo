@@ -273,9 +273,9 @@ int main(void)
         circuit.print();
         for (int i = 0; i < 5; i++) {
             cout << i << ". -----------------" << endl;
-            circuit.powerControlPin();
+            // circuit.powerControlPin();
             circuit.simulate();
-            circuit.print();
+            // circuit.print();
             // space.print();
         }
     }

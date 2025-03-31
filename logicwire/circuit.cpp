@@ -16,19 +16,20 @@ void Circuit::print(){
     vector<Component*> components;
     // Component* - pointer on component (logic and special)
 
-    for (auto logic_it = logicComponents.begin(); logic_it != logicComponents.end(); logic_it++) {
-        (logic_it)->print();
-    }
-    for (auto special_it = specialComponents.begin(); special_it != specialComponents.end(); special_it++) {
-        (special_it)->print();
-    }
+    // for (auto logic_it = logicComponents.begin(); logic_it != logicComponents.end(); logic_it++) {
+    //     (logic_it)->print();
+    // }
+    // for (auto special_it = specialComponents.begin(); special_it != specialComponents.end(); special_it++) {
+    //     (special_it)->print();
+    // }
 }
 
 // other methods
 void Circuit::simulate(){
-    controlPin.setPower(true);
     // (global connections)
-    for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
+    // for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
+    for (int a = priorityTree.size() - 1; a >= 0; a--) { // check every scheme
+                                                          // here we must check priorityTree started of last elem
         vector<bool> new_input_states;
 
         for (uint b = 0; b < priorityTree[a]->getInputsCount(); b++) { // check every scheme inputs
@@ -49,41 +50,37 @@ void Circuit::simulate(){
         }
         priorityTree[a]->simulate(); // simulation inside scheme
     }
-
-    // controlPin.setPower(false);
 }
 
 void Circuit::generatePriorityTree(){
-    // vector<pair<Component*, bool>> components;
-    // vector<Component*> components;
-    // Component* - pointer on component (logic and special)
 
-    // for (uint a = 0; a < specialComponents.size(); a++) {
-    //     components.push_back(&specialComponents.at(a));
-    // }
-    // for (uint a = 0; a < logicComponents.size(); a++) {
-    //     components.push_back(&logicComponents.at(a));
-    // }
+    vector<Component*> components; // pointer to all components (logic and special)
+    for (uint logic = 0; logic < logicComponents.size(); logic++)
+        components.push_back(&logicComponents[logic]);
+    for (uint special = 0; special < specialComponents.size(); special++)
+        components.push_back(&specialComponents[special]);
 
+    
     priorityTree.clear();
-
     for (auto it = components.begin(); it != components.end(); it++) {
 
-        if ((*it)->relationsCount() != 0 ) // if it has back relations continue search
+        if ((*it)->relationsCount() != 0 ) // if it has back relations (something connected to an output) continue search
             continue;
         
-        // search all front relations
-        function<void(vector<Component*>::iterator)> walker; // <-- search line relations
-
+        // search all front relations (connections to inputs)
         set<Component*> visited; // save already visited components
+        function<void(vector<Component*>::iterator)> walker; // <-- search line relations
+        
         walker = [&](auto component_it) {
             // if we visited this component before, stop function
-            if (visited.find((*component_it)) == visited.end())
+            if (visited.find((*component_it)) != visited.end())
                 return;
+                            
             // else make this component visited
             visited.insert((*component_it));
-            priorityTree.push_back((*component_it)); // save new elem priority
+            priorityTree.push_back((*component_it)); // save new priority elem
             
+            // check other connections of this component
             #define relations (*component_it)->getRelations()
             for (auto relation_it = relations->begin(); relation_it != relations->end(); relation_it++) {
                 walker(relation_it);
@@ -117,7 +114,7 @@ void Circuit::connectToControlPin(Component* classWithInput,  uint input_index){
 // add various components
 void Circuit::addComponent(LogicComponent component){
     logicComponents.push_back(component);
-    components.push_back(&logicComponents.back());
+    // components.push_back(&logicComponents.back());
 
     // debug
     // LogicComponent* ptr = &logicComponents.back();
@@ -126,7 +123,7 @@ void Circuit::addComponent(LogicComponent component){
 
 void Circuit::addComponent(SpecialComponent component){
     specialComponents.push_back(component);
-    components.push_back(&specialComponents.back());
+    // components.push_back(&specialComponents.back());
     
     // debug
     // SpecialComponent* ptr = &specialComponents.back();

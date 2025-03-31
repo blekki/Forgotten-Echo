@@ -12,7 +12,7 @@ class Component: public LogicWire
         uint height;
         uint consuming;
 
-        vector<Component*> relations; // save relations as input, but with the classes
+        vector<Component*> relations; // save relations as input makes, but with the classes
 
     public:
         void setName(string name);

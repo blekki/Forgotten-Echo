@@ -11,15 +11,17 @@ using namespace std;
 class Circuit
 {
     private:
-        Output controlPin = true;
+        Output controlPin;
 
         vector<LogicComponent> logicComponents;
         vector<SpecialComponent> specialComponents;
 
         LogicWire* space_ptr; //todo: replace to the Antenna class
 
-        vector<Component*> components; // pointer to all components (logic and special)
+        // vector<Component*> components; // pointer to all components (logic and special)
         vector<Component*> priorityTree; // remember sequence priority
+
+        //todo: rotate priorityTree be 180 degrees
 
     public:
         void powerTheInput(uint scheme_id, uint input_id);
@@ -37,13 +39,13 @@ class Circuit
 
         // test
     
-        Input* getInput(uint component_id, uint input_id){
-            return components[component_id]->getInput(input_id);
-        }
+        // Input* getInput(uint component_id, uint input_id){
+        //     return components[component_id]->getInput(input_id);
+        // }
 
-        Output* getOutput(uint component_id, uint output_id){
-            return components[component_id]->getOutput(output_id);
-        }
+        // Output* getOutput(uint component_id, uint output_id){
+        //     return components[component_id]->getOutput(output_id);
+        // }
 
         Output* getControlPin(){
             return &controlPin;
@@ -60,5 +62,7 @@ class Circuit
 
         void generatePriorityTree();
 
-        Circuit(){};
+        Circuit(){
+            controlPin.setPower(true); // controlPin must be TRUE everytime
+        };
 };
