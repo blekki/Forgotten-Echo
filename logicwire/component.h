@@ -2,64 +2,18 @@
 
 #include "logicwire.h"
 
-class Component: public LogicWire
+class Component
 {
-    private:
-        string name;
-        int priority;
-
-        uint width;
-        uint height;
-        uint consuming;
-
-        vector<Component*> relations; // save relations as input makes, but with the classes
-
     public:
-        void setName(string name);
-        void setSize(uint width, uint height);
-        void setConsuming(uint comsuming);
+        virtual uint getInputsCount() = 0;
+        virtual Input* getInput(uint id) = 0;
 
-        Component(const char* image_source)
-        :   LogicWire(image_source)
-        {};
-
-        void addRelation(Component* component_ptr){
-            relations.push_back(component_ptr);
-        }
-
-        // Component* getRelation(uint index){
-        //     return relations.at(index);
-        // }
-
-        vector<Component*>* getRelations(){
-            return &relations;
-        }
-
-        uint relationsCount(){
-            return relations.size();
-        }
+        virtual uint getOutputsCount() = 0;
+        virtual Output* getOutput(uint id) = 0;
 
 
-        // new
-        // virtual uint getInputsCount() = 0;
-        // virtual Input* getInput(uint id) = 0;
-        // virtual Output* getOutput(uint id) = 0;
-        // getSpaceInput()
-
-        int getPriority(){
-            return priority;
-        }
-
-        uint getInputsCount(){
-            return inputs.size();
-        }
-        uint getOutputsCount(){
-            return outputs.size();
-        }
-        Input* getInput(uint id){
-            return &inputs.at(id);
-        }
-        Output* getOutput(uint id){
-            return &outputs.at(id);
-        }
+        virtual void addFrontRelation(Component* component_ptr) = 0;
+        virtual void addBackRelation(Component* component_ptr) = 0;
+        virtual vector<Component*>* getRelations() = 0;
+        virtual uint relationsCount() = 0;
 };

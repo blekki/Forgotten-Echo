@@ -3,8 +3,8 @@
 #include <vector>
 
 #include "component.h"
-#include "logic_component.h"
-#include "special_component.h"
+#include "logicComponent.h"
+#include "specialComponent.h"
 
 using namespace std;
 
@@ -16,49 +16,36 @@ class Circuit
         vector<LogicComponent> logicComponents;
         vector<SpecialComponent> specialComponents;
 
-        LogicWire* space_ptr; //todo: replace to the Antenna class
+        // LogicWire* space_ptr; //todo: replace to the Antenna class
 
         // vector<Component*> components; // pointer to all components (logic and special)
-        vector<Component*> priorityTree; // remember sequence priority
+        vector<LogicComponent*> priorityTree; // remember sequence priority
 
         //todo: rotate priorityTree be 180 degrees
 
     public:
-        void powerTheInput(uint scheme_id, uint input_id);
-        void powerControlPin();
+        void powerTheInput(uint scheme_id, uint input_id); //todo: remove
+        void powerControlPin(); //todo:remove or change
 
         void print(uint scheme_id);
         void print();
 
         void simulate();
 
-        void addSpacePtr(LogicWire* space_ptr){
-            this->space_ptr = space_ptr;
-        }
-
-
-        // test
-    
-        // Input* getInput(uint component_id, uint input_id){
-        //     return components[component_id]->getInput(input_id);
+        // void addSpacePtr(LogicWire* space_ptr){
+        //     this->space_ptr = space_ptr;
         // }
 
-        // Output* getOutput(uint component_id, uint output_id){
-        //     return components[component_id]->getOutput(output_id);
+        // Output* getControlPin(){
+        //     return &controlPin;
         // }
-
-        Output* getControlPin(){
-            return &controlPin;
-        }
-        
         
         void addComponent(LogicComponent component);
         void addComponent(SpecialComponent component);
-
-        void connect(Component* classWithInput,  uint input_index, 
-                     Component* classWithOutput, uint output_index);
         
-        void connectToControlPin(Component* classWithInput,  uint input_index);
+        void connect(LogicComponent* classWithInput,  uint input_index, 
+                     LogicComponent* classWithOutput, uint output_index);
+        void connectToControlPin(LogicComponent* classWithInput,  uint input_index);
 
         void generatePriorityTree();
 

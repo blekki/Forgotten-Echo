@@ -13,7 +13,7 @@ void Circuit::powerControlPin(){
 }
 
 void Circuit::print(){
-    vector<Component*> components;
+    // vector<LogicComponent*> components;
     // Component* - pointer on component (logic and special)
 
     // for (auto logic_it = logicComponents.begin(); logic_it != logicComponents.end(); logic_it++) {
@@ -53,36 +53,38 @@ void Circuit::simulate(){
 }
 
 void Circuit::generatePriorityTree(){
-
-    vector<Component*> components; // pointer to all components (logic and special)
+    logicComponents;
+    vector<LogicComponent*> components; // pointers to all components (logic and special)
     for (uint logic = 0; logic < logicComponents.size(); logic++)
         components.push_back(&logicComponents[logic]);
     for (uint special = 0; special < specialComponents.size(); special++)
         components.push_back(&specialComponents[special]);
 
-    
+    // cout << "IMPORTANT:" << logicComponents.at(0).backRelationsCount() << endl;
+
     priorityTree.clear();
+    set<LogicComponent*> visited; // save already visited component
+
+    // back to front way
     for (auto it = components.begin(); it != components.end(); it++) {
 
-        if ((*it)->relationsCount() != 0 ) // if it has back relations (something connected to an output) continue search
+        if ((*it)->backRelationsCount() != 0 ) // if this component isn't last, continue search
             continue;
+        //todo: search all component with connection to the space
         
-        // search all front relations (connections to inputs)
-        set<Component*> visited; // save already visited components
-        function<void(vector<Component*>::iterator)> walker; // <-- search line relations
-        
+
+        function<void(vector<LogicComponent*>::iterator)> walker; // <-- search line relations
         walker = [&](auto component_it) {
-            // if we visited this component before, stop function
-            if (visited.find((*component_it)) != visited.end())
-                return;
-                            
-            // else make this component visited
-            visited.insert((*component_it));
-            priorityTree.push_back((*component_it)); // save new priority elem
+            // if we visited this component before, stop loop iteration
+            if (visited.find((*component_it)) == visited.end()) {
+                visited.insert((*component_it)); // make this component visited
+                priorityTree.push_back((*component_it)); // save new priority elem
+            }
+            else return;
             
             // check other connections of this component
-            #define relations (*component_it)->getRelations()
-            for (auto relation_it = relations->begin(); relation_it != relations->end(); relation_it++) {
+            vector<LogicComponent*> *relations_ptr = (*component_it)->getFrontRelations();
+            for (auto relation_it = relations_ptr->begin(); relation_it != relations_ptr->end(); relation_it++) {
                 walker(relation_it);
             }
 
@@ -92,40 +94,32 @@ void Circuit::generatePriorityTree(){
     }
 }
 
-void Circuit::connect(Component* classWithInput,  uint input_index, 
-                      Component* classWithOutput, uint output_index){
+void Circuit::connect(LogicComponent* classWithInput,  uint input_index, 
+                      LogicComponent* classWithOutput, uint output_index){
     
-    // input connection
-    #define input classWithInput->getInput(input_index)
-    #define output classWithOutput->getOutput(output_index)
+    // add input connection
+    Input* input   = classWithInput->getInput(input_index);
+    Output* output = classWithOutput->getOutput(output_index);
     input->addGlobalConnection(output);
     
-    // add components relation
-    classWithInput->addRelation(classWithOutput);
+    // add components relations
+    classWithInput->addFrontRelation(classWithOutput);
+    classWithOutput->addBackRelation(classWithInput);
 }
 
-void Circuit::connectToControlPin(Component* classWithInput,  uint input_index){
-
-    // input connection
-    #define input classWithInput->getInput(input_index)
+void Circuit::connectToControlPin(LogicComponent* classWithInput,  uint input_index){
+    // add input connection
+    Input* input = classWithInput->getInput(input_index);
     input->addGlobalConnection(&controlPin);
 }
 
-// add various components
+// Add various components
 void Circuit::addComponent(LogicComponent component){
     logicComponents.push_back(component);
     // components.push_back(&logicComponents.back());
-
-    // debug
-    // LogicComponent* ptr = &logicComponents.back();
-    // cout << ptr << endl;
 }
 
 void Circuit::addComponent(SpecialComponent component){
     specialComponents.push_back(component);
     // components.push_back(&specialComponents.back());
-    
-    // debug
-    // SpecialComponent* ptr = &specialComponents.back();
-    // cout << ptr << endl;
 }

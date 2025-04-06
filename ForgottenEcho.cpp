@@ -31,8 +31,8 @@
 
 // everything for a logicwire
 #include "logicwire/logicwire.h"
-#include "logicwire/logic_component.h"
-#include "logicwire/special_component.h"
+#include "logicwire/logicComponent.h"
+#include "logicwire/specialComponent.h"
 #include "logicwire/circuit.h"
 #include "logicwire/system.h"
 
@@ -267,16 +267,11 @@ int main(void)
         circuit.connect(&gate, 0, &repeater, 0);
         circuit.connect(&antenna, 0, &gate, 0);
         circuit.generatePriorityTree();
-        // circuit.connect(&repeater, 0, &gate, 0);
 
-        // circuit.powerControl();
         circuit.print();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             cout << i << ". -----------------" << endl;
-            // circuit.powerControlPin();
             circuit.simulate();
-            // circuit.print();
-            // space.print();
         }
     }
 
