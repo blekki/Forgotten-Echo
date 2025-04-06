@@ -6,7 +6,6 @@ class Component: public LogicWire
 {
     private:
         string name;
-        int priority;
 
         uint width;
         uint height;
@@ -25,6 +24,7 @@ class Component: public LogicWire
 
         void addRelation(Component* component_ptr){
             relations.push_back(component_ptr);
+            cout << "relations " << relations.at(0) << endl; // debug
         }
 
         // Component* getRelation(uint index){
@@ -45,10 +45,6 @@ class Component: public LogicWire
         // virtual Input* getInput(uint id) = 0;
         // virtual Output* getOutput(uint id) = 0;
         // getSpaceInput()
-
-        int getPriority(){
-            return priority;
-        }
 
         uint getInputsCount(){
             return inputs.size();

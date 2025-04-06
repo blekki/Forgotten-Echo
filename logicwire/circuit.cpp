@@ -53,6 +53,7 @@ void Circuit::simulate(){
 }
 
 void Circuit::generatePriorityTree(){
+    #define relations (*it)->getRelations()
 
     vector<Component*> components; // pointer to all components (logic and special)
     for (uint logic = 0; logic < logicComponents.size(); logic++)
@@ -60,12 +61,28 @@ void Circuit::generatePriorityTree(){
     for (uint special = 0; special < specialComponents.size(); special++)
         components.push_back(&specialComponents[special]);
 
+    // here must be a code searching tha lаst component int the system
+    cout << &components.at(0) << " : " << components.at(0)->relationsCount() << endl;
+    cout << &components.at(1) << " : " << components.at(1)->relationsCount() << endl;
+    cout << &components.at(2) << " : " << components.at(2)->relationsCount() << endl;
+
+    set<Component*> with_relations;
+    for (auto it = components.begin(); it != components.end(); it++) {
+        for (auto relation_it = relations->begin(); relation_it != relations->end(); relation_it++) {
+            if (with_relations.find(*relation_it) == with_relations.end()) // not find
+                with_relations.insert(*relation_it); // add this pointer
+        }
+    }
+    
     
     priorityTree.clear();
-    for (auto it = components.begin(); it != components.end(); it++) {
+    // for (auto it = components.begin(); it != components.end(); it++) {
+    for (auto it = components.end(); it != components.begin(); it--) { // at first check the last special component
 
-        if ((*it)->relationsCount() != 0 ) // if it has back relations (something connected to an output) continue search
-            continue;
+        // if ((*it)->relationsCount() == 0 ) // if it hasn't front relations continue searching
+        //     continue;
+        if (with_relations.find(*it) != with_relations.end())
+            return;
         
         // search all front relations (connections to inputs)
         set<Component*> visited; // save already visited components
@@ -81,7 +98,6 @@ void Circuit::generatePriorityTree(){
             priorityTree.push_back((*component_it)); // save new priority elem
             
             // check other connections of this component
-            #define relations (*component_it)->getRelations()
             for (auto relation_it = relations->begin(); relation_it != relations->end(); relation_it++) {
                 walker(relation_it);
             }
@@ -115,17 +131,9 @@ void Circuit::connectToControlPin(Component* classWithInput,  uint input_index){
 void Circuit::addComponent(LogicComponent component){
     logicComponents.push_back(component);
     // components.push_back(&logicComponents.back());
-
-    // debug
-    // LogicComponent* ptr = &logicComponents.back();
-    // cout << ptr << endl;
 }
 
 void Circuit::addComponent(SpecialComponent component){
     specialComponents.push_back(component);
     // components.push_back(&specialComponents.back());
-    
-    // debug
-    // SpecialComponent* ptr = &specialComponents.back();
-    // cout << ptr << endl;
 }
