@@ -12,6 +12,6 @@ class JsonReader{
         void readJsonPlanet(Planet *planet, string path);
         void readJsonSun(Sun *sun, string path);
         void readJsonSpaceship(Spaceship *object, string path);
-        void readJsonComponent(LogicComponent *component, string path);
-        void readJsonCircuit(LogicComponent *Circuit, string path);
+        void readJsonComponent(LogicComponent *component, string path); //todo: LogicComponent rename to Component
+        void readJsonCircuit(LogicComponent *Circuit, string path); //todo: LogicComponent rename to Component
 };

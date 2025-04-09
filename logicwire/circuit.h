@@ -13,13 +13,8 @@ class Circuit
     private:
         Output controlPin;
 
-        vector<LogicComponent> logicComponents;
-        vector<SpecialComponent> specialComponents;
-
-        // LogicWire* space_ptr; //todo: replace to the Antenna class
-
-        // vector<Component*> components; // pointer to all components (logic and special)
-        vector<LogicComponent*> priorityTree; // remember sequence priority
+        vector<Component*> components; //save components
+        vector<Component*> priorityTree; // remember sequence priority
 
         //todo: rotate priorityTree be 180 degrees
 
@@ -31,25 +26,30 @@ class Circuit
         void print();
 
         void simulate();
-
-        // void addSpacePtr(LogicWire* space_ptr){
-        //     this->space_ptr = space_ptr;
-        // }
-
-        // Output* getControlPin(){
-        //     return &controlPin;
-        // }
         
-        void addComponent(LogicComponent component);
-        void addComponent(SpecialComponent component);
+        // void addComponent(LogicComponent component);
+        // void addComponent(SpecialComponent component);
+        // void connectToControlPin(LogicComponent* classWithInput,  uint input_index);
+        void addComponent(Component* component){
+            components.push_back(component);
+        }
         
-        void connect(LogicComponent* classWithInput,  uint input_index, 
-                     LogicComponent* classWithOutput, uint output_index);
-        void connectToControlPin(LogicComponent* classWithInput,  uint input_index);
+        void connect(uint classInput_index,  uint input_index, 
+                     uint classOutput_index, uint output_index);
+        void connectToControlPin(uint classWithInput,  uint input_index);
 
         void generatePriorityTree();
 
         Circuit(){
-            controlPin.setPower(true); // controlPin must be TRUE everytime
+            controlPin.setPower(true); // controlPin is TRUE everytime
         };
+
+        ~Circuit(){
+            clog << "deleted components: " << endl;
+            for (Component* elem : components) {
+                delete elem;
+                clog << "#";
+            }
+            clog << endl;
+        }
 };

@@ -36,6 +36,8 @@
 #include "logicwire/circuit.h"
 #include "logicwire/system.h"
 
+#include "logicwire/componentFactory.h"
+
 
 
 using namespace std;
@@ -250,26 +252,25 @@ int main(void)
 
     // place for a testing
     {   
-        LogicComponent repeater("logicwire/circuits/repeater.png");
-        LogicComponent gate("logicwire/circuits/gate.png");
-        SpecialComponent antenna("logicwire/circuits/antenna.png");
-        
-        Circuit circuit;
-        circuit.addComponent(repeater); // logic
-        circuit.addComponent(gate);     // logic
-        circuit.addComponent(antenna);  // special
+        ComponentFactory ComponentFactory;
 
-        // System system;
-        // system.addSatellite(&circuit);
+        Circuit circuit;
+        circuit.addComponent(ComponentFactory.createRepeater()); // logic
+        circuit.addComponent(ComponentFactory.createGate());     // logic
+        circuit.addComponent(ComponentFactory.createAntenna());  // special
 
         // circuit.addSpacePtr(system.getSpacePtr());
-        circuit.connectToControlPin(&repeater, 0);
-        circuit.connect(&gate, 0, &repeater, 0);
-        circuit.connect(&antenna, 0, &gate, 0);
+        // circuit.connectToControlPin(&repeater, 0);
+        // circuit.connect(&gate, 0, &repeater, 0);
+        // circuit.connect(&antenna, 0, &gate, 0);
+
+        circuit.connectToControlPin(0, 0); //todo: remake
+        circuit.connect(1, 0, 0, 0); //todo: remake
+        circuit.connect(2, 0, 1, 0); //todo: remake
         circuit.generatePriorityTree();
 
         circuit.print();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10; i++) {
             cout << i << ". -----------------" << endl;
             circuit.simulate();
         }
