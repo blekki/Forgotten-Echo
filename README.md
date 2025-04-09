@@ -20,12 +20,13 @@ sudo apt install libsoil-dev
 sudo apt install freeglut3-dev
 sudp apt install libglut-dev
 
-(doesn't need right now) sudo apt install newton.h
 sudo apt install libopenal-dev
 sudo apt install nlohmann-json3-dev
 sudo apt install libpng++-dev
 sudo apt install libopus-dev
 sudo apt install libopusfile-dev
+
+(dont't need right now) sudo apt install newton.h
 ```
 
 ## Compile the project
