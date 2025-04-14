@@ -14,22 +14,17 @@ class Circuit
         Output controlPin;
 
         vector<Component*> components; //save components
-        vector<Component*> priorityTree; // remember sequence priority
-
-        //todo: rotate priorityTree be 180 degrees
+        vector<Component*> priorityTree;
+        // "priorityTree" saves sequence priority
+        // FIRST element has a lower priority
+        // SECOND - highter etc. The last one has the higtest priority
+                                        
 
     public:
-        void powerTheInput(uint scheme_id, uint input_id); //todo: remove
         void powerControlPin(); //todo:remove or change
-
-        void print(uint scheme_id);
-        void print();
 
         void simulate();
         
-        // void addComponent(LogicComponent component);
-        // void addComponent(SpecialComponent component);
-        // void connectToControlPin(LogicComponent* classWithInput,  uint input_index);
         void addComponent(Component* component){
             components.push_back(component);
         }
@@ -45,11 +40,11 @@ class Circuit
         };
 
         ~Circuit(){
-            clog << "deleted components: " << endl;
+            // clog << "deleted components: " << endl; //todo: change
             for (Component* elem : components) {
                 delete elem;
-                clog << "#";
+                // clog << "#";
             }
-            clog << endl;
+            // clog << endl;
         }
 };

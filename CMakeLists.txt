@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} ForgottenEcho.cpp primal.cpp sphere.cpp planet.cp
                                cursor.cpp
                                soundtrack.cpp
                                shader/shader.cpp shader/brightness.cpp shader/planetShader.cpp shader/sunShader.cpp
-                               logicwire/logicwire.cpp logicwire/board.cpp logicwire/input.cpp logicwire/gate.cpp logicwire/output.cpp logicwire/pin.cpp logicwire/component.cpp logicwire/circuit.cpp)
+                               logicwire/logicwire.cpp logicwire/board.cpp logicwire/input.cpp logicwire/gate.cpp logicwire/output.cpp logicwire/pin.cpp logicwire/circuit.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw GL SOIL GLU GLEW newton-dynamics openal opus opusfile png)
 # target_include_directories(${PROJECT_NAME} PUBLIC glad/glad)
 # target_link_libraries(${PROJECT_NAME} PUBLIC glad)

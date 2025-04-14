@@ -18,4 +18,8 @@ class ComponentFactory
         Component* createAntenna(){
             return new SpecialComponent("logicwire/circuits/antenna.png");
         }
+
+        Component* createAND(){
+            return new LogicComponent("logicwire/circuits/AND.png");
+        }
 };

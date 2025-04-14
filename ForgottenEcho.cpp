@@ -255,22 +255,54 @@ int main(void)
         ComponentFactory ComponentFactory;
 
         Circuit circuit;
-        circuit.addComponent(ComponentFactory.createRepeater()); // logic
-        circuit.addComponent(ComponentFactory.createGate());     // logic
-        circuit.addComponent(ComponentFactory.createAntenna());  // special
+        // circuit.addComponent(ComponentFactory.createGate());   //0
+        // circuit.addComponent(ComponentFactory.createAND());    //1
+        // circuit.addComponent(ComponentFactory.createAntenna());//2
+        // circuit.addComponent(ComponentFactory.createGate());   //3
+        // circuit.addComponent(ComponentFactory.createGate());   //4
+        // circuit.addComponent(ComponentFactory.createAntenna());//5
 
-        // circuit.addSpacePtr(system.getSpacePtr());
+        circuit.addComponent(ComponentFactory.createGate());//0
+        circuit.addComponent(ComponentFactory.createGate());//1
+        circuit.addComponent(ComponentFactory.createGate());//2
+        circuit.addComponent(ComponentFactory.createGate());//3
+        
+        // circuit.addComponent(ComponentFactory.createGate());//4        
+        // circuit.addComponent(ComponentFactory.createGate());//5
+        // circuit.addComponent(ComponentFactory.createGate());//6
+        // circuit.addComponent(ComponentFactory.createGate());//7
+
+        
+        // circuit.connectToControlPin(0, 0);
+        // circuit.connect(1, 0, 0, 0); 
+        // circuit.connect(2, 0, 1, 0);
+        // circuit.connect(3, 0, 1, 0);
+        // circuit.connect(4, 0, 3, 0);
+        // circuit.connect(5, 0, 4, 0);
+
+        circuit.connectToControlPin(0, 0);
+        circuit.connect(1, 0, 0, 0);
+        circuit.connect(2, 0, 1, 0); 
+        circuit.connect(3, 0, 2, 0); 
+        circuit.connect(1, 0, 3, 0);
+
+        circuit.connect(5, 0, 4, 0); 
+        circuit.connect(6, 0, 5, 0);
+        circuit.connect(7, 0, 6, 0); 
+        circuit.connect(5, 0, 7, 0); 
+
+        
+
         // circuit.connectToControlPin(&repeater, 0);
         // circuit.connect(&gate, 0, &repeater, 0);
         // circuit.connect(&antenna, 0, &gate, 0);
 
-        circuit.connectToControlPin(0, 0); //todo: remake
-        circuit.connect(1, 0, 0, 0); //todo: remake
-        circuit.connect(2, 0, 1, 0); //todo: remake
+        // circuit.connectToControlPin(0, 0); //todo: remake
+        // circuit.connect(1, 0, 0, 0); //todo: remake
+        // circuit.connect(2, 0, 1, 0); //todo: remake
         circuit.generatePriorityTree();
 
-        circuit.print();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             cout << i << ". -----------------" << endl;
             circuit.simulate();
         }

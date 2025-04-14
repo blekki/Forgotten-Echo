@@ -15,7 +15,7 @@ class System
             // satellites simulation
             for (vector<Circuit*>::iterator circuit_iter = circuits.begin(); circuit_iter != circuits.end(); circuit_iter++) {
                 (*circuit_iter)->simulate();
-                (*circuit_iter)->print(); // debug
+                // (*circuit_iter)->print(); // debug
             }
 
             // space signal simulation

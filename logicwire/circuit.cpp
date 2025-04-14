@@ -3,33 +3,18 @@
 #include <set>
 #include "functional" 
 
-// basic methods
-// void Circuit::powerTheInput(uint scheme_id, uint input_id){
-//     components[scheme_id]->powerTheInput(input_id, true);
-// }
+#include "component.h"
 
 void Circuit::powerControlPin(){
     controlPin.setPower(true);
 }
 
-void Circuit::print(){
-    // vector<LogicComponent*> components;
-    // Component* - pointer on component (logic and special)
-
-    // for (auto logic_it = logicComponents.begin(); logic_it != logicComponents.end(); logic_it++) {
-    //     (logic_it)->print();
-    // }
-    // for (auto special_it = specialComponents.begin(); special_it != specialComponents.end(); special_it++) {
-    //     (special_it)->print();
-    // }
-}
-
 // other methods
 void Circuit::simulate(){
-    // (global connections)
     // for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
-    for (int a = priorityTree.size() - 1; a >= 0; a--) { // check every scheme
-                                                          // here we must check priorityTree started of last elem
+    // for (int a = priorityTree.size() - 1; a >= 0; a--) { // check every scheme
+    for (uint a = 0; a <= priorityTree.size(); a++) { // check every scheme
+                                                         // here we must check priorityTree started of last elem
         vector<bool> new_input_states;
 
         for (uint b = 0; b < priorityTree[a]->getInputsCount(); b++) { // check every scheme inputs
@@ -53,45 +38,83 @@ void Circuit::simulate(){
 }
 
 void Circuit::generatePriorityTree(){
-    // logicComponents;
-    // vector<LogicComponent*> components; // pointers to all components (logic and special)
-    // for (uint logic = 0; logic < logicComponents.size(); logic++)
-    //     components.push_back(&logicComponents[logic]);
-    // for (uint special = 0; special < specialComponents.size(); special++)
-    //     components.push_back(&specialComponents[special]);
-
-    // cout << "IMPORTANT:" << logicComponents.at(0).backRelationsCount() << endl;
 
     priorityTree.clear();
+    
     set<Component*> visited; // save already visited component
+    vector<Component*> start_components;
 
     // back to front way
-    for (auto it = components.begin(); it != components.end(); it++) {
-
-        if ((*it)->backRelationsCount() != 0 ) // if this component isn't last, continue search
+    for (auto component_it = components.begin(); component_it != components.end(); ++component_it) {
+        cout << (*component_it) << endl;
+        if ((*component_it)->backRelationsCount()) // if this component isn't last (with back relation), continue search
             continue;
-        //todo: search all component with connection to the space
-        
+        // if ((*component_it)->frontRelationsCount()) {
+        //     visited.insert(*component_it);
+        //     start_components.push_back(*component_it);
+        //     continue;
+        // }
+            
 
-        function<void(vector<Component*>::iterator)> walker; // <-- search line relations
-        walker = [&](auto component_it) {
-            // if we visited this component before, stop loop iteration
+        set<Component*> new_visited;
+        
+        function<void(vector<Component*>::iterator)> front_walker; // search front relations
+        front_walker = [&](auto component_it){
+            if (new_visited.find((*component_it)) == new_visited.end()) // if didn't visit last iteration this component
+                if (visited.find((*component_it)) == visited.end()) { // check is this component already visited with current way 
+                    
+                    visited.insert((*component_it));
+                    new_visited.insert((*component_it));
+
+                    vector<Component*> *relations = (*component_it)->getFrontRelations();
+                    if (relations->size() == 0) {
+                        start_components.push_back(*component_it);
+                        return;
+                    }
+                    
+                    for (auto relation_it = relations->begin(); relation_it != relations->end(); ++relation_it) {
+                        front_walker(relation_it);
+                    }
+                }
+                else return;
+            else start_components.push_back(--(*component_it));
+        };
+        front_walker(component_it);
+        new_visited.clear();
+
+    }
+
+    visited.clear();
+    for (auto component_it = start_components.begin(); component_it != start_components.end(); ++component_it) {
+        function<void(vector<Component*>::iterator)> back_walker; // search back relations
+        back_walker = [&](auto component_it) {
+            // if we visited this component before, stop lambda function
             if (visited.find((*component_it)) == visited.end()) {
-                visited.insert((*component_it)); // make this component visited
-                priorityTree.push_back((*component_it)); // save new priority elem
+                visited.insert((*component_it));
+                priorityTree.push_back((*component_it));
+                
+                vector<Component*> *relations_ptr = (*component_it)->getBackRelations();
+                for (auto relation_it = relations_ptr->begin(); relation_it != relations_ptr->end(); ++relation_it) {
+                    back_walker(relation_it);
+                }
             }
             else return;
-            
-            // check other connections of this component
-            vector<Component*> *relations_ptr = (*component_it)->getFrontRelations();
-            for (auto relation_it = relations_ptr->begin(); relation_it != relations_ptr->end(); relation_it++) {
-                walker(relation_it);
-            }
-
         };
-        walker(it);
-        
+        back_walker(component_it);
     }
+        
+    for (uint i = 0; i < components.size(); i++) {
+        cout << "+ " << components.at(i) << endl;
+    }
+    cout << endl;
+    for (uint i = 0; i < priorityTree.size(); i++) {
+        cout << "- " << priorityTree.at(i) << endl;
+    }
+    cout << endl;
+    for (uint i = 0; i < start_components.size(); i++) {
+        cout << "first comp: " << start_components.at(i) << endl;
+    }
+    cout << endl;
 }
 
 void Circuit::connect(uint classWithInput,  uint input_index, //todo: remake
@@ -128,15 +151,4 @@ void Circuit::connectToControlPin(uint classWithInput,  uint input_index){ //tod
 //     // add input connection
 //     Input* input = classWithInput->getInput(input_index);
 //     input->addGlobalConnection(&controlPin);
-// }
-
-// // Add various components
-// void Circuit::addComponent(LogicComponent component){
-//     logicComponents.push_back(component);
-//     // components.push_back(&logicComponents.back());
-// }
-
-// void Circuit::addComponent(SpecialComponent component){
-//     specialComponents.push_back(component);
-//     // components.push_back(&specialComponents.back());
 // }
