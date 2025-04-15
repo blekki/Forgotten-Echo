@@ -256,23 +256,26 @@ int main(void)
 
         Circuit circuit;
         circuit.addComponent(ComponentFactory.createGate());   //0
-        circuit.addComponent(ComponentFactory.createAND());    //1
-        circuit.addComponent(ComponentFactory.createAntenna());//2
-        circuit.addComponent(ComponentFactory.createGate());   //3
-        circuit.addComponent(ComponentFactory.createGate());   //4
-        circuit.addComponent(ComponentFactory.createAntenna());//5
+        circuit.addComponent(ComponentFactory.createTube());   //0
+        // circuit.addComponent(ComponentFactory.createAND());    //1
+        // circuit.addComponent(ComponentFactory.createAntenna());//2
+        // circuit.addComponent(ComponentFactory.createGate());   //3
+        // circuit.addComponent(ComponentFactory.createGate());   //4
+        // circuit.addComponent(ComponentFactory.createAntenna());//5
         
-        circuit.connectToControlPin(0, 0);
         circuit.connect(1, 0, 0, 0);
-        circuit.connect(2, 0, 1, 0);
-        circuit.connect(1, 1, 3, 0);
-        circuit.connect(4, 0, 3, 0);
-        circuit.connect(3, 0, 5, 0);
+        circuit.connect(0, 0, 1, 0);
 
-        for (int i = 0; i < 5; i++) {
+        // circuit.connectToControlPin(0, 0);
+        // circuit.connect(1, 0, 0, 0);
+        // circuit.connect(2, 0, 1, 0);
+        // circuit.connect(1, 1, 3, 0);
+        // circuit.connect(4, 0, 3, 0);
+        // circuit.connect(3, 0, 5, 0);
+
+        for (int i = 0; i < 10; i++) {
             cout << i << ". -----------------" << endl;
-            circuit.simulate2();
-            circuit.applyChanges();
+            circuit.simulate();
         }
     }
 

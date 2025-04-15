@@ -214,10 +214,10 @@ void LogicWire::simulate(){
 
 // apply changes pack
 // INPUT
-void LogicWire::applyNextInputState(uint index){
+void LogicWire::applyInputChanges(uint index){
     inputs[index].setPower(next_input_states[index]);
 }
-void LogicWire::pushNextInputState(uint index, bool state){
+void LogicWire::saveNewInputState(uint index, bool state){
     next_input_states.at(index) = state;
 }
 // WIRE

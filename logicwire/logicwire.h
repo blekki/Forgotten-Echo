@@ -34,8 +34,8 @@ class LogicWire
         void simulate();
         void applyWireChanges();
         void applyOutputChanges();
-        void applyNextInputState(uint index);
-        void pushNextInputState(uint index, bool state);
+        void applyInputChanges(uint index);
+        void saveNewInputState(uint index, bool state);
 
         // constructors
         LogicWire(){};
