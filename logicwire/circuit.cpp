@@ -11,8 +11,6 @@ void Circuit::powerControlPin(){
 
 // other methods
 void Circuit::simulate(){
-    // for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
-    // for (int a = priorityTree.size() - 1; a >= 0; a--) { // check every scheme
     for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
                                                          // here we must check priorityTree started of last elem
         vector<bool> new_input_states;
@@ -34,6 +32,41 @@ void Circuit::simulate(){
             input_ptr->setPower(new_input_states.at(b));
         }
         priorityTree[a]->simulate(); // simulation inside scheme
+    }
+}
+
+void Circuit::simulate2(){
+    for (uint a = 0; a < components.size(); a++) { // check every scheme
+
+        vector<bool> new_input_states;
+        
+        for (uint b = 0; b < components[a]->getInputsCount(); b++) { // check every scheme inputs
+            components[a]->pushNextInputState(b, false);
+            // new_input_states.push_back(false);
+            
+            // check every input connections
+            Input* input_ptr = components[a]->getInput(b);
+            for (uint c = 0; c < input_ptr->getGlobalConnectionsCount(); c++) { // check every connection to the input
+
+                Output* output_ptr = input_ptr->getConnection(c);
+                if (output_ptr->checkPower()) {
+                    components[a]->pushNextInputState(b, true);
+                    // new_input_states.at(b) = true;
+                    break;
+                }
+            }
+            // input_ptr->setPower(new_input_states.at(b));
+            components[a]->applyNextInputState(b);
+            // components[a]->applyNextInputState(b);
+        }
+        // components[a]->applyNextInputState();
+        components[a]->simulate(); // simulation inside scheme
+    }
+}
+
+void Circuit::applyChanges(){
+    for (uint a = 0; a < components.size(); a++) {
+        components[a]->applyChanges();
     }
 }
 

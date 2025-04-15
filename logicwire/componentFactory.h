@@ -14,12 +14,20 @@ class ComponentFactory
         Component* createGate(){
             return new LogicComponent("logicwire/circuits/gate.png");
         }
-        
-        Component* createAntenna(){
-            return new SpecialComponent("logicwire/circuits/antenna.png");
-        }
 
         Component* createAND(){
             return new LogicComponent("logicwire/circuits/AND.png");
+        }
+
+        Component* createNAND(){
+            return new LogicComponent("logicwire/circuits/NAND.png");
+        }
+
+        Component* createTube(){
+            return new LogicComponent("logicwire/circuits/tube.png");
+        }
+        
+        Component* createAntenna(){
+            return new SpecialComponent("logicwire/circuits/antenna.png");
         }
 };

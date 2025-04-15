@@ -24,6 +24,8 @@ class Circuit
         void powerControlPin(); //todo:remove or change
 
         void simulate();
+        void simulate2();
+        void applyChanges();
         
         void addComponent(Component* component){
             components.push_back(component);

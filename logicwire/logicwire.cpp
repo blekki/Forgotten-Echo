@@ -12,7 +12,6 @@ enum direction_t{
 };
 
 void LogicWire::loadCircuit(const char* image_source){
-// LogicWire::LogicWire(const char* image_source){
     // image into board
     png::image<png::rgb_pixel> image(image_source);
     string circuit = "";
@@ -96,7 +95,7 @@ void LogicWire::loadCircuit(const char* image_source){
                                       image[y][x].green +
                                       image[y][x].blue;
                     if (color_hash == 255 * 3)
-                        powerTheWire(wire);
+                        powerTheWire(wire, true);
                     
                     // check bridge
                     (board(x+1, y)) ? walker(x+1, y) : bridge(x+1, y, RIGHT_DIRECTION );
@@ -168,70 +167,61 @@ void LogicWire::loadCircuit(const char* image_source){
             }
         }
     }
-    // cout << "gates count: " << gate << endl; // for debug
+
+    // prepare containers for future states
+    next_input_states.resize(inputs.size());
+    next_wire_states.resize(wires.size());
+    next_output_states.resize(outputs.size());
 }
 
 // ############# OTHER FUNCTIONS #############
 
-void LogicWire::powerTheInput(int id, bool status){
-    inputs[id].setPower(status);
+void LogicWire::powerTheWire(int id, bool status){
+    this->wires.at(id) = true;
 }
 
 void LogicWire::simulate(){
-    vector<bool> new_wire_states(wires.size());
-    vector<bool> new_output_states(outputs.size());
+    // delete alredy applied states
+    for (uint i = 0; i < next_wire_states.size(); i++)
+        next_wire_states.at(i) = false;
+    for (uint i = 0; i < next_output_states.size(); i++)
+        next_output_states.at(i) = false;
 
     // (local connection) wires get power from inputs
     for (uint a = 0; a < inputs.size(); a++) {
-        if (inputs[a].checkPower()) {
-            new_wire_states[inputs[a].getLocalConnection()] = true;
-            // cout << inputs[a].checkPower() << " ";
-        }
+        if (inputs[a].checkPower())
+            next_wire_states[inputs[a].getLocalConnection()] = true;
     }
 
     // gates stop/push power
     for (uint a = 0; a < gates.size(); a++) {
         Gate& gate = gates[a];
         bool source_powered = wires[gate.source];
-        // bool source_powered = new_wire_states[gate.source];
         if (!source_powered)
-            new_wire_states[gate.drain] = true;
+            next_wire_states[gate.drain] = true;
     }
 
     // (local connection) outputs get power from wires
     for (uint a = 0; a < outputs.size(); a++) {
-        // if (wires[outputs[a].getLocalConnection()]) {
-        // here is an interesting mechanics. Use global connection as a gate
-
-        if (new_wire_states[outputs[a].getLocalConnection()]) { // global connection as one wire (without delay)
-            outputs[a].setPower(true);
-        } 
-        else outputs[a].setPower(false);
-        
-        // cout << outputs[a].checkPower() << " ";
+        // output is a part of wire 
+        // (if wire power changes, output changes it too)
+        if (next_wire_states[outputs[a].getLocalConnection()]) 
+            next_output_states.at(a) = true;
     }
-    // cout << endl;
     
-    // apply changes
-    wires = new_wire_states;
-
     print();
 }
 
-// uint LogicWire::getInputsCount(){
-//     return inputs.size();
-// }
+void LogicWire::applyChanges(){
 
-// Input* LogicWire::getInput(uint id){
-//     return &inputs.at(id);
-// }
+    for (uint a = 0; a < wires.size(); a++) {
+        wires[a] = next_wire_states[a];
+    }
 
-// Output* LogicWire::getOutput(uint id){
-//     return &outputs.at(id);
-// }
-
-void LogicWire::powerTheWire(int id){
-    this->wires.at(id) = true;
+    for (uint a = 0; a < outputs.size(); a++) {
+        outputs[a].setPower(next_output_states[a]);
+    }
+    
 }
 
 // in future i won't need it
