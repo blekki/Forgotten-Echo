@@ -13,7 +13,7 @@ void Circuit::powerControlPin(){
 void Circuit::simulate(){
     // for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
     // for (int a = priorityTree.size() - 1; a >= 0; a--) { // check every scheme
-    for (uint a = 0; a <= priorityTree.size(); a++) { // check every scheme
+    for (uint a = 0; a < priorityTree.size(); a++) { // check every scheme
                                                          // here we must check priorityTree started of last elem
         vector<bool> new_input_states;
 
@@ -40,21 +40,20 @@ void Circuit::simulate(){
 void Circuit::generatePriorityTree(){
 
     priorityTree.clear();
+    vector<Component*> start_components;
     
     set<Component*> visited; // save already visited component
-    vector<Component*> start_components;
 
     // back to front way
     for (auto component_it = components.begin(); component_it != components.end(); ++component_it) {
-        cout << (*component_it) << endl;
-        if ((*component_it)->backRelationsCount()) // if this component isn't last (with back relation), continue search
+        cout << "avalible components: " << (*component_it) << endl;
+        if ((*component_it)->backRelationsCount() > 0) { // if this component isn't last (with back relation), continue search
+            if ((*component_it)->frontRelationsCount() == 0) {
+                visited.insert(*component_it);
+                start_components.push_back(*component_it);
+            }
             continue;
-        // if ((*component_it)->frontRelationsCount()) {
-        //     visited.insert(*component_it);
-        //     start_components.push_back(*component_it);
-        //     continue;
-        // }
-            
+        }
 
         set<Component*> new_visited;
         
@@ -77,7 +76,7 @@ void Circuit::generatePriorityTree(){
                     }
                 }
                 else return;
-            else start_components.push_back(--(*component_it));
+            else start_components.push_back((*component_it));
         };
         front_walker(component_it);
         new_visited.clear();
@@ -102,7 +101,9 @@ void Circuit::generatePriorityTree(){
         };
         back_walker(component_it);
     }
-        
+    
+    // debug
+    cout << endl;
     for (uint i = 0; i < components.size(); i++) {
         cout << "+ " << components.at(i) << endl;
     }
