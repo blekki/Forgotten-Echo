@@ -11,9 +11,7 @@ class Input: public Pin
 {
     private:
         uint localConnection; // zero means it doesn't connected
-        // vector<globalConnections;
         vector<Output*> globalConnections;
-        // vector<Component*> classConnections;
 
     public:
 

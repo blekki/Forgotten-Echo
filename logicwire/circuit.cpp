@@ -49,10 +49,6 @@ void Circuit::connect(uint classWithInput,  uint input_index, //todo: remake
     Input* input   = components[classWithInput]->getInput(input_index);
     Output* output = components[classWithOutput]->getOutput(output_index);
     input->addGlobalConnection(output);
-    
-    // add components relations
-    components[classWithInput]->addFrontRelation(components[classWithOutput]);
-    components[classWithOutput]->addBackRelation(components[classWithInput]);
 }
 
 void Circuit::connectToControlPin(uint classWithInput,  uint input_index){ //todo: remake
@@ -66,10 +62,6 @@ void Circuit::connectToControlPin(uint classWithInput,  uint input_index){ //tod
 //     Input* input   = classWithInput->getInput(input_index);
 //     Output* output = classWithOutput->getOutput(output_index);
 //     input->addGlobalConnection(output);
-    
-//     // add components relations
-//     classWithInput->addFrontRelation(classWithOutput);
-//     classWithOutput->addBackRelation(classWithInput);
 // }
 
 // void Circuit::connectToControlPin(LogicComponent* classWithInput,  uint input_index){
