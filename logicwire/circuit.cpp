@@ -66,7 +66,8 @@ void Circuit::simulate2(){
 
 void Circuit::applyChanges(){
     for (uint a = 0; a < components.size(); a++) {
-        components[a]->applyChanges();
+        components[a]->applyWireChanges();
+        components[a]->applyOutputChanges();
     }
 }
 
